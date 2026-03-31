@@ -1,0 +1,51 @@
+# Зависимости
+node_modules
+npm-debug.log
+yarn-error.log
+yarn.lock
+package-lock.json
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Build
+dist
+.output
+.nuxt
+.cache
+build
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs
+*.log
+
+# Тесты
+coverage
+.test-results
+playwright-report
+
+# Docker
+Dockerfile
+Dockerfile.dev
+docker-compose*.yml
+
+# Documentation
+*.md
+!package.json
+
+# Misc
+.DS_Store
+*.pem
+*.key

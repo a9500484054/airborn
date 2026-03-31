@@ -1,0 +1,201 @@
+/**
+ * Users Service
+ * Handles user-related business logic
+ */
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+  BadRequestException,
+  ForbiddenException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, Like, FindOptionsWhere } from 'typeorm';
+import { User, UserRole } from './entities/user.entity';
+import { CreateUserDto, UpdateUserDto, UpdateUserRoleDto } from './dto/user.dto';
+import * as bcrypt from 'bcrypt';
+
+@Injectable()
+export class UsersService {
+  constructor(
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
+  ) {}
+
+  /**
+   * Create a new user
+   */
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    // Check if email already exists
+    const existingUser = await this.findByEmail(createUserDto.email);
+    if (existingUser) {
+      throw new ConflictException('Email already registered');
+    }
+
+    // Hash password before saving
+    const saltRounds = 10;
+    const passwordHash = await bcrypt.hash(createUserDto.password, saltRounds);
+    
+    const user = this.usersRepository.create({
+      ...createUserDto,
+      passwordHash,
+    });
+    return await this.usersRepository.save(user);
+  }
+
+  /**
+   * Find user by email
+   */
+  async findByEmail(email: string): Promise<User | null> {
+    return await this.usersRepository.findOne({
+      where: { email, isDeleted: false },
+      withDeleted: true,
+      select: ['id', 'email', 'passwordHash', 'name', 'phone', 'role', 'avatar', 'isBlocked', 'isDeleted', 'refreshToken', 'createdAt', 'updatedAt'],
+    });
+  }
+
+  /**
+   * Find user by ID
+   */
+  async findById(id: string): Promise<User> {
+    const user = await this.usersRepository.findOne({
+      where: { id, isDeleted: false },
+      select: ['id', 'email', 'name', 'phone', 'role', 'avatar', 'isBlocked', 'createdAt', 'updatedAt'],
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
+  }
+
+  /**
+   * Find user by ID with sensitive data (for internal use)
+   */
+  async findByIdWithSensitive(id: string): Promise<User> {
+    const user = await this.usersRepository.findOne({
+      where: { id, isDeleted: false },
+      withDeleted: true,
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
+  }
+
+  /**
+   * Get all users with pagination and filtering
+   */
+  async findAll(
+    page: number = 1,
+    limit: number = 20,
+    search?: string,
+    role?: UserRole,
+    isBlocked?: boolean,
+    sortBy: 'createdAt' | 'name' = 'createdAt',
+    sortOrder: 'ASC' | 'DESC' = 'DESC',
+  ) {
+    const where: FindOptionsWhere<User> = { isDeleted: false };
+
+    if (search) {
+      where.name = Like(`%${search}%`);
+    }
+
+    if (role) {
+      where.role = role;
+    }
+
+    if (isBlocked !== undefined) {
+      where.isBlocked = isBlocked;
+    }
+
+    const [users, total] = await this.usersRepository.findAndCount({
+      where,
+      skip: (page - 1) * limit,
+      take: limit,
+      order: { [sortBy]: sortOrder },
+      select: ['id', 'email', 'name', 'phone', 'role', 'avatar', 'isBlocked', 'createdAt', 'updatedAt'],
+    });
+
+    return {
+      data: users,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  }
+
+  /**
+   * Update user profile
+   */
+  async update(id: string, updateUserDto: UpdateUserDto, currentUserId: string): Promise<User> {
+    const user = await this.findById(id);
+
+    // Users can only update their own profile unless they're admin
+    if (user.id !== currentUserId) {
+      const currentUser = await this.findById(currentUserId);
+      if (currentUser.role !== UserRole.ADMIN) {
+        throw new ForbiddenException('You can only update your own profile');
+      }
+    }
+
+    Object.assign(user, updateUserDto);
+    return await this.usersRepository.save(user);
+  }
+
+  /**
+   * Update user role (admin only)
+   */
+  async updateRole(id: string, updateUserRoleDto: UpdateUserRoleDto): Promise<User> {
+    const user = await this.findById(id);
+    user.role = updateUserRoleDto.role;
+    return await this.usersRepository.save(user);
+  }
+
+  /**
+   * Block/unblock user (admin only)
+   */
+  async toggleBlock(id: string, isBlocked: boolean): Promise<User> {
+    const user = await this.findById(id);
+    user.isBlocked = isBlocked;
+    return await this.usersRepository.save(user);
+  }
+
+  /**
+   * Soft delete user
+   */
+  async remove(id: string): Promise<void> {
+    const user = await this.findByIdWithSensitive(id);
+    user.isDeleted = true;
+    user.email = `deleted_${user.id}@deleted.com`; // Free up email
+    await this.usersRepository.save(user);
+  }
+
+  /**
+   * Update refresh token
+   */
+  async updateRefreshToken(userId: string, refreshToken: string | null): Promise<void> {
+    await this.usersRepository.update(userId, { refreshToken });
+  }
+
+  /**
+   * Validate user for authentication
+   */
+  async validateForAuth(user: User): Promise<{ isValid: boolean; reason?: string }> {
+    if (user.isDeleted) {
+      return { isValid: false, reason: 'User account has been deleted' };
+    }
+
+    if (user.isBlocked) {
+      return { isValid: false, reason: 'User account is blocked' };
+    }
+
+    return { isValid: true };
+  }
+}

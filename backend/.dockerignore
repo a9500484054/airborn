@@ -1,0 +1,44 @@
+# Зависимости
+node_modules
+npm-debug.log
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Build
+dist
+build
+.cache
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Uploads (не нужны при сборке)
+uploads/*
+!uploads/.gitkeep
+
+# Logs
+logs
+*.log
+
+# Тесты
+coverage
+.test-results
+
+# Docker
+Dockerfile
+Dockerfile.dev
+docker-compose*.yml
+
+# Documentation
+*.md
+!package.json
