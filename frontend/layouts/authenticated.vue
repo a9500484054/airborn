@@ -28,7 +28,7 @@
               <path d="M5 10L5 15L10 17.5L15 15L15 10" stroke="currentColor" stroke-width="1.5" fill="none"/>
             </svg>
           </div>
-          <span>Личный кабинет</span>
+          <span>Дашборд</span>
         </NuxtLink>
 
         <NuxtLink to="/projects" class="sidebar-link" :class="{ active: $route.path.startsWith('/projects') }">
