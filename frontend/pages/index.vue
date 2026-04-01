@@ -386,6 +386,8 @@ onMounted(() => {
   });
 });
 
+const config = useRuntimeConfig();
+
 const scrollToForm = () => {
   document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
   mobileMenuOpen.value = false;
@@ -397,13 +399,25 @@ const submitForm = async () => {
   formSuccess.value = false;
 
   try {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    formSuccess.value = true;
-    form.value = { name: '', phone: '', service: '' };
-    setTimeout(() => {
-      formSuccess.value = false;
-    }, 3000);
-  } catch (error) {
+    const { data, error } = await useFetch(`${config.public.apiUrl}/leads`, {
+      method: 'POST',
+      body: {
+        name: form.value.name,
+        phone: form.value.phone,
+        comment: form.value.service ? `Услуга: ${form.value.service}` : ''
+      }
+    });
+
+    if (error.value) {
+      formError.value = error.value.data?.error?.message || 'Ошибка при отправке заявки';
+      return;
+    }
+
+    if (data.value) {
+      formSuccess.value = true;
+      form.value = { name: '', phone: '', service: '' };
+    }
+  } catch (err) {
     formError.value = 'Произошла ошибка. Попробуйте позже.';
   } finally {
     isSubmitting.value = false;

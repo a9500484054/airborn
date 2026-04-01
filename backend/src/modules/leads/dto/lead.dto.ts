@@ -26,10 +26,10 @@ export class CreateLeadDto {
   @IsPhoneNumber('RU', { message: 'Invalid Russian phone number format' })
   phone: string;
 
-  @ApiProperty({ example: 'user@example.com', description: 'Email address' })
-  @IsNotEmpty({ message: 'Email is required' })
+  @ApiPropertyOptional({ example: 'user@example.com', description: 'Email address' })
+  @IsOptional()
   @IsEmail({}, { message: 'Invalid email format' })
-  email: string;
+  email?: string;
 
   @ApiPropertyOptional({ example: 'I am interested in your services...', description: 'Comment' })
   @IsOptional()

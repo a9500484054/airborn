@@ -26,7 +26,7 @@ export class Lead {
   @Column({ type: 'varchar', length: 50 })
   phone: string;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   email: string;
 
   @Column({ type: 'text', nullable: true })
