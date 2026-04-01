@@ -58,6 +58,15 @@ export class User {
   @Column({ type: 'text', nullable: true })
   refreshToken: string | null;
 
+  @Column({ type: 'boolean', default: false })
+  isEmailVerified: boolean;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  emailVerificationToken: string | null;
+
+  @Column({ type: 'timestamp', nullable: true })
+  emailVerificationTokenExpires: Date | null;
+
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 

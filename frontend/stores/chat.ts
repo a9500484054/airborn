@@ -58,10 +58,15 @@ export const useChatStore = defineStore('chat', {
      * Initialize WebSocket connection
      */
     connect(token: string) {
-      if (this.isConnected) return;
+      // Disconnect existing connection first
+      if (this.socket) {
+        this.disconnect();
+      }
 
       const config = useRuntimeConfig();
       const wsUrl = config.public.wsUrl;
+
+      console.log('Connecting to WebSocket:', wsUrl);
 
       this.socket = io(wsUrl, {
         query: { token },
@@ -69,12 +74,15 @@ export const useChatStore = defineStore('chat', {
         reconnection: true,
         reconnectionAttempts: 5,
         reconnectionDelay: 1000,
+        auth: { token },
       });
 
       this.socket.on('connect', () => {
         this.isConnected = true;
         this.error = null;
         console.log('WebSocket connected');
+        // Load messages after connection
+        this.loadMessages(1);
       });
 
       this.socket.on('disconnect', () => {
@@ -89,7 +97,12 @@ export const useChatStore = defineStore('chat', {
       });
 
       this.socket.on('new_message', (message: ChatMessage) => {
-        this.messages.unshift(message);
+        // Avoid duplicates
+        const exists = this.messages.some(m => m.id === message.id);
+        if (!exists) {
+          // Add to end (newest at bottom)
+          this.messages.push(message);
+        }
       });
 
       this.socket.on('user_typing', (data: { userId: string; userName: string; isTyping: boolean }) => {
@@ -202,6 +215,13 @@ export const useChatStore = defineStore('chat', {
       try {
         const config = useRuntimeConfig();
         const authStore = useAuthStore();
+        
+        if (!authStore.accessToken) {
+          console.warn('No access token, skipping message load');
+          this.isLoading = false;
+          return;
+        }
+        
         const { data } = await useFetch(`${config.public.apiUrl}/messages?page=${page}&limit=${limit}`, {
           headers: {
             Authorization: `Bearer ${authStore.accessToken}`,
@@ -210,17 +230,31 @@ export const useChatStore = defineStore('chat', {
 
         if (data.value) {
           const response = data.value as any;
+          const newMessages = response.data.data || [];
 
           if (page === 1) {
-            this.messages = response.data.data;
+            // Replace all messages for first page
+            this.messages = newMessages;
           } else {
-            this.messages = [...response.data.data, ...this.messages];
+            // Prepend older messages (oldest at top), avoiding duplicates
+            const existingIds = new Set(this.messages.map(m => m.id));
+            const olderMessages = newMessages.filter(m => !existingIds.has(m.id));
+            this.messages = [...olderMessages, ...this.messages];
           }
 
           this.page = page;
           this.hasMore = page < response.data.meta.totalPages;
+          
+          // Scroll to bottom after loading messages
+          setTimeout(() => {
+            const container = document.querySelector('.messages-container');
+            if (container && page === 1) {
+              container.scrollTop = container.scrollHeight;
+            }
+          }, 100);
         }
       } catch (error: any) {
+        console.error('Failed to load messages:', error);
         this.error = error.data?.error?.message || 'Failed to load messages';
       } finally {
         this.isLoading = false;

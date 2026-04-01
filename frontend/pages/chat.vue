@@ -52,13 +52,13 @@
 
               <!-- File Attachment -->
               <div v-if="message.fileUrl" class="message-file">
-                <a :href="message.fileUrl" target="_blank" class="file-link">
+                <a :href="getFullUrl(message.fileUrl)" target="_blank" class="file-link">
                   <span class="file-icon">{{ getFileIcon(message.fileType) }}</span>
                   <span class="file-name">Download File</span>
                 </a>
                 <img
                   v-if="message.fileType?.includes('image')"
-                  :src="message.fileUrl"
+                  :src="getFullUrl(message.fileUrl)"
                   alt="Attachment"
                   class="file-image"
                 />
@@ -145,6 +145,8 @@
 </template>
 
 <script setup lang="ts">
+import { watch } from 'vue';
+
 definePageMeta({
   middleware: ['auth'],
 });
@@ -160,9 +162,12 @@ const selectedFile = ref<File | null>(null);
 const typingTimeout = ref<NodeJS.Timeout | null>(null);
 
 const typingUsers = computed(() => {
-  return Array.from(chatStore.typingUsers.values())
-    .filter(u => u.name !== authStore.user?.name)
-    .map(u => u.name.split(' ')[0]);
+  const authStore = useAuthStore();
+  const chatStore = useChatStore();
+  
+  return Array.from(chatStore.typingUsers.entries())
+    .filter(([userId, data]) => userId !== authStore.user?.id)
+    .map(([userId, data]) => data.name.split(' ')[0]);
 });
 
 const canSend = computed(() => {
@@ -172,20 +177,24 @@ const canSend = computed(() => {
 onMounted(async () => {
   // Initialize auth if needed
   if (!authStore.isAuthenticated) {
-    authStore.initFromStorage();
+    await authStore.initFromStorage();
   }
 
-  // Load message history
-  await chatStore.loadMessages(1);
-
-  // Connect to WebSocket
+  // Connect to WebSocket first
   if (authStore.accessToken) {
     chatStore.connect(authStore.accessToken);
   }
 
-  // Scroll to bottom
-  scrollToBottom();
+  // Scroll to bottom after messages load
+  setTimeout(() => {
+    scrollToBottom();
+  }, 500);
 });
+
+// Watch for new messages and scroll to bottom
+watch(() => chatStore.messages.length, () => {
+  scrollToBottom();
+}, { immediate: false });
 
 onBeforeUnmount(() => {
   chatStore.disconnect();
@@ -307,6 +316,15 @@ const formatTime = (dateString: string) => {
     hour: '2-digit',
     minute: '2-digit',
   });
+};
+
+const getFullUrl = (path: string) => {
+  if (!path) return '';
+  if (path.startsWith('http://') || path.startsWith('https://')) return path;
+  const config = useRuntimeConfig();
+  // Remove leading slash and append to API URL
+  const apiUrl = config.public.apiUrl.replace('/api', '');
+  return `${apiUrl}${path}`;
 };
 
 const formatFileSize = (bytes: number) => {

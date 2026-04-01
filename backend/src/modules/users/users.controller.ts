@@ -13,7 +13,6 @@ import {
   Param,
   Query,
   ParseUUIDPipe,
-  ParseBoolPipe,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -51,15 +50,26 @@ export class UsersController {
   @ApiQuery({ name: 'sortBy', required: false, enum: ['createdAt', 'name'] })
   @ApiQuery({ name: 'sortOrder', required: false, enum: ['ASC', 'DESC'] })
   async findAll(
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 20,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
     @Query('search') search?: string,
     @Query('role') role?: UserRole,
-    @Query('isBlocked', ParseBoolPipe) isBlocked?: boolean,
-    @Query('sortBy') sortBy: 'createdAt' | 'name' = 'createdAt',
-    @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'DESC',
+    @Query('isBlocked') isBlocked?: string,
+    @Query('sortBy') sortBy?: 'createdAt' | 'name',
+    @Query('sortOrder') sortOrder?: 'ASC' | 'DESC',
   ) {
-    return this.usersService.findAll(page, limit, search, role, isBlocked, sortBy, sortOrder);
+    // Convert string to boolean if provided
+    const isBlockedBool = isBlocked === 'true' ? true : isBlocked === 'false' ? false : undefined;
+    
+    return this.usersService.findAll(
+      page ? +page : 1,
+      limit ? +limit : 20,
+      search,
+      role,
+      isBlockedBool,
+      sortBy || 'createdAt',
+      sortOrder || 'DESC',
+    );
   }
 
   @Get(':id')

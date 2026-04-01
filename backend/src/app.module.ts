@@ -15,6 +15,7 @@ import { MessagesModule } from './modules/messages/messages.module';
 import { LeadsModule } from './modules/leads/leads.module';
 import { FilesModule } from './modules/files/files.module';
 import { WebsocketModule } from './websocket/websocket.module';
+import { EmailModule } from './modules/email/email.module';
 
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 

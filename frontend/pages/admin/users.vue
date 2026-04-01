@@ -214,7 +214,7 @@ const toggleBlock = async (user: User) => {
   if (!confirm(`${action} user ${user.name}?`)) return;
 
   try {
-    await useFetch(`${config.public.apiUrl}/users/${userId}/block`, {
+    await useFetch(`${config.public.apiUrl}/users/${user.id}/block`, {
       method: 'PATCH',
       headers: {
         Authorization: `Bearer ${authStore.accessToken}`,

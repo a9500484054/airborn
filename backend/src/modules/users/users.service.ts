@@ -23,6 +23,75 @@ export class UsersService {
   ) {}
 
   /**
+   * Create a new unverified user
+   */
+  async createUnverified(createUserDto: CreateUserDto): Promise<User> {
+    // Hash password before saving
+    const saltRounds = 10;
+    const passwordHash = await bcrypt.hash(createUserDto.password, saltRounds);
+
+    const user = this.usersRepository.create({
+      ...createUserDto,
+      passwordHash,
+      isEmailVerified: false,
+    });
+    return await this.usersRepository.save(user);
+  }
+
+  /**
+   * Set verification token
+   */
+  async setVerificationToken(userId: string, token: string, expires: Date): Promise<void> {
+    await this.usersRepository.update(userId, {
+      emailVerificationToken: token,
+      emailVerificationTokenExpires: expires,
+    });
+  }
+
+  /**
+   * Find user by verification token
+   */
+  async findByVerificationToken(token: string): Promise<User | null> {
+    try {
+      const user = await this.usersRepository.findOne({
+        where: {
+          emailVerificationToken: token,
+          isEmailVerified: false,
+        },
+        select: ['id', 'email', 'name', 'isEmailVerified', 'emailVerificationToken', 'emailVerificationTokenExpires'],
+      });
+
+      console.log('Find user by token:', token, 'Found:', user ? user.email : 'null');
+      if (user) {
+        console.log('Token expires:', user.emailVerificationTokenExpires, 'Now:', new Date(), 'Valid:', user.emailVerificationTokenExpires! > new Date());
+      }
+
+      // Manual date comparison
+      if (user && user.emailVerificationToken === token && user.emailVerificationTokenExpires) {
+        if (user.emailVerificationTokenExpires > new Date()) {
+          return user;
+        }
+      }
+
+      return null;
+    } catch (error) {
+      console.error('Error finding user by token:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Verify user email
+   */
+  async verifyEmail(userId: string): Promise<void> {
+    await this.usersRepository.update(userId, {
+      isEmailVerified: true,
+      emailVerificationToken: null,
+      emailVerificationTokenExpires: null,
+    });
+  }
+
+  /**
    * Create a new user
    */
   async create(createUserDto: CreateUserDto): Promise<User> {

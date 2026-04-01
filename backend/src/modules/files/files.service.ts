@@ -37,7 +37,7 @@ export class FilesService {
   };
 
   constructor(private configService: ConfigService) {
-    this.uploadPath = this.configService.get<string>('UPLOAD_PATH') || './uploads';
+    this.uploadPath = this.configService.get<string>('UPLOAD_PATH') || '/app/uploads';
     this.maxFileSize = this.configService.get<number>('MAX_FILE_SIZE') || 20 * 1024 * 1024; // 20MB
 
     // Ensure upload directory exists
