@@ -7,12 +7,14 @@ import {
   UnauthorizedException,
   ConflictException,
   BadRequestException,
+  NotFoundException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../users/users.service';
 import { User } from '../users/entities/user.entity';
 import { RegisterDto, LoginDto } from './dto/auth.dto';
+import { ForgotPasswordDto, ResetPasswordDto } from './dto/password-reset.dto';
 import { EmailService } from '../email/email.service';
 
 @Injectable()
@@ -301,5 +303,66 @@ export class AuthService {
    */
   private generateVerificationToken(): string {
     return require('crypto').randomBytes(32).toString('hex');
+  }
+
+  /**
+   * Forgot password - send reset token
+   */
+  async forgotPassword(forgotPasswordDto: ForgotPasswordDto) {
+    const user = await this.usersService.findByEmail(forgotPasswordDto.email);
+
+    if (!user) {
+      // Don't reveal if email exists or not for security
+      return { 
+        success: true, 
+        message: 'If an account exists with this email, you will receive password reset instructions.' 
+      };
+    }
+
+    // Generate reset token
+    const resetToken = this.generateVerificationToken();
+    const tokenExpires = new Date();
+    tokenExpires.setHours(tokenExpires.getHours() + 1); // 1 hour
+
+    await this.usersService.setPasswordResetToken(user.id, resetToken, tokenExpires);
+
+    // Send reset email
+    try {
+      await this.emailService.sendPasswordResetEmail(
+        user.email,
+        user.name,
+        resetToken,
+      );
+    } catch (error) {
+      console.error('Failed to send password reset email:', error);
+      throw new BadRequestException('Failed to send reset email');
+    }
+
+    return { 
+      success: true, 
+      message: 'Password reset instructions have been sent to your email.' 
+    };
+  }
+
+  /**
+   * Reset password with token
+   */
+  async resetPassword(resetPasswordDto: ResetPasswordDto) {
+    const user = await this.usersService.findByPasswordResetToken(resetPasswordDto.token);
+
+    if (!user) {
+      throw new BadRequestException('Invalid or expired reset token');
+    }
+
+    // Update password
+    await this.usersService.updatePassword(user.id, resetPasswordDto.newPassword);
+
+    // Clear reset token
+    await this.usersService.clearPasswordResetToken(user.id);
+
+    return { 
+      success: true, 
+      message: 'Password has been reset successfully. You can now log in with your new password.' 
+    };
   }
 }

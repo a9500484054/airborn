@@ -254,6 +254,60 @@ export class UsersService {
   }
 
   /**
+   * Set password reset token
+   */
+  async setPasswordResetToken(userId: string, token: string, expires: Date): Promise<void> {
+    await this.usersRepository.update(userId, {
+      passwordResetToken: token,
+      passwordResetTokenExpires: expires,
+    });
+  }
+
+  /**
+   * Find user by password reset token
+   */
+  async findByPasswordResetToken(token: string): Promise<User | null> {
+    try {
+      const user = await this.usersRepository.findOne({
+        where: {
+          passwordResetToken: token,
+        },
+        select: ['id', 'email', 'name', 'passwordResetToken', 'passwordResetTokenExpires'],
+      });
+
+      if (user && user.passwordResetToken === token && user.passwordResetTokenExpires) {
+        if (user.passwordResetTokenExpires > new Date()) {
+          return user;
+        }
+      }
+
+      return null;
+    } catch (error) {
+      console.error('Error finding user by reset token:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Update password
+   */
+  async updatePassword(userId: string, newPassword: string): Promise<void> {
+    const saltRounds = 10;
+    const passwordHash = await bcrypt.hash(newPassword, saltRounds);
+    await this.usersRepository.update(userId, { passwordHash });
+  }
+
+  /**
+   * Clear password reset token
+   */
+  async clearPasswordResetToken(userId: string): Promise<void> {
+    await this.usersRepository.update(userId, {
+      passwordResetToken: null,
+      passwordResetTokenExpires: null,
+    });
+  }
+
+  /**
    * Validate user for authentication
    */
   async validateForAuth(user: User): Promise<{ isValid: boolean; reason?: string }> {

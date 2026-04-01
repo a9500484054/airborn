@@ -1,538 +1,1323 @@
 <template>
-  <NuxtLayout>
-    <div class="landing-page">
-      <!-- Hero Section -->
-      <section class="hero">
-        <div class="container hero-content">
-          <h1 class="hero-title">
-            Building the Future,
-            <span class="text-primary">One Project at a Time</span>
-          </h1>
-          <p class="hero-subtitle">
-            AirBorn delivers innovative solutions and cutting-edge technology 
-            to transform your vision into reality.
-          </p>
-          <div class="hero-actions">
-            <NuxtLink to="/register" class="btn btn-primary btn-lg">
-              Get Started
-            </NuxtLink>
-            <NuxtLink to="/projects" class="btn btn-outline btn-lg">
-              View Projects
-            </NuxtLink>
-          </div>
-        </div>
-        <div class="hero-bg"></div>
-      </section>
-
-      <!-- About Section -->
-      <section class="about section">
-        <div class="container">
-          <div class="section-header">
-            <h2>About AirBorn</h2>
-            <p class="section-subtitle">
-              We are a team of passionate professionals dedicated to excellence
-            </p>
-          </div>
-          <div class="about-grid">
-            <div class="about-card">
-              <div class="card-icon">🎯</div>
-              <h3>Our Mission</h3>
-              <p>
-                To deliver exceptional solutions that exceed expectations and drive 
-                business growth through innovation and expertise.
-              </p>
-            </div>
-            <div class="about-card">
-              <div class="card-icon">👁️</div>
-              <h3>Our Vision</h3>
-              <p>
-                To be the leading partner for businesses seeking transformative 
-                solutions and sustainable success.
-              </p>
-            </div>
-            <div class="about-card">
-              <div class="card-icon">⭐</div>
-              <h3>Our Values</h3>
-              <p>
-                Integrity, excellence, innovation, and customer focus guide 
-                everything we do.
-              </p>
-            </div>
-          </div>
-          <div class="stats-grid">
-            <div class="stat-item">
-              <div class="stat-number">150+</div>
-              <div class="stat-label">Projects Completed</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-number">50+</div>
-              <div class="stat-label">Happy Clients</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-number">10+</div>
-              <div class="stat-label">Years Experience</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-number">24/7</div>
-              <div class="stat-label">Support</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Projects Preview -->
-      <section class="projects-preview section">
-        <div class="container">
-          <div class="section-header">
-            <h2>Featured Projects</h2>
-            <p class="section-subtitle">
-              Explore our portfolio of successful projects
-            </p>
-          </div>
-          <div class="projects-grid">
-            <div
-              v-for="project in projectsStore.projects.slice(0, 3)"
-              :key="project.id"
-              class="project-card"
-            >
-              <div class="project-image">
-                <img
-                  v-if="project.images?.[0]"
-                  :src="project.images[0]"
-                  :alt="project.title"
-                  loading="lazy"
-                />
-                <div v-else class="project-image-placeholder">
-                  📁
-                </div>
-              </div>
-              <div class="project-content">
-                <h3>{{ project.title }}</h3>
-                <p>{{ project.shortDescription }}</p>
-                <NuxtLink :to="`/projects/${project.id}`" class="btn btn-outline btn-sm">
-                  Learn More →
-                </NuxtLink>
-              </div>
-            </div>
-          </div>
-          <div class="text-center mt-xl">
-            <NuxtLink to="/projects" class="btn btn-primary btn-lg">
-              View All Projects
-            </NuxtLink>
-          </div>
-        </div>
-      </section>
-
-      <!-- Contact Section -->
-      <section id="contacts" class="contact section">
-        <div class="container">
-          <div class="section-header">
-            <h2>Get In Touch</h2>
-            <p class="section-subtitle">
-              Ready to start your project? Contact us today!
-            </p>
-          </div>
-          <div class="contact-grid">
-            <div class="contact-info">
-              <div class="info-item">
-                <div class="info-icon">📍</div>
-                <div>
-                  <h4>Address</h4>
-                  <p>Moscow, Russia</p>
-                </div>
-              </div>
-              <div class="info-item">
-                <div class="info-icon">📞</div>
-                <div>
-                  <h4>Phone</h4>
-                  <p>+7 (999) 123-45-67</p>
-                </div>
-              </div>
-              <div class="info-item">
-                <div class="info-icon">✉️</div>
-                <div>
-                  <h4>Email</h4>
-                  <p>info@airborn.com</p>
-                </div>
-              </div>
-            </div>
-            <div class="contact-form-wrapper">
-              <form @submit.prevent="submitForm" class="contact-form">
-                <div class="form-group">
-                  <label class="form-label" for="name">Full Name *</label>
-                  <input
-                    id="name"
-                    v-model="form.name"
-                    type="text"
-                    class="form-input"
-                    placeholder="John Doe"
-                    required
-                  />
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="phone">Phone *</label>
-                  <input
-                    id="phone"
-                    v-model="form.phone"
-                    type="tel"
-                    class="form-input"
-                    placeholder="+7 (999) 123-45-67"
-                    required
-                  />
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="email">Email *</label>
-                  <input
-                    id="email"
-                    v-model="form.email"
-                    type="email"
-                    class="form-input"
-                    placeholder="john@example.com"
-                    required
-                  />
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="comment">Comment</label>
-                  <textarea
-                    id="comment"
-                    v-model="form.comment"
-                    class="form-textarea"
-                    placeholder="Tell us about your project..."
-                    rows="4"
-                  ></textarea>
-                </div>
-                <button
-                  type="submit"
-                  class="btn btn-primary btn-lg"
-                  :disabled="isSubmitting"
-                >
-                  {{ isSubmitting ? 'Sending...' : 'Send Message' }}
-                </button>
-                <div v-if="formSuccess" class="alert alert-success mt-md">
-                  Thank you! We'll contact you soon.
-                </div>
-                <div v-if="formError" class="alert alert-error mt-md">
-                  {{ formError }}
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </section>
+  <div class="landing-page">
+    <!-- Preloader -->
+    <div v-if="isLoading" class="preloader">
+      <div class="preloader-content">
+        <div class="preloader-ring"></div>
+        <p class="preloader-text">AirBorn</p>
+      </div>
     </div>
-  </NuxtLayout>
+
+    <!-- Header -->
+    <header class="header" :class="{ 'header-scrolled': isScrolled }">
+      <div class="container">
+        <div class="header-inner">
+          <div class="logo">
+            <div class="logo-mark">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <path d="M16 4L4 12L16 20L28 12L16 4Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                <path d="M4 20L16 28L28 20" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                <circle cx="16" cy="12" r="2" fill="currentColor"/>
+              </svg>
+            </div>
+            <span class="logo-text">AirBorn</span>
+          </div>
+          
+          <nav class="nav">
+            <a href="#services" class="nav-link">Услуги</a>
+            <a href="#process" class="nav-link">Процесс</a>
+            <a href="#contacts" class="nav-link">Контакты</a>
+          </nav>
+
+          <div class="header-actions">
+            <a href="tel:+78121234567" class="phone">+7 (812) 123-45-67</a>
+            <button @click="scrollToForm" class="btn-primary-small">
+              Заказать звонок
+            </button>
+            <NuxtLink to="/login" class="btn-login">Вход</NuxtLink>
+          </div>
+
+          <button class="mobile-menu-btn" @click="mobileMenuOpen = !mobileMenuOpen">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Menu -->
+      <div v-if="mobileMenuOpen" class="mobile-menu">
+        <a href="#services" class="mobile-nav-link">Услуги</a>
+        <a href="#process" class="mobile-nav-link">Процесс</a>
+        <a href="#contacts" class="mobile-nav-link">Контакты</a>
+        <NuxtLink to="/login" class="mobile-nav-link">Вход</NuxtLink>
+        <button @click="scrollToForm" class="btn-primary-full">Оставить заявку</button>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-bg">
+        <div class="hero-gradient"></div>
+        <div class="hero-particles"></div>
+      </div>
+      
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-badge">
+            <span class="badge-dot"></span>
+            Работаем в СПб и Ленобласти
+          </div>
+          
+          <h1 class="hero-title">
+            Профессиональный монтаж
+            <span class="title-gradient">вентиляции и кондиционирования</span>
+          </h1>
+          
+          <p class="hero-description">
+            Монтируем системы «под ключ» с гарантией 12 месяцев. 
+            Бесплатный выезд инженера в день обращения.
+          </p>
+          
+          <div class="hero-stats">
+            <div class="stat">
+              <div class="stat-number">500+</div>
+              <div class="stat-label">Выполненных проектов</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat">
+              <div class="stat-number">12 лет</div>
+              <div class="stat-label">Опыта на рынке</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat">
+              <div class="stat-number">24/7</div>
+              <div class="stat-label">Техподдержка</div>
+            </div>
+          </div>
+          
+          <div class="hero-actions">
+            <button @click="scrollToForm" class="btn-primary-hero">
+              Рассчитать стоимость
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M4.16663 10H15.8333M15.8333 10L10.8333 5M15.8333 10L10.8333 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </button>
+            <a href="tel:+78121234567" class="btn-outline-hero">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M18.3334 14.0833V16.5C18.334 16.789 18.2653 17.074 18.1335 17.3299C18.0018 17.5858 17.811 17.8049 17.5778 17.9692C17.3446 18.1336 17.076 18.2385 16.7946 18.2757C16.5133 18.3128 16.2276 18.2813 15.9584 18.1833C13.0719 17.2007 10.4706 15.5151 8.39166 13.275C6.17864 11.1732 4.50927 8.56192 3.54166 5.65833C3.44587 5.39193 3.4151 5.10596 3.45193 4.82516C3.48876 4.54436 3.59218 4.27618 3.75444 4.04296C3.91669 3.80973 4.13316 3.61808 4.38624 3.48471C4.63933 3.35134 4.92166 3.28023 5.20833 3.27708H7.625C7.958 3.27518 8.28134 3.37946 8.54855 3.57425C8.81576 3.76904 9.0134 4.04403 9.1125 4.35833C9.30618 4.99811 9.57218 5.61353 9.90417 6.19167C10.0825 6.50452 10.1658 6.86214 10.1445 7.22062C10.1232 7.57909 9.99833 7.92375 9.7875 8.2125L8.85417 9.4375C9.9669 11.3462 11.5675 12.8609 13.5125 13.8542L14.7625 12.9583C15.0492 12.7546 15.3903 12.6338 15.744 12.6117C16.0977 12.5897 16.4504 12.6672 16.7583 12.8354C17.3499 13.1689 17.974 13.4468 18.625 13.6667C18.9435 13.7671 19.2214 13.9669 19.4167 14.2372C19.612 14.5075 19.7145 14.8345 19.7083 15.1688V18.3333H19.7083Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              Позвонить
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-badge">Что мы делаем</span>
+          <h2 class="section-title">Комплексные решения<br>для вашего комфорта</h2>
+        </div>
+
+        <div class="services-grid">
+          <div class="service-card" v-for="service in services" :key="service.title">
+            <div class="service-icon">{{ service.icon }}</div>
+            <h3 class="service-title">{{ service.title }}</h3>
+            <p class="service-desc">{{ service.desc }}</p>
+            <ul class="service-list">
+              <li v-for="item in service.items" :key="item">• {{ item }}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Advantages Section -->
+    <section class="advantages">
+      <div class="container">
+        <div class="advantages-grid">
+          <div class="advantage-item" v-for="advantage in advantages" :key="advantage.title">
+            <div class="advantage-number">{{ advantage.number }}</div>
+            <h3 class="advantage-title">{{ advantage.title }}</h3>
+            <p class="advantage-desc">{{ advantage.desc }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Process Section -->
+    <section id="process" class="process">
+      <div class="container">
+        <div class="section-header center">
+          <span class="section-badge">Как мы работаем</span>
+          <h2 class="section-title">Прозрачный процесс<br>от заявки до результата</h2>
+        </div>
+
+        <div class="process-steps">
+          <div class="step" v-for="(step, index) in steps" :key="index">
+            <div class="step-number">{{ String(index + 1).padStart(2, '0') }}</div>
+            <div class="step-content">
+              <h3 class="step-title">{{ step.title }}</h3>
+              <p class="step-desc">{{ step.desc }}</p>
+            </div>
+            <div v-if="index < steps.length - 1" class="step-line"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+      <div class="container">
+        <div class="cta-card">
+          <div class="cta-content">
+            <h2 class="cta-title">Нужен расчет стоимости?</h2>
+            <p class="cta-desc">Оставьте заявку и получите бесплатный выезд инженера в день обращения</p>
+            <button @click="scrollToForm" class="btn-primary-cta">
+              Оставить заявку
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M4.16663 10H15.8333M15.8333 10L10.8333 5M15.8333 10L10.8333 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </div>
+          <div class="cta-stats">
+            <div class="cta-stat">
+              <div class="cta-stat-value">15 мин</div>
+              <div class="cta-stat-label">Среднее время ответа</div>
+            </div>
+            <div class="cta-stat">
+              <div class="cta-stat-value">24/7</div>
+              <div class="cta-stat-label">Техническая поддержка</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Form Section -->
+    <section id="contact-form" class="contact-form">
+      <div class="container">
+        <div class="form-grid">
+          <div class="form-info">
+            <div class="section-badge">Свяжитесь с нами</div>
+            <h2 class="form-title">Остались вопросы?</h2>
+            <p class="form-desc">Наш специалист свяжется с вами в ближайшее время и ответит на все вопросы</p>
+            
+            <div class="contact-info">
+              <div class="contact-info-item">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M22 16.92V19.92C22.0011 20.1985 21.9441 20.4742 21.8325 20.7294C21.7209 20.9845 21.5573 21.2136 21.352 21.4019C21.1467 21.5901 20.9041 21.7335 20.6408 21.8227C20.3775 21.9119 20.0994 21.9451 19.823 21.92C16.7427 21.5856 13.787 20.5341 11.19 18.85C8.7738 17.3147 6.72533 15.2662 5.19 12.85C3.4999 10.2412 2.44809 7.27179 2.12 4.18C2.09497 3.90347 2.12814 3.62521 2.2173 3.36171C2.30647 3.09822 2.44984 2.8554 2.63809 2.64994C2.82633 2.44448 3.05551 2.28073 3.31079 2.1691C3.56607 2.05746 3.84184 2.0005 4.12041 2.00195H7.12041C7.5448 1.9984 7.9582 2.13063 8.30104 2.3793C8.64389 2.62798 8.89779 2.97992 9.02041 3.38195C9.20463 4.02366 9.45668 4.64425 9.77041 5.23195C9.94928 5.54851 10.0299 5.90889 10.004 6.26882C9.97807 6.62875 9.84659 6.97505 9.625 7.26595L8.655 8.51195C9.81542 10.4413 11.4456 12.0303 13.405 13.1419L14.665 12.2069C14.9546 11.9878 15.2987 11.8579 15.6567 11.8315C16.0148 11.8051 16.3735 11.8832 16.69 12.0579C17.2836 12.3694 17.9099 12.6193 18.557 12.8029C18.9632 12.9246 19.319 13.179 19.5705 13.5254C19.822 13.8718 19.9554 14.2906 19.951 14.7189V17.7189C19.951 18.1133 19.8365 18.4989 19.6221 18.8286C19.4076 19.1584 19.1026 19.4179 18.743 19.5759C18.4191 19.7179 18.069 19.7943 17.715 19.801C17.362 19.8076 17.01 19.745 16.68 19.6169" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <div>
+                  <strong>Телефон</strong>
+                  <a href="tel:+78121234567">+7 (812) 123-45-67</a>
+                </div>
+              </div>
+              <div class="contact-info-item">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="currentColor" stroke-width="1.5"/>
+                  <path d="M22 6L12 13L2 6" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
+                <div>
+                  <strong>Email</strong>
+                  <a href="mailto:info@airborn-spb.ru">info@airborn-spb.ru</a>
+                </div>
+              </div>
+              <div class="contact-info-item">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 2C8.13 2 5 5.13 5 9C5 13.17 9.42 18.92 11.24 21.11C11.64 21.59 12.37 21.59 12.77 21.11C14.58 18.92 19 13.17 19 9C19 5.13 15.87 2 12 2Z" stroke="currentColor" stroke-width="1.5"/>
+                  <circle cx="12" cy="9" r="3" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
+                <div>
+                  <strong>Адрес</strong>
+                  <p>Санкт-Петербург, Невский пр., 1</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-wrapper">
+            <form @submit.prevent="submitForm" class="form">
+              <div class="form-group">
+                <input type="text" v-model="form.name" placeholder="Ваше имя" required>
+              </div>
+              <div class="form-group">
+                <input type="tel" v-model="form.phone" placeholder="+7 (___) ___-__-__" required>
+              </div>
+              <div class="form-group">
+                <select v-model="form.service">
+                  <option value="">Выберите услугу</option>
+                  <option value="split">Сплит-система</option>
+                  <option value="cassette">Кассетная система</option>
+                  <option value="vrv">VRV/VRF система</option>
+                  <option value="ventilation">Вентиляция</option>
+                </select>
+              </div>
+              <button type="submit" class="btn-submit" :disabled="isSubmitting">
+                {{ isSubmitting ? 'Отправка...' : 'Отправить заявку' }}
+              </button>
+              
+              <div v-if="formSuccess" class="alert-success">
+                ✅ Спасибо! Мы свяжемся с вами
+              </div>
+              <div v-if="formError" class="alert-error">
+                ❌ {{ formError }}
+              </div>
+              
+              <p class="form-note">
+                Нажимая на кнопку, вы соглашаетесь с политикой конфиденциальности
+              </p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-brand">
+            <div class="logo-mark">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <path d="M16 4L4 12L16 20L28 12L16 4Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                <path d="M4 20L16 28L28 20" stroke="currentColor" stroke-width="1.5" fill="none"/>
+              </svg>
+            </div>
+            <span class="logo-text">AirBorn</span>
+            <p class="footer-desc">Профессиональный монтаж систем вентиляции и кондиционирования в Санкт-Петербурге</p>
+          </div>
+          
+          <div class="footer-links">
+            <div class="footer-column">
+              <h4>Услуги</h4>
+              <a href="#">Кондиционирование</a>
+              <a href="#">Вентиляция</a>
+              <a href="#">Обслуживание</a>
+            </div>
+            <div class="footer-column">
+              <h4>Компания</h4>
+              <a href="#">О нас</a>
+              <a href="#">Проекты</a>
+              <a href="#">Отзывы</a>
+            </div>
+            <div class="footer-column">
+              <h4>Правовая информация</h4>
+              <a href="#">Политика конфиденциальности</a>
+              <a href="#">Договор оферты</a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="footer-bottom">
+          <p>&copy; {{ new Date().getFullYear() }} AirBorn. Все права защищены.</p>
+        </div>
+      </div>
+    </footer>
+  </div>
 </template>
 
 <script setup lang="ts">
-const projectsStore = useProjectsStore();
-const config = useRuntimeConfig();
-
-// Form state
-const form = ref({
-  name: '',
-  phone: '',
-  email: '',
-  comment: '',
+useHead({
+  title: 'AirBorn | Монтаж вентиляции и кондиционирования в СПб',
+  meta: [
+    { name: 'description', content: 'Профессиональный монтаж систем вентиляции и кондиционирования в Санкт-Петербурге. Гарантия 12 месяцев. Бесплатный выезд инженера.' }
+  ]
 });
+
+const isLoading = ref(true);
+const isScrolled = ref(false);
+const mobileMenuOpen = ref(false);
 const isSubmitting = ref(false);
 const formSuccess = ref(false);
 const formError = ref('');
 
-// Load projects on mount
-onMounted(async () => {
-  await projectsStore.loadProjects(1);
+const form = ref({
+  name: '',
+  phone: '',
+  service: ''
 });
 
-// Submit contact form
+const services = [
+  {
+    icon: '❄️',
+    title: 'Сплит-системы',
+    desc: 'Идеальное решение для квартир и небольших офисов',
+    items: ['Монтаж за 2-4 часа', 'Пуско-наладка в подарок', 'Гарантия 12 месяцев']
+  },
+  {
+    icon: '🏢',
+    title: 'VRV/VRF системы',
+    desc: 'Централизованное кондиционирование для больших объектов',
+    items: ['До 50 внутренних блоков', 'Энергоэффективность A+++', 'Индивидуальный климат']
+  },
+  {
+    icon: '💨',
+    title: 'Вентиляция',
+    desc: 'Приточно-вытяжные системы с рекуперацией тепла',
+    items: ['Фильтрация воздуха', 'Тихая работа', 'Экономия до 40% тепла']
+  }
+];
+
+const advantages = [
+  { number: '01', title: 'Гарантия 12 месяцев', desc: 'На все виды работ и оборудование' },
+  { number: '02', title: 'Бесплатный выезд', desc: 'Инженер приедет в день обращения' },
+  { number: '03', title: 'Оплата по факту', desc: 'Только после полного завершения работ' },
+  { number: '04', title: 'Соблюдение СНиП', desc: 'Все работы по ГОСТ и нормативам' }
+];
+
+const steps = [
+  { title: 'Оставьте заявку', desc: 'Заполните форму или позвоните нам. Консультация бесплатно' },
+  { title: 'Выезд инженера', desc: 'Бесплатный замер и расчет сметы на объекте' },
+  { title: 'Заключение договора', desc: 'Фиксация сроков, стоимости и всех условий' },
+  { title: 'Монтаж и оплата', desc: 'Профессиональная установка. Оплата после приемки' }
+];
+
+onMounted(() => {
+  setTimeout(() => {
+    isLoading.value = false;
+  }, 1500);
+
+  window.addEventListener('scroll', () => {
+    isScrolled.value = window.scrollY > 50;
+  });
+});
+
+const scrollToForm = () => {
+  document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
+  mobileMenuOpen.value = false;
+};
+
 const submitForm = async () => {
   isSubmitting.value = true;
   formError.value = '';
   formSuccess.value = false;
 
   try {
-    const { data } = await useFetch(`${config.public.apiUrl}/leads`, {
-      method: 'POST',
-      body: form.value,
-    });
-
-    if (data.value) {
-      formSuccess.value = true;
-      form.value = { name: '', phone: '', email: '', comment: '' };
-    }
-  } catch (error: any) {
-    formError.value = error.data?.error?.message || 'Failed to send message';
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    formSuccess.value = true;
+    form.value = { name: '', phone: '', service: '' };
+    setTimeout(() => {
+      formSuccess.value = false;
+    }, 3000);
+  } catch (error) {
+    formError.value = 'Произошла ошибка. Попробуйте позже.';
   } finally {
     isSubmitting.value = false;
   }
 };
-
-// Page metadata
-useHead({
-  title: 'AirBorn - Innovative Solutions for Modern Business',
-  meta: [
-    { name: 'description', content: 'AirBorn delivers innovative solutions and cutting-edge technology to transform your vision into reality.' },
-  ],
-});
 </script>
 
 <style scoped>
-.landing-page {
-  overflow-x: hidden;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.section {
-  padding: var(--spacing-2xl) 0;
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 32px;
 }
 
-.section-header {
-  text-align: center;
-  margin-bottom: var(--spacing-2xl);
+@media (max-width: 768px) {
+  .container {
+    padding: 0 20px;
+  }
 }
 
-.section-header h2 {
-  font-size: var(--font-size-3xl);
-  margin-bottom: var(--spacing-sm);
+/* Header */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  z-index: 1000;
+  transition: all 0.3s ease;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-.section-subtitle {
-  font-size: var(--font-size-lg);
-  color: var(--color-text-secondary);
+.header-scrolled {
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.header-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 80px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-mark {
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+}
+
+.logo-text {
+  font-size: 24px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #1e293b 0%, #2563eb 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.nav {
+  display: flex;
+  gap: 32px;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #475569;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #2563eb;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.phone {
+  text-decoration: none;
+  color: #1e293b;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.btn-primary-small {
+  padding: 8px 20px;
+  background: #1e293b;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary-small:hover {
+  background: #2563eb;
+  transform: translateY(-2px);
+}
+
+.btn-login {
+  padding: 8px 20px;
+  background: transparent;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-login:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+.mobile-menu-btn {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.mobile-menu-btn span {
+  width: 24px;
+  height: 2px;
+  background: #1e293b;
+  transition: all 0.3s ease;
+}
+
+.mobile-menu {
+  position: fixed;
+  top: 80px;
+  left: 0;
+  right: 0;
+  background: white;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.mobile-nav-link {
+  text-decoration: none;
+  color: #475569;
+  font-weight: 500;
+  padding: 12px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.btn-primary-full {
+  padding: 12px;
+  background: #1e293b;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+@media (max-width: 1024px) {
+  .nav, .phone {
+    display: none;
+  }
+  
+  .mobile-menu-btn {
+    display: flex;
+  }
+  
+  .header-actions {
+    gap: 12px;
+  }
 }
 
 /* Hero Section */
 .hero {
   position: relative;
-  min-height: 90vh;
+  min-height: 100vh;
   display: flex;
   align-items: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: #ffffff;
   overflow: hidden;
-}
-
-.hero-content {
-  position: relative;
-  z-index: 2;
-  max-width: 800px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.hero-title {
-  font-size: clamp(2.5rem, 5vw, 4rem);
-  font-weight: 700;
-  line-height: 1.2;
-  margin-bottom: var(--spacing-lg);
-}
-
-.hero-title .text-primary {
-  color: var(--color-accent);
-}
-
-.hero-subtitle {
-  font-size: clamp(1.125rem, 2vw, 1.5rem);
-  opacity: 0.9;
-  margin-bottom: var(--spacing-xl);
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.hero-actions {
-  display: flex;
-  gap: var(--spacing-md);
-  justify-content: center;
-  flex-wrap: wrap;
 }
 
 .hero-bg {
   position: absolute;
   inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-  opacity: 0.5;
+  z-index: 0;
 }
 
-/* About Section */
-.about {
-  background-color: var(--color-bg-primary);
+.hero-gradient {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 50%, rgba(37, 99, 235, 0.03) 0%, transparent 50%);
 }
 
-.about-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: var(--spacing-xl);
-  margin-bottom: var(--spacing-2xl);
+.hero-particles {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 2px 2px, rgba(37, 99, 235, 0.1) 1px, transparent 0);
+  background-size: 40px 40px;
 }
 
-.about-card {
-  text-align: center;
-  padding: var(--spacing-xl);
-  border-radius: var(--radius-lg);
-  background-color: var(--color-bg-secondary);
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+  padding: 120px 0 80px;
 }
 
-.card-icon {
-  font-size: 3rem;
-  margin-bottom: var(--spacing-md);
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background: #f1f5f9;
+  border-radius: 100px;
+  font-size: 14px;
+  color: #475569;
+  margin-bottom: 32px;
 }
 
-.about-card h3 {
-  margin-bottom: var(--spacing-sm);
+.badge-dot {
+  width: 6px;
+  height: 6px;
+  background: #10b981;
+  border-radius: 50%;
+  display: inline-block;
 }
 
-.about-card p {
-  color: var(--color-text-secondary);
-  margin-bottom: 0;
+.hero-title {
+  font-size: 56px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #0f172a;
+  margin-bottom: 24px;
 }
 
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: var(--spacing-lg);
-  padding: var(--spacing-xl);
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-  border-radius: var(--radius-lg);
-  color: white;
+.title-gradient {
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: block;
 }
 
-.stat-item {
-  text-align: center;
+.hero-description {
+  font-size: 18px;
+  color: #475569;
+  line-height: 1.6;
+  margin-bottom: 48px;
+  max-width: 600px;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 48px;
+  margin-bottom: 48px;
+}
+
+.stat {
+  text-align: left;
 }
 
 .stat-number {
-  font-size: var(--font-size-4xl);
+  font-size: 32px;
   font-weight: 700;
-  margin-bottom: var(--spacing-xs);
+  color: #0f172a;
+  margin-bottom: 8px;
 }
 
 .stat-label {
-  font-size: var(--font-size-sm);
-  opacity: 0.9;
+  font-size: 14px;
+  color: #64748b;
 }
 
-/* Projects Preview */
-.projects-preview {
-  background-color: var(--color-bg-secondary);
+.stat-divider {
+  width: 1px;
+  background: #e2e8f0;
 }
 
-.projects-grid {
+.hero-actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.btn-primary-hero {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 32px;
+  background: #0f172a;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary-hero:hover {
+  background: #2563eb;
+  transform: translateY(-2px);
+  gap: 16px;
+}
+
+.btn-outline-hero {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 32px;
+  background: transparent;
+  color: #0f172a;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-hero:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 36px;
+  }
+  
+  .hero-stats {
+    gap: 24px;
+  }
+  
+  .stat-number {
+    font-size: 24px;
+  }
+  
+  .hero-actions {
+    flex-direction: column;
+  }
+  
+  .btn-primary-hero, .btn-outline-hero {
+    justify-content: center;
+  }
+}
+
+/* Services Section */
+.services {
+  padding: 100px 0;
+  background: #ffffff;
+}
+
+.section-header {
+  margin-bottom: 64px;
+}
+
+.section-header.center {
+  text-align: center;
+}
+
+.section-badge {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #2563eb;
+  letter-spacing: 0.5px;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+.section-title {
+  font-size: 40px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+@media (max-width: 768px) {
+  .section-title {
+    font-size: 28px;
+  }
+}
+
+.services-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: var(--spacing-xl);
-  margin-bottom: var(--spacing-xl);
+  gap: 32px;
 }
 
-.project-card {
-  background-color: var(--color-bg-primary);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  box-shadow: var(--shadow-md);
-  transition: transform var(--transition-base), box-shadow var(--transition-base);
+.service-card {
+  padding: 40px 32px;
+  background: #ffffff;
+  border: 1px solid #eef2ff;
+  border-radius: 24px;
+  transition: all 0.3s ease;
 }
 
-.project-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-xl);
+.service-card:hover {
+  transform: translateY(-8px);
+  border-color: #2563eb;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
 }
 
-.project-image {
-  width: 100%;
-  height: 200px;
-  overflow: hidden;
-  background-color: var(--color-bg-secondary);
+.service-icon {
+  font-size: 48px;
+  margin-bottom: 24px;
 }
 
-.project-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform var(--transition-base);
+.service-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 12px;
 }
 
-.project-card:hover .project-image img {
-  transform: scale(1.1);
+.service-desc {
+  color: #64748b;
+  line-height: 1.6;
+  margin-bottom: 24px;
 }
 
-.project-image-placeholder {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 4rem;
-  color: var(--color-text-light);
+.service-list {
+  list-style: none;
+  padding: 0;
 }
 
-.project-content {
-  padding: var(--spacing-lg);
+.service-list li {
+  color: #475569;
+  font-size: 14px;
+  padding: 6px 0;
 }
 
-.project-content h3 {
-  margin-bottom: var(--spacing-sm);
+/* Advantages Section */
+.advantages {
+  padding: 80px 0;
+  background: #f8fafc;
 }
 
-.project-content p {
-  color: var(--color-text-secondary);
-  margin-bottom: var(--spacing-md);
-}
-
-/* Contact Section */
-.contact {
-  background-color: var(--color-bg-primary);
-}
-
-.contact-grid {
+.advantages-grid {
   display: grid;
-  grid-template-columns: 1fr 1.5fr;
-  gap: var(--spacing-2xl);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 48px;
+}
+
+.advantage-item {
+  text-align: center;
+}
+
+.advantage-number {
+  font-size: 48px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 16px;
+}
+
+.advantage-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 12px;
+}
+
+.advantage-desc {
+  color: #64748b;
+  line-height: 1.6;
+}
+
+/* Process Section */
+.process {
+  padding: 100px 0;
+  background: #ffffff;
+}
+
+.process-steps {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.step {
+  display: flex;
+  gap: 32px;
+  position: relative;
+  padding-bottom: 48px;
+}
+
+.step:last-child {
+  padding-bottom: 0;
+}
+
+.step-number {
+  font-size: 32px;
+  font-weight: 700;
+  color: #e2e8f0;
+  font-family: monospace;
+  flex-shrink: 0;
+}
+
+.step-content {
+  flex: 1;
+}
+
+.step-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+.step-desc {
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.step-line {
+  position: absolute;
+  left: 46px;
+  top: 48px;
+  bottom: -24px;
+  width: 1px;
+  background: #e2e8f0;
+}
+
+.step:last-child .step-line {
+  display: none;
+}
+
+/* CTA Section */
+.cta {
+  padding: 80px 0;
+  background: #f8fafc;
+}
+
+.cta-card {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border-radius: 32px;
+  padding: 64px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 40px;
+}
+
+.cta-content {
+  flex: 1;
+}
+
+.cta-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 16px;
+}
+
+.cta-desc {
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 32px;
+  line-height: 1.6;
+}
+
+.btn-primary-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 32px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary-cta:hover {
+  background: #3b82f6;
+  transform: translateY(-2px);
+  gap: 16px;
+}
+
+.cta-stats {
+  display: flex;
+  gap: 48px;
+}
+
+.cta-stat {
+  text-align: center;
+}
+
+.cta-stat-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 8px;
+}
+
+.cta-stat-label {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+@media (max-width: 768px) {
+  .cta-card {
+    padding: 40px;
+  }
+  
+  .cta-stats {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+/* Contact Form */
+.contact-form {
+  padding: 100px 0;
+  background: #ffffff;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+}
+
+.form-info {
+  padding-right: 32px;
+}
+
+.form-title {
+  font-size: 36px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 16px 0 24px;
+}
+
+.form-desc {
+  color: #64748b;
+  line-height: 1.6;
+  margin-bottom: 48px;
 }
 
 .contact-info {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: 32px;
 }
 
-.info-item {
+.contact-info-item {
   display: flex;
+  gap: 16px;
   align-items: flex-start;
-  gap: var(--spacing-md);
 }
 
-.info-icon {
-  font-size: 1.5rem;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--color-bg-secondary);
-  border-radius: var(--radius-full);
+.contact-info-item svg {
+  width: 24px;
+  height: 24px;
+  color: #2563eb;
   flex-shrink: 0;
 }
 
-.info-item h4 {
-  margin-bottom: var(--spacing-xs);
+.contact-info-item strong {
+  display: block;
+  color: #0f172a;
+  margin-bottom: 4px;
+  font-size: 14px;
 }
 
-.info-item p {
-  color: var(--color-text-secondary);
-  margin-bottom: 0;
+.contact-info-item a, .contact-info-item p {
+  color: #475569;
+  text-decoration: none;
+  font-size: 16px;
 }
 
-.contact-form-wrapper {
-  background-color: var(--color-bg-secondary);
-  padding: var(--spacing-xl);
-  border-radius: var(--radius-lg);
+.contact-info-item a:hover {
+  color: #2563eb;
+}
+
+.form-wrapper {
+  background: #f8fafc;
+  padding: 48px;
+  border-radius: 24px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 14px 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.btn-submit {
+  padding: 14px 32px;
+  background: #0f172a;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-submit:hover {
+  background: #2563eb;
+  transform: translateY(-2px);
+}
+
+.form-note {
+  font-size: 12px;
+  color: #94a3b8;
+  text-align: center;
+  margin-top: 8px;
+}
+
+.alert-success,
+.alert-error {
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.alert-success {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.alert-error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+@media (max-width: 1024px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+  
+  .form-info {
+    padding-right: 0;
+  }
 }
 
 @media (max-width: 768px) {
-  .contact-grid {
-    grid-template-columns: 1fr;
+  .form-wrapper {
+    padding: 32px;
   }
+  
+  .form-title {
+    font-size: 28px;
+  }
+}
 
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
+/* Footer */
+.footer {
+  background: #0f172a;
+  padding: 64px 0 32px;
+  color: white;
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 64px;
+  margin-bottom: 48px;
+}
+
+.footer-brand .logo-mark {
+  color: #2563eb;
+  margin-bottom: 16px;
+}
+
+.footer-brand .logo-text {
+  font-size: 24px;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 16px;
+  color: white;
+  background: none;
+  -webkit-text-fill-color: white;
+}
+
+.footer-desc {
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
+  max-width: 300px;
+}
+
+.footer-links {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.footer-column h4 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: white;
+}
+
+.footer-column a {
+  display: block;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  margin-bottom: 12px;
+  font-size: 14px;
+  transition: color 0.3s ease;
+}
+
+.footer-column a:hover {
+  color: #2563eb;
+}
+
+.footer-bottom {
+  padding-top: 32px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 48px;
   }
+  
+  .footer-links {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+/* Preloader */
+.preloader {
+  position: fixed;
+  inset: 0;
+  background: #0f172a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.preloader-content {
+  text-align: center;
+}
+
+.preloader-ring {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 20px;
+  border: 3px solid rgba(37, 99, 235, 0.2);
+  border-top-color: #2563eb;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.preloader-text {
+  color: white;
+  font-size: 18px;
+  font-weight: 500;
 }
 </style>
