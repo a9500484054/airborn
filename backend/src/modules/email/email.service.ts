@@ -63,7 +63,7 @@ export class EmailService {
               <td align="center" style="padding: 40px 0;">
                 <table role="presentation" style="width: 600px; border-collapse: collapse; background-color: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
                   <tr>
-                    <td style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px; text-align: center;">
+                    <td style="background: linear-gradient(135deg, #161e31 0%, #161e31 100%); padding: 40px; text-align: center;">
                       <h1 style="color: #ffffff; margin: 0; font-size: 28px;">🚀 AirBorn</h1>
                     </td>
                   </tr>
@@ -78,7 +78,7 @@ export class EmailService {
                       </p>
                       <p style="text-align: center; margin: 30px 0;">
                         <a href="${verificationUrl}" 
-                           style="display: inline-block; padding: 14px 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; text-decoration: none; border-radius: 25px; font-weight: bold; font-size: 16px;">
+                           style="display: inline-block; padding: 14px 40px; background: linear-gradient(135deg, #161e31 0%, #161e31 100%); color: #ffffff; text-decoration: none; border-radius: 25px; font-weight: bold; font-size: 16px;">
                           Подтвердить email
                         </a>
                       </p>
@@ -217,7 +217,7 @@ export class EmailService {
               <td align="center" style="padding: 40px 0;">
                 <table role="presentation" style="width: 600px; border-collapse: collapse; background-color: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
                   <tr>
-                    <td style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); padding: 40px; text-align: center;">
+                  <td style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px; text-align: center;">
                       <h1 style="color: #ffffff; margin: 0; font-size: 28px;">🔐 Сброс пароля</h1>
                     </td>
                   </tr>
@@ -229,7 +229,7 @@ export class EmailService {
                       </p>
                       <p style="text-align: center; margin: 30px 0;">
                         <a href="${resetUrl}"
-                           style="display: inline-block; padding: 14px 40px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #ffffff; text-decoration: none; border-radius: 25px; font-weight: bold; font-size: 16px;">
+                           style="display: inline-block; padding: 14px 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; text-decoration: none; border-radius: 25px; font-weight: bold; font-size: 16px;">
                           Сбросить пароль
                         </a>
                       </p>

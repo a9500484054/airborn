@@ -25,7 +25,7 @@
 
           <div class="hero-quote">
             <h2>Добро пожаловать!</h2>
-            <p>Войдите в свой аккаунт, чтобы управлять заказами, отслеживать статус монтажа и получать персональные предложения.</p>
+            <p>Введите свои данные для доступа к личному кабинету</p>
           </div>
 
           <div class="features-list">
@@ -62,7 +62,7 @@
           <!-- Login Form -->
           <div v-if="!showForgotPassword" class="form-header">
             <h1 class="form-title">Вход в аккаунт</h1>
-            <p class="form-subtitle">Введите свои данные для доступа к личному кабинету</p>
+            <!-- <p class="form-subtitle">Введите свои данные для доступа к личному кабинету</p> -->
           </div>
 
           <!-- Forgot Password Form -->
@@ -146,9 +146,9 @@
               <span>Успешный вход! Перенаправление...</span>
             </div>
 
-            <div class="form-footer">
+            <!-- <div class="form-footer">
               <p>Нет аккаунта? <NuxtLink to="/register" class="register-link">Зарегистрироваться</NuxtLink></p>
-            </div>
+            </div> -->
           </form>
 
           <!-- Forgot Password Form -->

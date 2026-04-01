@@ -286,7 +286,7 @@ const handleResetPassword = async () => {
 }
 
 .logo-mark-large {
-  color: #f59e0b;
+  color: #3b82f6;
   display: flex;
   align-items: center;
 }
@@ -329,7 +329,7 @@ const handleResetPassword = async () => {
 }
 
 .feature-item svg {
-  color: #f59e0b;
+  color: #3b82f6;
   flex-shrink: 0;
 }
 
@@ -342,13 +342,13 @@ const handleResetPassword = async () => {
 .bg-gradient {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 30% 50%, rgba(245, 158, 11, 0.1) 0%, transparent 50%);
+  background: radial-gradient(circle at 30% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
 }
 
 .bg-particles {
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(circle at 2px 2px, rgba(245, 158, 11, 0.2) 1px, transparent 0);
+  background-image: radial-gradient(circle at 2px 2px, rgba(59, 130, 246, 0.2) 1px, transparent 0);
   background-size: 40px 40px;
 }
 
@@ -416,8 +416,8 @@ const handleResetPassword = async () => {
 
 .form-input:focus {
   outline: none;
-  border-color: #f59e0b;
-  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
 .form-input:disabled {
@@ -447,7 +447,7 @@ const handleResetPassword = async () => {
 }
 
 .password-toggle:hover {
-  color: #f59e0b;
+  color: #2563eb;
 }
 
 .password-toggle:disabled {
@@ -463,7 +463,7 @@ const handleResetPassword = async () => {
 
 .btn-reset-submit {
   padding: 14px 24px;
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  background: #0f172a;
   color: white;
   border: none;
   border-radius: 12px;
@@ -474,8 +474,9 @@ const handleResetPassword = async () => {
 }
 
 .btn-reset-submit:hover:not(:disabled) {
+  background: #2563eb;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
 
 .btn-reset-submit:disabled {
@@ -534,7 +535,7 @@ const handleResetPassword = async () => {
 
 .back-link:hover {
   background: #f1f5f9;
-  color: #f59e0b;
+  color: #2563eb;
 }
 
 /* Preloader */
@@ -556,8 +557,8 @@ const handleResetPassword = async () => {
   width: 60px;
   height: 60px;
   margin: 0 auto 20px;
-  border: 3px solid rgba(245, 158, 11, 0.2);
-  border-top-color: #f59e0b;
+  border: 3px solid rgba(37, 99, 235, 0.2);
+  border-top-color: #2563eb;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
