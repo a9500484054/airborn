@@ -119,7 +119,7 @@ export class UsersService {
     return await this.usersRepository.findOne({
       where: { email, isDeleted: false },
       withDeleted: true,
-      select: ['id', 'email', 'passwordHash', 'name', 'phone', 'role', 'avatar', 'isBlocked', 'isDeleted', 'refreshToken', 'createdAt', 'updatedAt'],
+      select: ['id', 'email', 'passwordHash', 'name', 'phone', 'role', 'avatar', 'isBlocked', 'isDeleted', 'refreshToken', 'isEmailVerified', 'createdAt', 'updatedAt'],
     });
   }
 
