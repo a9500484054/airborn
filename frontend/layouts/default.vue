@@ -48,11 +48,35 @@
 
       <!-- Mobile Menu -->
       <div v-if="mobileMenuOpen" class="mobile-menu" :class="{ 'mobile-menu-open': mobileMenuOpen }">
-        <button class="mobile-menu-close" @click="closeMobileMenu">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <div>
+          <div class="mobile-menu-header">
+            <div class="mobile-logo">
+              <svg width="40" height="40" viewBox="0 0 32 32" fill="none">
+                <path d="M16 4L4 12L16 20L28 12L16 4Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                <path d="M4 20L16 28L28 20" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                <circle cx="16" cy="12" r="2" fill="currentColor"/>
+              </svg>
+            </div>
+            <span class="mobile-logo-text">AirBorn</span>
+          </div>
+          <button class="mobile-menu-close" @click="closeMobileMenu">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        
+
+        
+        <a href="tel:+79650212288" class="mobile-phone">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M18.3334 14.0833V16.5C18.334 16.789 18.2653 17.074 18.1335 17.3299C18.0018 17.5858 17.811 17.8049 17.5778 17.9692C17.3446 18.1336 17.076 18.2385 16.7946 18.2757C16.5133 18.3128 16.2276 18.2813 15.9584 18.1833C13.0719 17.2007 10.4706 15.5151 8.39166 13.275C6.17864 11.1732 4.50927 8.56192 3.54166 5.65833C3.44587 5.39193 3.4151 5.10596 3.45193 4.82516C3.48876 4.54436 3.59218 4.27618 3.75444 4.04296C3.91669 3.80973 4.13316 3.61808 4.38624 3.48471C4.63933 3.35134 4.92166 3.28023 5.20833 3.27708H7.625C7.958 3.27518 8.28134 3.37946 8.54855 3.57425C8.81576 3.76904 9.0134 4.04403 9.1125 4.35833C9.30618 4.99811 9.57218 5.61353 9.90417 6.19167C10.0825 6.50452 10.1658 6.86214 10.1445 7.22062C10.1232 7.57909 9.99833 7.92375 9.7875 8.2125L8.85417 9.4375C9.9669 11.3462 11.5675 12.8609 13.5125 13.8542L14.7625 12.9583C15.0492 12.7546 15.3903 12.6338 15.744 12.6117C16.0977 12.5897 16.4504 12.6672 16.7583 12.8354C17.3499 13.1689 17.974 13.4468 18.625 13.6667C18.9435 13.7671 19.2214 13.9669 19.4167 14.2372C19.612 14.5075 19.7145 14.8345 19.7083 15.1688V18.3333H19.7083Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
-        </button>
+          +7 (965) 021-22-88
+        </a>
+        
+        <div class="mobile-menu-divider"></div>
+        
         <a href="#services" class="mobile-nav-link" @click="closeMobileMenu">Услуги</a>
         <a href="#process" class="mobile-nav-link" @click="closeMobileMenu">Процесс</a>
         <a href="#contacts" class="mobile-nav-link" @click="closeMobileMenu">Контакты</a>
@@ -350,7 +374,7 @@ a {
   bottom: 0;
   width: 280px;
   background: #ffffff;
-  padding: 80px 24px 24px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -380,6 +404,59 @@ a {
 
 .mobile-menu-close:hover {
   color: #2563eb;
+}
+
+.mobile-menu-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 20px;
+  margin-bottom: 10px;
+}
+
+.mobile-logo {
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+}
+
+.mobile-logo-text {
+  font-size: 22px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #1e293b 0%, #2563eb 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.mobile-phone {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  background: #f8fafc;
+  border-radius: 12px;
+  text-decoration: none;
+  color: #1e293b;
+  font-weight: 600;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  margin-bottom: 10px;
+}
+
+.mobile-phone:hover {
+  background: #f1f5f9;
+  color: #2563eb;
+}
+
+.mobile-phone svg {
+  color: #2563eb;
+}
+
+.mobile-menu-divider {
+  height: 1px;
+  background: #f1f5f9;
+  margin: 8px 0;
 }
 
 .mobile-nav-link {
