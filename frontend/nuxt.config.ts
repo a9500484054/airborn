@@ -68,6 +68,12 @@ export default defineNuxtConfig({
 
   // Compatibility
   nitro: {
+    devProxy: {
+      '/uploads': {
+        target: 'http://localhost:3000/uploads',
+        changeOrigin: true,
+      },
+    },
     esbuild: {
       options: {
         target: 'es2020',
