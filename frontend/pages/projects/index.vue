@@ -21,7 +21,7 @@
               @input="handleSearch"
             />
           </div>
-          <button class="filter-btn" @click="showFilters = !showFilters">
+          <!-- <button class="filter-btn" @click="showFilters = !showFilters">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
               <path d="M2 4H16M4 9H14M6 14H12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
               <circle cx="13" cy="4" r="1.5" fill="currentColor"/>
@@ -29,12 +29,12 @@
               <circle cx="5" cy="14" r="1.5" fill="currentColor"/>
             </svg>
             Фильтры
-          </button>
+          </button> -->
         </div>
       </div>
 
       <!-- Filters Panel -->
-      <transition name="slide">
+      <!-- <transition name="slide">
         <div v-if="showFilters" class="filters-panel">
           <div class="filters-grid">
             <div class="filter-group">
@@ -68,10 +68,10 @@
             <button class="btn-clear" @click="clearFilters">Сбросить фильтры</button>
           </div>
         </div>
-      </transition>
+      </transition> -->
 
       <!-- Stats Cards -->
-      <div class="stats-cards">
+      <!-- <div class="stats-cards">
         <div class="stat-card">
           <div class="stat-icon blue">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -118,7 +118,7 @@
             <div class="stat-label">В ожидании</div>
           </div>
         </div>
-      </div>
+      </div> -->
 
       <!-- Loading State -->
       <div v-if="projectsStore.isLoading && !projectsStore.hasProjects" class="loading-state">
