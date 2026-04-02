@@ -442,6 +442,8 @@ const submitForm = async () => {
   margin-bottom: 24px;
 }
 
+
+
 .title-gradient {
   background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
   background-clip: text;
@@ -559,6 +561,13 @@ const submitForm = async () => {
   .btn-primary-hero, .btn-outline-hero {
     justify-content: center;
   }
+}
+
+@media (max-width: 433px) {
+  .hero-title {
+    font-size: 28px;
+  }
+
 }
 
 /* Services Section */

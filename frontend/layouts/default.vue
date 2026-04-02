@@ -35,7 +35,7 @@
             <NuxtLink to="/login" class="btn-login">Вход</NuxtLink>
           </div>
 
-          <button class="mobile-menu-btn" @click="mobileMenuOpen = !mobileMenuOpen">
+          <button class="mobile-menu-btn" @click="toggleMobileMenu">
             <span></span>
             <span></span>
             <span></span>
@@ -43,12 +43,20 @@
         </div>
       </div>
 
+      <!-- Mobile Menu Overlay -->
+      <div v-if="mobileMenuOpen" class="mobile-overlay" @click="closeMobileMenu"></div>
+
       <!-- Mobile Menu -->
-      <div v-if="mobileMenuOpen" class="mobile-menu">
-        <a href="#services" class="mobile-nav-link">Услуги</a>
-        <a href="#process" class="mobile-nav-link">Процесс</a>
-        <a href="#contacts" class="mobile-nav-link">Контакты</a>
-        <NuxtLink to="/login" class="mobile-nav-link">Вход</NuxtLink>
+      <div v-if="mobileMenuOpen" class="mobile-menu" :class="{ 'mobile-menu-open': mobileMenuOpen }">
+        <button class="mobile-menu-close" @click="closeMobileMenu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <a href="#services" class="mobile-nav-link" @click="closeMobileMenu">Услуги</a>
+        <a href="#process" class="mobile-nav-link" @click="closeMobileMenu">Процесс</a>
+        <a href="#contacts" class="mobile-nav-link" @click="closeMobileMenu">Контакты</a>
+        <NuxtLink to="/login" class="mobile-nav-link" @click="closeMobileMenu">Вход</NuxtLink>
         <button @click="scrollToForm" class="btn-primary-full">Оставить заявку</button>
       </div>
     </header>
@@ -111,6 +119,16 @@ const mobileMenuOpen = ref(false);
 const scrollToForm = () => {
   document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
   mobileMenuOpen.value = false;
+};
+
+const toggleMobileMenu = () => {
+  mobileMenuOpen.value = !mobileMenuOpen.value;
+  document.body.style.overflow = mobileMenuOpen.value ? 'hidden' : '';
+};
+
+const closeMobileMenu = () => {
+  mobileMenuOpen.value = false;
+  document.body.style.overflow = mobileMenuOpen.value ? 'hidden' : '';
 };
 
 onMounted(() => {
@@ -294,40 +312,99 @@ a {
   transition: all 0.3s ease;
 }
 
-.mobile-menu {
+.mobile-menu-btn.open span:nth-child(1) {
+  transform: rotate(45deg) translate(6px, 6px);
+}
+
+.mobile-menu-btn.open span:nth-child(2) {
+  opacity: 0;
+}
+
+.mobile-menu-btn.open span:nth-child(3) {
+  transform: rotate(-45deg) translate(6px, -6px);
+}
+
+.mobile-overlay {
   position: fixed;
-  top: 80px;
+  top: 0;
   left: 0;
   right: 0;
-  background: white;
-  padding: 24px;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 998;
+  opacity: 0;
+  animation: fadeIn 0.3s ease-in-out forwards;
+  height: 100vh;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 280px;
+  background: #ffffff;
+  padding: 80px 24px 24px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
+  z-index: 999;
+  overflow-y: auto;
+  height: 100vh;
+}
+
+.mobile-menu-open {
+  transform: translateX(0);
+}
+
+.mobile-menu-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  color: #475569;
+  transition: color 0.3s ease;
+}
+
+.mobile-menu-close:hover {
+  color: #2563eb;
 }
 
 .mobile-nav-link {
   text-decoration: none;
   color: #475569;
   font-weight: 500;
-  padding: 12px 0;
+  padding: 16px 0;
   border-bottom: 1px solid #f1f5f9;
+  font-size: 16px;
 }
 
 .btn-primary-full {
-  padding: 12px;
+  padding: 14px;
   background: #1e293b;
   color: white;
   border: none;
   border-radius: 8px;
   font-weight: 500;
   cursor: pointer;
-  margin-top: 8px;
+  margin-top: 16px;
+  font-size: 15px;
+  margin-top: auto;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 865px) {
   .nav, .phone {
     display: none;
   }
