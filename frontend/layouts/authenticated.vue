@@ -198,7 +198,7 @@ const handleLogout = async () => {
 const handleProfile = () => {
   userMenuOpen.value = false;
   userMenuOpenMobile.value = false;
-  navigateTo('/profile');
+  navigateTo('/dashboard/profile');
 };
 
 const handleSettings = () => {

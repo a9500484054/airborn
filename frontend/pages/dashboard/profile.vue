@@ -132,14 +132,24 @@
           </div>
           <div class="card-body">
             <form @submit.prevent="changePassword" class="password-form">
+              
+              <!-- Текущий пароль -->
               <div class="form-group">
-                <label class="form-label" for="currentPassword">Текущий пароль</label>
+                <label class="form-label" for="currentPassword">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M12.6667 6.66667H3.33333C2.59695 6.66667 2 7.26362 2 8V12.6667C2 13.403 2.59695 14 3.33333 14H12.6667C13.403 14 14 13.403 14 12.6667V8C14 7.26362 13.403 6.66667 12.6667 6.66667Z" stroke="currentColor" stroke-width="1.2"/>
+                    <path d="M4.66667 6.66667V4C4.66667 3.11594 5.01786 2.2681 5.64298 1.64298C6.2681 1.01786 7.11594 0.666667 8 0.666667C8.88406 0.666667 9.7319 1.01786 10.357 1.64298C10.9821 2.2681 11.3333 3.11594 11.3333 4V6.66667" stroke="currentColor" stroke-width="1.2"/>
+                    <circle cx="8" cy="10.3333" r="1" fill="currentColor"/>
+                  </svg>
+                  Текущий пароль
+                </label>
                 <div class="password-input-wrapper">
                   <input
                     id="currentPassword"
                     v-model="passwordForm.currentPassword"
                     :type="showCurrentPassword ? 'text' : 'password'"
                     class="form-input"
+                    placeholder="Введите текущий пароль"
                     required
                   />
                   <button 
@@ -159,8 +169,16 @@
                 </div>
               </div>
 
+              <!-- Новый пароль -->
               <div class="form-group">
-                <label class="form-label" for="newPassword">Новый пароль</label>
+                <label class="form-label" for="newPassword">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M12.6667 6.66667H3.33333C2.59695 6.66667 2 7.26362 2 8V12.6667C2 13.403 2.59695 14 3.33333 14H12.6667C13.403 14 14 13.403 14 12.6667V8C14 7.26362 13.403 6.66667 12.6667 6.66667Z" stroke="currentColor" stroke-width="1.2"/>
+                    <path d="M4.66667 6.66667V4C4.66667 3.11594 5.01786 2.2681 5.64298 1.64298C6.2681 1.01786 7.11594 0.666667 8 0.666667C8.88406 0.666667 9.7319 1.01786 10.357 1.64298C10.9821 2.2681 11.3333 3.11594 11.3333 4V6.66667" stroke="currentColor" stroke-width="1.2"/>
+                    <circle cx="8" cy="10.3333" r="1" fill="currentColor"/>
+                  </svg>
+                  Новый пароль
+                </label>
                 <div class="password-input-wrapper">
                   <input
                     id="newPassword"
@@ -192,14 +210,24 @@
                 </div>
               </div>
 
+              <!-- Подтверждение пароля -->
               <div class="form-group">
-                <label class="form-label" for="confirmPassword">Подтвердите пароль</label>
+                <label class="form-label" for="confirmPassword">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M12.6667 6.66667H3.33333C2.59695 6.66667 2 7.26362 2 8V12.6667C2 13.403 2.59695 14 3.33333 14H12.6667C13.403 14 14 13.403 14 12.6667V8C14 7.26362 13.403 6.66667 12.6667 6.66667Z" stroke="currentColor" stroke-width="1.2"/>
+                    <path d="M4.66667 6.66667V4C4.66667 3.11594 5.01786 2.2681 5.64298 1.64298C6.2681 1.01786 7.11594 0.666667 8 0.666667C8.88406 0.666667 9.7319 1.01786 10.357 1.64298C10.9821 2.2681 11.3333 3.11594 11.3333 4V6.66667" stroke="currentColor" stroke-width="1.2"/>
+                    <circle cx="8" cy="10.3333" r="1" fill="currentColor"/>
+                    <path d="M10 8L6 12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                  </svg>
+                  Подтвердите пароль
+                </label>
                 <div class="password-input-wrapper">
                   <input
                     id="confirmPassword"
                     v-model="passwordForm.confirmPassword"
                     :type="showConfirmPassword ? 'text' : 'password'"
                     class="form-input"
+                    placeholder="Повторите новый пароль"
                     required
                   />
                   <button 
@@ -218,10 +246,15 @@
                   </button>
                 </div>
                 <p v-if="passwordForm.confirmPassword && passwordForm.newPassword !== passwordForm.confirmPassword" class="form-error">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/>
+                    <path d="M7 4V7.5M7 9.5H7.01" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                  </svg>
                   Пароли не совпадают
                 </p>
               </div>
 
+              <!-- Кнопка отправки -->
               <div class="form-actions">
                 <button
                   type="submit"
@@ -236,6 +269,7 @@
                 </button>
               </div>
 
+              <!-- Сообщения об успехе/ошибке -->
               <transition name="alert">
                 <div v-if="passwordSuccess" class="alert-success">
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
