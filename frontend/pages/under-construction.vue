@@ -22,7 +22,7 @@
         </p>
 
         <!-- Action Button -->
-        <NuxtLink to="/dashboard" class="back-btn">
+        <NuxtLink to="/" class="back-btn">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
             <path d="M11 14L6 9L11 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
           </svg>

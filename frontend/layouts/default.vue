@@ -28,7 +28,7 @@
           </nav>
 
           <div class="header-actions">
-            <a href="tel:+78121234567" class="phone">+7 (812) 123-45-67</a>
+            <a href="tel:+79650212288" class="phone">+7 (965) 021-22-88</a>
             <button @click="scrollToForm" class="btn-primary-small">
               Заказать звонок
             </button>
@@ -72,28 +72,28 @@
             <span class="logo-text">AirBorn</span>
             <p class="footer-desc">Профессиональный монтаж систем вентиляции и кондиционирования в Санкт-Петербурге</p>
           </div>
-          
+
           <div class="footer-links">
             <div class="footer-column">
               <h4>Услуги</h4>
-              <a href="#">Кондиционирование</a>
-              <a href="#">Вентиляция</a>
-              <a href="#">Обслуживание</a>
+              <NuxtLink to="/under-construction" class="footer-link">Кондиционирование</NuxtLink>
+              <NuxtLink to="/under-construction" class="footer-link">Вентиляция</NuxtLink>
+              <NuxtLink to="/under-construction" class="footer-link">Обслуживание</NuxtLink>
             </div>
             <div class="footer-column">
               <h4>Компания</h4>
-              <a href="#">О нас</a>
-              <a href="#">Проекты</a>
-              <a href="#">Отзывы</a>
+              <NuxtLink to="/under-construction" class="footer-link">О нас</NuxtLink>
+              <NuxtLink to="/under-construction" class="footer-link">Проекты</NuxtLink>
+              <NuxtLink to="/under-construction" class="footer-link">Отзывы</NuxtLink>
             </div>
             <div class="footer-column">
               <h4>Правовая информация</h4>
-              <a href="#">Политика конфиденциальности</a>
-              <a href="#">Договор оферты</a>
+              <NuxtLink to="/under-construction" class="footer-link">Политика конфиденциальности</NuxtLink>
+              <NuxtLink to="/under-construction" class="footer-link">Договор оферты</NuxtLink>
             </div>
           </div>
         </div>
-        
+
         <div class="footer-bottom">
           <p>&copy; {{ new Date().getFullYear() }} AirBorn. Все права защищены.</p>
         </div>
@@ -210,6 +210,13 @@ a {
   -webkit-text-fill-color: transparent;
 }
 
+
+@media (max-width: 433px) {
+  .logo-text {
+    display: none;
+  }
+}
+
 .nav {
   display: flex;
   gap: 32px;
@@ -256,7 +263,7 @@ a {
 }
 
 .btn-login {
-  padding: 8px 20px;
+  padding: 3px 14px;
   background: transparent;
   color: #475569;
   border: 1px solid #e2e8f0;

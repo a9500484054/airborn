@@ -202,13 +202,12 @@
                   >
                 </div>
                 <div class="form-group">
-                  <select v-model="form.service">
-                    <option value="">Выберите услугу</option>
-                    <option value="split">Сплит-система</option>
-                    <option value="cassette">Кассетная система</option>
-                    <option value="vrv">VRV/VRF система</option>
-                    <option value="ventilation">Вентиляция</option>
-                  </select>
+                  <textarea 
+                    v-model="form.comment" 
+                    placeholder="Опишите вашу задачу или вопрос"
+                    rows="4"
+                    required
+                  ></textarea>
                 </div>
                 <button type="submit" class="btn-submit" :disabled="isSubmitting">
                   {{ isSubmitting ? 'Отправка...' : 'Отправить заявку' }}
@@ -275,8 +274,8 @@ const services = [
 const advantages = [
   { number: '01', title: 'Гарантия 12 месяцев', desc: 'На все виды работ и оборудование' },
   { number: '02', title: 'Бесплатный выезд', desc: 'Инженер приедет в день обращения' },
-  { number: '03', title: 'Оплата по факту', desc: 'Только после полного завершения работ' },
-  { number: '04', title: 'Соблюдение СНиП', desc: 'Все работы по ГОСТ и нормативам' }
+  // { number: '03', title: 'Оплата по факту', desc: 'Только после полного завершения работ' },
+  { number: '03', title: 'Соблюдение СНиП', desc: 'Все работы по ГОСТ и нормативам' }
 ];
 
 const steps = [
@@ -463,6 +462,12 @@ const submitForm = async () => {
   display: flex;
   gap: 48px;
   margin-bottom: 48px;
+}
+@media (max-width: 433px) {
+  .hero-stats {
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 .stat {
@@ -809,6 +814,12 @@ const submitForm = async () => {
   color: white;
   margin-bottom: 8px;
 }
+@media (max-width: 433px) {
+  .cta-stat-value {
+    font-size: 26px
+  }
+}
+
 
 .cta-stat-label {
   font-size: 14px;
@@ -904,7 +915,8 @@ const submitForm = async () => {
 }
 
 .form-group input,
-.form-group select {
+.form-group select,
+.form-group textarea {
   width: 100%;
   padding: 14px 20px;
   border: 1px solid #e2e8f0;
@@ -912,10 +924,13 @@ const submitForm = async () => {
   font-size: 16px;
   transition: all 0.3s ease;
   background: white;
+  font-family: inherit;
+  resize: vertical;
 }
 
 .form-group input:focus,
-.form-group select:focus {
+.form-group select:focus,
+.form-group textarea:focus {
   outline: none;
   border-color: #2563eb;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
