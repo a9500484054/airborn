@@ -1,322 +1,228 @@
 <template>
   <div class="landing-page">
-    <!-- Preloader -->
-    <div v-if="isLoading" class="preloader">
-      <div class="preloader-content">
-        <div class="preloader-ring"></div>
-        <p class="preloader-text">AirBorn</p>
-      </div>
-    </div>
 
-    <!-- Header -->
-    <header class="header" :class="{ 'header-scrolled': isScrolled }">
-      <div class="container">
-        <div class="header-inner">
-          <div class="logo">
-            <div class="logo-mark">
-              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                <path d="M16 4L4 12L16 20L28 12L16 4Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
-                <path d="M4 20L16 28L28 20" stroke="currentColor" stroke-width="1.5" fill="none"/>
-                <circle cx="16" cy="12" r="2" fill="currentColor"/>
-              </svg>
-            </div>
-            <span class="logo-text">AirBorn</span>
-          </div>
-          
-          <nav class="nav">
-            <a href="#services" class="nav-link">Услуги</a>
-            <a href="#process" class="nav-link">Процесс</a>
-            <a href="#contacts" class="nav-link">Контакты</a>
-          </nav>
-
-          <div class="header-actions">
-            <a href="tel:+78121234567" class="phone">+7 (812) 123-45-67</a>
-            <button @click="scrollToForm" class="btn-primary-small">
-              Заказать звонок
-            </button>
-            <NuxtLink to="/login" class="btn-login">Вход</NuxtLink>
-          </div>
-
-          <button class="mobile-menu-btn" @click="mobileMenuOpen = !mobileMenuOpen">
-            <span></span>
-            <span></span>
-            <span></span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Mobile Menu -->
-      <div v-if="mobileMenuOpen" class="mobile-menu">
-        <a href="#services" class="mobile-nav-link">Услуги</a>
-        <a href="#process" class="mobile-nav-link">Процесс</a>
-        <a href="#contacts" class="mobile-nav-link">Контакты</a>
-        <NuxtLink to="/login" class="mobile-nav-link">Вход</NuxtLink>
-        <button @click="scrollToForm" class="btn-primary-full">Оставить заявку</button>
-      </div>
-    </header>
-
-    <!-- Hero Section -->
-    <section class="hero">
-      <div class="hero-bg">
-        <div class="hero-gradient"></div>
-        <div class="hero-particles"></div>
-      </div>
-      
-      <div class="container">
-        <div class="hero-content">
-          <div class="hero-badge">
-            <span class="badge-dot"></span>
-            Работаем в СПб и Ленобласти
-          </div>
-          
-          <h1 class="hero-title">
-            Профессиональный монтаж
-            <span class="title-gradient">вентиляции и кондиционирования</span>
-          </h1>
-          
-          <p class="hero-description">
-            Монтируем системы «под ключ» с гарантией 12 месяцев. 
-            Бесплатный выезд инженера в день обращения.
-          </p>
-          
-          <div class="hero-stats">
-            <div class="stat">
-              <div class="stat-number">500+</div>
-              <div class="stat-label">Выполненных проектов</div>
-            </div>
-            <div class="stat-divider"></div>
-            <div class="stat">
-              <div class="stat-number">12 лет</div>
-              <div class="stat-label">Опыта на рынке</div>
-            </div>
-            <div class="stat-divider"></div>
-            <div class="stat">
-              <div class="stat-number">24/7</div>
-              <div class="stat-label">Техподдержка</div>
-            </div>
-          </div>
-          
-          <div class="hero-actions">
-            <button @click="scrollToForm" class="btn-primary-hero">
-              Рассчитать стоимость
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path d="M4.16663 10H15.8333M15.8333 10L10.8333 5M15.8333 10L10.8333 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-              </svg>
-            </button>
-            <a href="tel:+78121234567" class="btn-outline-hero">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path d="M18.3334 14.0833V16.5C18.334 16.789 18.2653 17.074 18.1335 17.3299C18.0018 17.5858 17.811 17.8049 17.5778 17.9692C17.3446 18.1336 17.076 18.2385 16.7946 18.2757C16.5133 18.3128 16.2276 18.2813 15.9584 18.1833C13.0719 17.2007 10.4706 15.5151 8.39166 13.275C6.17864 11.1732 4.50927 8.56192 3.54166 5.65833C3.44587 5.39193 3.4151 5.10596 3.45193 4.82516C3.48876 4.54436 3.59218 4.27618 3.75444 4.04296C3.91669 3.80973 4.13316 3.61808 4.38624 3.48471C4.63933 3.35134 4.92166 3.28023 5.20833 3.27708H7.625C7.958 3.27518 8.28134 3.37946 8.54855 3.57425C8.81576 3.76904 9.0134 4.04403 9.1125 4.35833C9.30618 4.99811 9.57218 5.61353 9.90417 6.19167C10.0825 6.50452 10.1658 6.86214 10.1445 7.22062C10.1232 7.57909 9.99833 7.92375 9.7875 8.2125L8.85417 9.4375C9.9669 11.3462 11.5675 12.8609 13.5125 13.8542L14.7625 12.9583C15.0492 12.7546 15.3903 12.6338 15.744 12.6117C16.0977 12.5897 16.4504 12.6672 16.7583 12.8354C17.3499 13.1689 17.974 13.4468 18.625 13.6667C18.9435 13.7671 19.2214 13.9669 19.4167 14.2372C19.612 14.5075 19.7145 14.8345 19.7083 15.1688V18.3333H19.7083Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-              </svg>
-              Позвонить
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Services Section -->
-    <section id="services" class="services">
-      <div class="container">
-        <div class="section-header">
-          <span class="section-badge">Что мы делаем</span>
-          <h2 class="section-title">Комплексные решения<br>для вашего комфорта</h2>
-        </div>
-
-        <div class="services-grid">
-          <div class="service-card" v-for="service in services" :key="service.title">
-            <div class="service-icon">{{ service.icon }}</div>
-            <h3 class="service-title">{{ service.title }}</h3>
-            <p class="service-desc">{{ service.desc }}</p>
-            <ul class="service-list">
-              <li v-for="item in service.items" :key="item">• {{ item }}</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Advantages Section -->
-    <section class="advantages">
-      <div class="container">
-        <div class="advantages-grid">
-          <div class="advantage-item" v-for="advantage in advantages" :key="advantage.title">
-            <div class="advantage-number">{{ advantage.number }}</div>
-            <h3 class="advantage-title">{{ advantage.title }}</h3>
-            <p class="advantage-desc">{{ advantage.desc }}</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Process Section -->
-    <section id="process" class="process">
-      <div class="container">
-        <div class="section-header center">
-          <span class="section-badge">Как мы работаем</span>
-          <h2 class="section-title">Прозрачный процесс<br>от заявки до результата</h2>
-        </div>
-
-        <div class="process-steps">
-          <div class="step" v-for="(step, index) in steps" :key="index">
-            <div class="step-number">{{ String(index + 1).padStart(2, '0') }}</div>
-            <div class="step-content">
-              <h3 class="step-title">{{ step.title }}</h3>
-              <p class="step-desc">{{ step.desc }}</p>
-            </div>
-            <div v-if="index < steps.length - 1" class="step-line"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="cta">
-      <div class="container">
-        <div class="cta-card">
-          <div class="cta-content">
-            <h2 class="cta-title">Нужен расчет стоимости?</h2>
-            <p class="cta-desc">Оставьте заявку и получите бесплатный выезд инженера в день обращения</p>
-            <button @click="scrollToForm" class="btn-primary-cta">
-              Оставить заявку
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path d="M4.16663 10H15.8333M15.8333 10L10.8333 5M15.8333 10L10.8333 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-              </svg>
-            </button>
-          </div>
-          <div class="cta-stats">
-            <div class="cta-stat">
-              <div class="cta-stat-value">15 мин</div>
-              <div class="cta-stat-label">Среднее время ответа</div>
-            </div>
-            <div class="cta-stat">
-              <div class="cta-stat-value">24/7</div>
-              <div class="cta-stat-label">Техническая поддержка</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Contact Form Section -->
-    <section id="contact-form" class="contact-form">
-      <div class="container">
-        <div class="form-grid">
-          <div class="form-info">
-            <div class="section-badge">Свяжитесь с нами</div>
-            <h2 class="form-title">Остались вопросы?</h2>
-            <p class="form-desc">Наш специалист свяжется с вами в ближайшее время и ответит на все вопросы</p>
-            
-            <div class="contact-info">
-              <div class="contact-info-item">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M22 16.92V19.92C22.0011 20.1985 21.9441 20.4742 21.8325 20.7294C21.7209 20.9845 21.5573 21.2136 21.352 21.4019C21.1467 21.5901 20.9041 21.7335 20.6408 21.8227C20.3775 21.9119 20.0994 21.9451 19.823 21.92C16.7427 21.5856 13.787 20.5341 11.19 18.85C8.7738 17.3147 6.72533 15.2662 5.19 12.85C3.4999 10.2412 2.44809 7.27179 2.12 4.18C2.09497 3.90347 2.12814 3.62521 2.2173 3.36171C2.30647 3.09822 2.44984 2.8554 2.63809 2.64994C2.82633 2.44448 3.05551 2.28073 3.31079 2.1691C3.56607 2.05746 3.84184 2.0005 4.12041 2.00195H7.12041C7.5448 1.9984 7.9582 2.13063 8.30104 2.3793C8.64389 2.62798 8.89779 2.97992 9.02041 3.38195C9.20463 4.02366 9.45668 4.64425 9.77041 5.23195C9.94928 5.54851 10.0299 5.90889 10.004 6.26882C9.97807 6.62875 9.84659 6.97505 9.625 7.26595L8.655 8.51195C9.81542 10.4413 11.4456 12.0303 13.405 13.1419L14.665 12.2069C14.9546 11.9878 15.2987 11.8579 15.6567 11.8315C16.0148 11.8051 16.3735 11.8832 16.69 12.0579C17.2836 12.3694 17.9099 12.6193 18.557 12.8029C18.9632 12.9246 19.319 13.179 19.5705 13.5254C19.822 13.8718 19.9554 14.2906 19.951 14.7189V17.7189C19.951 18.1133 19.8365 18.4989 19.6221 18.8286C19.4076 19.1584 19.1026 19.4179 18.743 19.5759C18.4191 19.7179 18.069 19.7943 17.715 19.801C17.362 19.8076 17.01 19.745 16.68 19.6169" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                </svg>
-                <div>
-                  <strong>Телефон</strong>
-                  <a href="tel:+78121234567">+7 (812) 123-45-67</a>
-                </div>
-              </div>
-              <div class="contact-info-item">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="currentColor" stroke-width="1.5"/>
-                  <path d="M22 6L12 13L2 6" stroke="currentColor" stroke-width="1.5"/>
-                </svg>
-                <div>
-                  <strong>Email</strong>
-                  <a href="mailto:info@airborn-spb.ru">info@airborn-spb.ru</a>
-                </div>
-              </div>
-              <div class="contact-info-item">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 2C8.13 2 5 5.13 5 9C5 13.17 9.42 18.92 11.24 21.11C11.64 21.59 12.37 21.59 12.77 21.11C14.58 18.92 19 13.17 19 9C19 5.13 15.87 2 12 2Z" stroke="currentColor" stroke-width="1.5"/>
-                  <circle cx="12" cy="9" r="3" stroke="currentColor" stroke-width="1.5"/>
-                </svg>
-                <div>
-                  <strong>Адрес</strong>
-                  <p>Санкт-Петербург, Невский пр., 1</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="form-wrapper">
-            <form @submit.prevent="submitForm" class="form">
-              <div class="form-group">
-                <input type="text" v-model="form.name" placeholder="Ваше имя" required>
-              </div>
-              <div class="form-group">
-                <input type="tel" v-model="form.phone" placeholder="+7 (___) ___-__-__" required>
-              </div>
-              <div class="form-group">
-                <select v-model="form.service">
-                  <option value="">Выберите услугу</option>
-                  <option value="split">Сплит-система</option>
-                  <option value="cassette">Кассетная система</option>
-                  <option value="vrv">VRV/VRF система</option>
-                  <option value="ventilation">Вентиляция</option>
-                </select>
-              </div>
-              <button type="submit" class="btn-submit" :disabled="isSubmitting">
-                {{ isSubmitting ? 'Отправка...' : 'Отправить заявку' }}
-              </button>
-              
-              <div v-if="formSuccess" class="alert-success">
-                ✅ Спасибо! Мы свяжемся с вами
-              </div>
-              <div v-if="formError" class="alert-error">
-                ❌ {{ formError }}
-              </div>
-              
-              <p class="form-note">
-                Нажимая на кнопку, вы соглашаетесь с политикой конфиденциальности
-              </p>
-            </form>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-      <div class="container">
-        <div class="footer-content">
-          <div class="footer-brand">
-            <div class="logo-mark">
-              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                <path d="M16 4L4 12L16 20L28 12L16 4Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
-                <path d="M4 20L16 28L28 20" stroke="currentColor" stroke-width="1.5" fill="none"/>
-              </svg>
-            </div>
-            <span class="logo-text">AirBorn</span>
-            <p class="footer-desc">Профессиональный монтаж систем вентиляции и кондиционирования в Санкт-Петербурге</p>
-          </div>
-          
-          <div class="footer-links">
-            <div class="footer-column">
-              <h4>Услуги</h4>
-              <a href="#">Кондиционирование</a>
-              <a href="#">Вентиляция</a>
-              <a href="#">Обслуживание</a>
-            </div>
-            <div class="footer-column">
-              <h4>Компания</h4>
-              <a href="#">О нас</a>
-              <a href="#">Проекты</a>
-              <a href="#">Отзывы</a>
-            </div>
-            <div class="footer-column">
-              <h4>Правовая информация</h4>
-              <a href="#">Политика конфиденциальности</a>
-              <a href="#">Договор оферты</a>
-            </div>
-          </div>
+    <NuxtLayout>
+      <!-- Hero Section -->
+      <section class="hero">
+        <div class="hero-bg">
+          <div class="hero-gradient"></div>
+          <div class="hero-particles"></div>
         </div>
         
-        <div class="footer-bottom">
-          <p>&copy; {{ new Date().getFullYear() }} AirBorn. Все права защищены.</p>
+        <div class="container">
+          <div class="hero-content">
+            <div class="hero-badge">
+              <span class="badge-dot"></span>
+              Работаем в СПб и Ленобласти
+            </div>
+            
+            <h1 class="hero-title">
+              Профессиональный монтаж
+              <span class="title-gradient">вентиляции и кондиционирования</span>
+            </h1>
+            
+            <p class="hero-description">
+              Монтируем системы «под ключ» с гарантией 12 месяцев. 
+              Бесплатный выезд инженера в день обращения.
+            </p>
+            
+            <div class="hero-stats">
+              <div class="stat">
+                <div class="stat-number">500+</div>
+                <div class="stat-label">Выполненных проектов</div>
+              </div>
+              <div class="stat-divider"></div>
+              <div class="stat">
+                <div class="stat-number">12 лет</div>
+                <div class="stat-label">Опыта на рынке</div>
+              </div>
+              <div class="stat-divider"></div>
+              <div class="stat">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Техподдержка</div>
+              </div>
+            </div>
+            
+            <div class="hero-actions">
+              <button @click="scrollToForm" class="btn-primary-hero">
+                Рассчитать стоимость
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M4.16663 10H15.8333M15.8333 10L10.8333 5M15.8333 10L10.8333 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </button>
+              <a href="tel:+78121234567" class="btn-outline-hero">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M18.3334 14.0833V16.5C18.334 16.789 18.2653 17.074 18.1335 17.3299C18.0018 17.5858 17.811 17.8049 17.5778 17.9692C17.3446 18.1336 17.076 18.2385 16.7946 18.2757C16.5133 18.3128 16.2276 18.2813 15.9584 18.1833C13.0719 17.2007 10.4706 15.5151 8.39166 13.275C6.17864 11.1732 4.50927 8.56192 3.54166 5.65833C3.44587 5.39193 3.4151 5.10596 3.45193 4.82516C3.48876 4.54436 3.59218 4.27618 3.75444 4.04296C3.91669 3.80973 4.13316 3.61808 4.38624 3.48471C4.63933 3.35134 4.92166 3.28023 5.20833 3.27708H7.625C7.958 3.27518 8.28134 3.37946 8.54855 3.57425C8.81576 3.76904 9.0134 4.04403 9.1125 4.35833C9.30618 4.99811 9.57218 5.61353 9.90417 6.19167C10.0825 6.50452 10.1658 6.86214 10.1445 7.22062C10.1232 7.57909 9.99833 7.92375 9.7875 8.2125L8.85417 9.4375C9.9669 11.3462 11.5675 12.8609 13.5125 13.8542L14.7625 12.9583C15.0492 12.7546 15.3903 12.6338 15.744 12.6117C16.0977 12.5897 16.4504 12.6672 16.7583 12.8354C17.3499 13.1689 17.974 13.4468 18.625 13.6667C18.9435 13.7671 19.2214 13.9669 19.4167 14.2372C19.612 14.5075 19.7145 14.8345 19.7083 15.1688V18.3333H19.7083Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                Позвонить
+              </a>
+            </div>
+          </div>
         </div>
-      </div>
-    </footer>
+      </section>
+
+      <!-- Services Section -->
+      <section id="services" class="services">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-badge">Что мы делаем</span>
+            <h2 class="section-title">Комплексные решения<br>для вашего комфорта</h2>
+          </div>
+
+          <div class="services-grid">
+            <div class="service-card" v-for="service in services" :key="service.title">
+              <div class="service-icon">{{ service.icon }}</div>
+              <h3 class="service-title">{{ service.title }}</h3>
+              <p class="service-desc">{{ service.desc }}</p>
+              <ul class="service-list">
+                <li v-for="item in service.items" :key="item">• {{ item }}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Advantages Section -->
+      <section class="advantages">
+        <div class="container">
+          <div class="advantages-grid">
+            <div class="advantage-item" v-for="advantage in advantages" :key="advantage.title">
+              <div class="advantage-number">{{ advantage.number }}</div>
+              <h3 class="advantage-title">{{ advantage.title }}</h3>
+              <p class="advantage-desc">{{ advantage.desc }}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Process Section -->
+      <section id="process" class="process">
+        <div class="container">
+          <div class="section-header center">
+            <span class="section-badge">Как мы работаем</span>
+            <h2 class="section-title">Прозрачный процесс<br>от заявки до результата</h2>
+          </div>
+
+          <div class="process-steps">
+            <div class="step" v-for="(step, index) in steps" :key="index">
+              <div class="step-number">{{ String(index + 1).padStart(2, '0') }}</div>
+              <div class="step-content">
+                <h3 class="step-title">{{ step.title }}</h3>
+                <p class="step-desc">{{ step.desc }}</p>
+              </div>
+              <div v-if="index < steps.length - 1" class="step-line"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Section -->
+      <section class="cta">
+        <div class="container">
+          <div class="cta-card">
+            <div class="cta-content">
+              <h2 class="cta-title">Нужен расчет стоимости?</h2>
+              <p class="cta-desc">Оставьте заявку и получите бесплатный выезд инженера в день обращения</p>
+              <button @click="scrollToForm" class="btn-primary-cta">
+                Оставить заявку
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M4.16663 10H15.8333M15.8333 10L10.8333 5M15.8333 10L10.8333 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </button>
+            </div>
+            <div class="cta-stats">
+              <div class="cta-stat">
+                <div class="cta-stat-value">15 мин</div>
+                <div class="cta-stat-label">Среднее время ответа</div>
+              </div>
+              <div class="cta-stat">
+                <div class="cta-stat-value">24/7</div>
+                <div class="cta-stat-label">Техническая поддержка</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact Form Section -->
+      <section id="contact-form" class="contact-form">
+        <div class="container">
+          <div class="form-grid">
+            <div class="form-info">
+              <div class="section-badge">Свяжитесь с нами</div>
+              <h2 class="form-title">Остались вопросы?</h2>
+              <p class="form-desc">Наш специалист свяжется с вами в ближайшее время и ответит на все вопросы</p>
+              
+              <div class="contact-info">
+                <div class="contact-info-item">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M22 16.92V19.92C22.0011 20.1985 21.9441 20.4742 21.8325 20.7294C21.7209 20.9845 21.5573 21.2136 21.352 21.4019C21.1467 21.5901 20.9041 21.7335 20.6408 21.8227C20.3775 21.9119 20.0994 21.9451 19.823 21.92C16.7427 21.5856 13.787 20.5341 11.19 18.85C8.7738 17.3147 6.72533 15.2662 5.19 12.85C3.4999 10.2412 2.44809 7.27179 2.12 4.18C2.09497 3.90347 2.12814 3.62521 2.2173 3.36171C2.30647 3.09822 2.44984 2.8554 2.63809 2.64994C2.82633 2.44448 3.05551 2.28073 3.31079 2.1691C3.56607 2.05746 3.84184 2.0005 4.12041 2.00195H7.12041C7.5448 1.9984 7.9582 2.13063 8.30104 2.3793C8.64389 2.62798 8.89779 2.97992 9.02041 3.38195C9.20463 4.02366 9.45668 4.64425 9.77041 5.23195C9.94928 5.54851 10.0299 5.90889 10.004 6.26882C9.97807 6.62875 9.84659 6.97505 9.625 7.26595L8.655 8.51195C9.81542 10.4413 11.4456 12.0303 13.405 13.1419L14.665 12.2069C14.9546 11.9878 15.2987 11.8579 15.6567 11.8315C16.0148 11.8051 16.3735 11.8832 16.69 12.0579C17.2836 12.3694 17.9099 12.6193 18.557 12.8029C18.9632 12.9246 19.319 13.179 19.5705 13.5254C19.822 13.8718 19.9554 14.2906 19.951 14.7189V17.7189C19.951 18.1133 19.8365 18.4989 19.6221 18.8286C19.4076 19.1584 19.1026 19.4179 18.743 19.5759C18.4191 19.7179 18.069 19.7943 17.715 19.801C17.362 19.8076 17.01 19.745 16.68 19.6169" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                  <div>
+                    <strong>Телефон</strong>
+                    <a href="tel:+78121234567">+7 (812) 123-45-67</a>
+                  </div>
+                </div>
+                <div class="contact-info-item">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M22 6L12 13L2 6" stroke="currentColor" stroke-width="1.5"/>
+                  </svg>
+                  <div>
+                    <strong>Email</strong>
+                    <a href="mailto:info@airborn-spb.ru">info@airborn-spb.ru</a>
+                  </div>
+                </div>
+                <div class="contact-info-item">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2C8.13 2 5 5.13 5 9C5 13.17 9.42 18.92 11.24 21.11C11.64 21.59 12.37 21.59 12.77 21.11C14.58 18.92 19 13.17 19 9C19 5.13 15.87 2 12 2Z" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="12" cy="9" r="3" stroke="currentColor" stroke-width="1.5"/>
+                  </svg>
+                  <div>
+                    <strong>Адрес</strong>
+                    <p>Санкт-Петербург, Невский пр., 1</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-wrapper">
+              <form @submit.prevent="submitForm" class="form">
+                <div class="form-group">
+                  <input type="text" v-model="form.name" placeholder="Ваше имя" required>
+                </div>
+                <div class="form-group">
+                  <input type="tel" v-model="form.phone" placeholder="+7 (___) ___-__-__" required>
+                </div>
+                <div class="form-group">
+                  <select v-model="form.service">
+                    <option value="">Выберите услугу</option>
+                    <option value="split">Сплит-система</option>
+                    <option value="cassette">Кассетная система</option>
+                    <option value="vrv">VRV/VRF система</option>
+                    <option value="ventilation">Вентиляция</option>
+                  </select>
+                </div>
+                <button type="submit" class="btn-submit" :disabled="isSubmitting">
+                  {{ isSubmitting ? 'Отправка...' : 'Отправить заявку' }}
+                </button>
+                
+                <div v-if="formSuccess" class="alert-success">
+                  ✅ Спасибо! Мы свяжемся с вами
+                </div>
+                <div v-if="formError" class="alert-error">
+                  ❌ {{ formError }}
+                </div>
+                
+                <p class="form-note">
+                  Нажимая на кнопку, вы соглашаетесь с политикой конфиденциальности
+                </p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+    </NuxtLayout>
   </div>
 </template>
 

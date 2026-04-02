@@ -12,21 +12,24 @@
     <header class="header" :class="{ 'header-scrolled': isScrolled }">
       <div class="container">
         <div class="header-inner">
-          <div class="logo">
-            <div class="logo-mark">
-              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                <path d="M16 4L4 12L16 20L28 12L16 4Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
-                <path d="M4 20L16 28L28 20" stroke="currentColor" stroke-width="1.5" fill="none"/>
-                <circle cx="16" cy="12" r="2" fill="currentColor"/>
-              </svg>
+          <NuxtLink to="/">
+            <div class="logo">
+              <div class="logo-mark">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                  <path d="M16 4L4 12L16 20L28 12L16 4Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                  <path d="M4 20L16 28L28 20" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                  <circle cx="16" cy="12" r="2" fill="currentColor"/>
+                </svg>
+              </div>
+              <span class="logo-text">AirBorn</span>
             </div>
-            <span class="logo-text">AirBorn</span>
-          </div>
+          </NuxtLink>
+
           
           <nav class="nav">
-            <a href="#services" class="nav-link">Услуги</a>
-            <a href="#process" class="nav-link">Процесс</a>
-            <a href="#contacts" class="nav-link">Контакты</a>
+            <NuxtLink to="/#services" class="nav-link">Услуги</NuxtLink>
+            <NuxtLink to="/#process" class="nav-link">Процесс</NuxtLink>
+            <NuxtLink to="/#contact-form" class="nav-link">Контакты</NuxtLink>
           </nav>
 
           <div class="header-actions">

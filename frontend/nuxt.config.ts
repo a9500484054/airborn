@@ -62,7 +62,8 @@ export default defineNuxtConfig({
     '/projects/**': { ssr: false },
     '/admin/**': { ssr: false },
     '/under-construction': { ssr: true },
-
+    // 404 page
+    '/404': { ssr: true },
   },
 
   // Compatibility
