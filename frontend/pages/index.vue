@@ -327,6 +327,12 @@ const formatPhone = (event: Event) => {
   form.value.phone = formatted;
 };
 
+function formatPhoneNumber(phone:string): string {
+    // Удаляем все символы, кроме цифр
+    const digits = phone.replace(/\D/g, '');
+    return `+${digits}`;
+}
+
 const submitForm = async () => {
   isSubmitting.value = true;
   formError.value = '';
@@ -337,7 +343,7 @@ const submitForm = async () => {
       method: 'POST',
       body: {
         name: form.value.name,
-        phone: form.value.phone,
+        phone: formatPhoneNumber(form.value.phone),
         comment: form.value.service ? `Услуга: ${form.value.service}` : ''
       }
     });
