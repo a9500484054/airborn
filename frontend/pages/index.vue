@@ -344,7 +344,7 @@ const submitForm = async () => {
       body: {
         name: form.value.name,
         phone: formatPhoneNumber(form.value.phone),
-        comment: form.value.service ? `Услуга: ${form.value.service}` : ''
+        comment: form.value.comment || undefined
       }
     });
 
