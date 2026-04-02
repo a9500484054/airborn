@@ -192,7 +192,14 @@
                   <input type="text" v-model="form.name" placeholder="Ваше имя" required>
                 </div>
                 <div class="form-group">
-                  <input type="tel" v-model="form.phone" placeholder="+7 (___) ___-__-__" required>
+                  <input 
+                    type="tel" 
+                    v-model="form.phone" 
+                    @input="formatPhone"
+                    placeholder="+7 (___) ___-__-__" 
+                    required
+                    class="form-input-phone"
+                  >
                 </div>
                 <div class="form-group">
                   <select v-model="form.service">
@@ -283,6 +290,42 @@ const config = useRuntimeConfig();
 
 const scrollToForm = () => {
   document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
+};
+
+const formatPhone = (event: Event) => {
+  const input = event.target as HTMLInputElement;
+  let value = input.value.replace(/\D/g, '');
+  
+  if (value.length === 0) {
+    input.value = '';
+    return;
+  }
+  
+  if (value[0] === '7' || value[0] === '8') {
+    value = value.slice(1);
+  }
+  
+  if (value.length > 10) {
+    value = value.slice(0, 10);
+  }
+  
+  let formatted = '+7';
+  
+  if (value.length > 0) {
+    formatted += ' (' + value.slice(0, 3);
+  }
+  if (value.length > 3) {
+    formatted += ') ' + value.slice(3, 6);
+  }
+  if (value.length > 6) {
+    formatted += '-' + value.slice(6, 8);
+  }
+  if (value.length > 8) {
+    formatted += '-' + value.slice(8, 10);
+  }
+  
+  input.value = formatted;
+  form.value.phone = formatted;
 };
 
 const submitForm = async () => {
