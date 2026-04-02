@@ -21,13 +21,13 @@
         <!-- Project Header -->
         <div class="project-header">
           <div>
-            <div class="project-badge" :class="`status-${projectsStore.currentProject.status}`">
+            <!-- <div class="project-badge" :class="`status-${projectsStore.currentProject.status}`">
               {{ getStatusText(projectsStore.currentProject.status) }}
-            </div>
+            </div> -->
             <h1 class="project-title">{{ projectsStore.currentProject.title }}</h1>
             <p class="project-subtitle">{{ projectsStore.currentProject.shortDescription }}</p>
           </div>
-          <div class="project-actions">
+          <!-- <div class="project-actions">
             <button class="action-btn" @click="shareProject">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                 <path d="M15 6.66667C16.3807 6.66667 17.5 5.54738 17.5 4.16667C17.5 2.78595 16.3807 1.66667 15 1.66667C13.6193 1.66667 12.5 2.78595 12.5 4.16667C12.5 5.54738 13.6193 6.66667 15 6.66667Z" stroke="currentColor" stroke-width="1.2"/>
@@ -43,7 +43,7 @@
               </svg>
               Редактировать
             </NuxtLink>
-          </div>
+          </div> -->
         </div>
 
         <!-- Project Gallery -->
@@ -108,14 +108,14 @@
             </div>
             <div class="card-body">
               <div class="info-list">
-                <div class="info-item">
+                <!-- <div class="info-item">
                   <span class="info-label">Статус</span>
                   <span class="info-value">
                     <span class="status-badge" :class="`status-${projectsStore.currentProject.status}`">
                       {{ getStatusText(projectsStore.currentProject.status) }}
                     </span>
                   </span>
-                </div>
+                </div> -->
                 <div class="info-item">
                   <span class="info-label">Дата создания</span>
                   <span class="info-value">{{ formatDate(projectsStore.currentProject.createdAt) }}</span>
