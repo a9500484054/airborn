@@ -28,9 +28,9 @@
           <div class="profile-info">
             <h2 class="profile-name">{{ authStore.userName }}</h2>
             <p class="profile-email">{{ authStore.user?.email }}</p>
-            <div class="profile-badge" :class="`badge-${authStore.user?.role}`">
+            <!-- <div class="profile-badge" :class="`badge-${authStore.user?.role}`">
               {{ authStore.user?.role === 'admin' ? 'Администратор' : 'Пользователь' }}
-            </div>
+            </div> -->
           </div>
         </div>
         

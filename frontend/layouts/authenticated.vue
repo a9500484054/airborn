@@ -92,23 +92,23 @@
         <!-- Dropdown Menu -->
         <transition name="dropdown">
           <div v-if="userMenuOpen" class="user-dropdown">
-              <!-- <div class="dropdown-item" @click="handleProfile">
+              <div class="dropdown-item" @click="handleProfile">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
                 <path d="M9 11.25C10.2426 11.25 11.25 10.2426 11.25 9C11.25 7.75736 10.2426 6.75 9 6.75C7.75736 6.75 6.75 7.75736 6.75 9C6.75 10.2426 7.75736 11.25 9 11.25Z" stroke="currentColor" stroke-width="1.2"/>
                 <path d="M14.25 14.25C13.125 12.75 11.25 11.25 9 11.25C6.75 11.25 4.875 12.75 3.75 14.25" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
                 <circle cx="9" cy="9" r="7.5" stroke="currentColor" stroke-width="1.2"/>
               </svg>
-              <span>Профиль</span>
+              <span>Настройки профиля</span>
             </div>
-            <div class="dropdown-item" @click="handleSettings">
+            <!-- <div class="dropdown-item" @click="handleSettings">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
                 <path d="M9 11.25C10.2426 11.25 11.25 10.2426 11.25 9C11.25 7.75736 10.2426 6.75 9 6.75C7.75736 6.75 6.75 7.75736 6.75 9C6.75 10.2426 7.75736 11.25 9 11.25Z" stroke="currentColor" stroke-width="1.2"/>
                 <path d="M14.25 14.25C13.125 12.75 11.25 11.25 9 11.25C6.75 11.25 4.875 12.75 3.75 14.25" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
                 <circle cx="9" cy="9" r="7.5" stroke="currentColor" stroke-width="1.2"/>
               </svg>
               <span>Настройки</span>
-            </div>
-            <div class="dropdown-divider"></div> -->
+            </div> -->
+            <div class="dropdown-divider"></div>
             <div class="dropdown-item logout-item" @click="handleLogout">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
                 <path d="M6.75 2.25H3.75C3.35218 2.25 2.97064 2.40804 2.68934 2.68934C2.40804 2.97064 2.25 3.35218 2.25 3.75V14.25C2.25 14.6478 2.40804 15.0294 2.68934 15.3107C2.97064 15.592 3.35218 15.75 3.75 15.75H6.75M12 12.75L15.75 9L12 5.25M15.75 9H6.75" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
@@ -148,15 +148,15 @@
         <!-- Mobile Dropdown -->
         <transition name="dropdown">
           <div v-if="userMenuOpenMobile" class="user-dropdown-mobile">
-            <!-- <div class="dropdown-item" @click="handleProfile">
+            <div class="dropdown-item" @click="handleProfile">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
                 <path d="M9 11.25C10.2426 11.25 11.25 10.2426 11.25 9C11.25 7.75736 10.2426 6.75 9 6.75C7.75736 6.75 6.75 7.75736 6.75 9C6.75 10.2426 7.75736 11.25 9 11.25Z" stroke="currentColor" stroke-width="1.2"/>
                 <path d="M14.25 14.25C13.125 12.75 11.25 11.25 9 11.25C6.75 11.25 4.875 12.75 3.75 14.25" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
                 <circle cx="9" cy="9" r="7.5" stroke="currentColor" stroke-width="1.2"/>
               </svg>
-              <span>Профиль</span>
+              <span>Настройки профиля</span>
             </div>
-            <div class="dropdown-item" @click="handleSettings">
+            <!-- <div class="dropdown-item" @click="handleSettings">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
                 <path d="M9 11.25C10.2426 11.25 11.25 10.2426 11.25 9C11.25 7.75736 10.2426 6.75 9 6.75C7.75736 6.75 6.75 7.75736 6.75 9C6.75 10.2426 7.75736 11.25 9 11.25Z" stroke="currentColor" stroke-width="1.2"/>
                 <path d="M14.25 14.25C13.125 12.75 11.25 11.25 9 11.25C6.75 11.25 4.875 12.75 3.75 14.25" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
@@ -164,7 +164,7 @@
               </svg>
               <span>Настройки</span>
             </div> -->
-            <!-- <div class="dropdown-divider"></div> -->
+            <div class="dropdown-divider"></div>
             <div class="dropdown-item logout-item" @click="handleLogout">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
                 <path d="M6.75 2.25H3.75C3.35218 2.25 2.97064 2.40804 2.68934 2.68934C2.40804 2.97064 2.25 3.35218 2.25 3.75V14.25C2.25 14.6478 2.40804 15.0294 2.68934 15.3107C2.97064 15.592 3.35218 15.75 3.75 15.75H6.75M12 12.75L15.75 9L12 5.25M15.75 9H6.75" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
@@ -494,6 +494,9 @@ onUnmounted(() => {
 
 .logout-item:hover {
   background: #fef2f2;
+}
+.logout-item:hover svg {
+  color: #ef4444;
 }
 
 .dropdown-divider {

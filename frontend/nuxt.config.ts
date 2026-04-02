@@ -55,13 +55,14 @@ export default defineNuxtConfig({
     // Landing page - SSR
     '/': { ssr: true },
     // Auth pages - SSR
-    '/login': { ssr: true },
-    '/register': { ssr: true },
+    '/login': { ssr: false },
     // Dashboard and app - SPA
     '/dashboard/**': { ssr: false },
     '/chat': { ssr: false },
     '/projects/**': { ssr: false },
     '/admin/**': { ssr: false },
+    '/under-construction': { ssr: true },
+
   },
 
   // Compatibility

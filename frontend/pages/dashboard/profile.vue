@@ -484,7 +484,7 @@ useHead({
 .password-form {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  /* gap: 24px; */
 }
 
 .form-group {

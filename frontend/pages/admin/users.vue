@@ -8,6 +8,12 @@
           <p class="page-subtitle">Управление учетными записями, ролями и правами доступа</p>
         </div>
         <div class="header-right">
+          <button class="btn btn-primary" @click="showCreateModal = true">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M9 3.75V14.25M3.75 9H14.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            Добавить пользователя
+          </button>
           <div class="stats-badge">
             <div class="stats-badge-icon">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -230,6 +236,97 @@
           </div>
         </div>
       </transition>
+
+      <!-- Create User Modal -->
+      <transition name="modal">
+        <div v-if="showCreateModal" class="modal-overlay" @click="showCreateModal = false">
+          <div class="modal-content modal-large" @click.stop>
+            <div class="modal-header">
+              <div class="modal-icon create-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M16 12H12M12 8V12M12 16H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <h3 class="modal-title">Добавить пользователя</h3>
+            </div>
+            <div class="modal-body">
+              <form @submit.prevent="createUser" class="create-form">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label" for="name">Имя *</label>
+                    <input
+                      id="name"
+                      v-model="createFormData.name"
+                      type="text"
+                      class="form-input"
+                      placeholder="Иван Иванов"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label" for="email">Email *</label>
+                    <input
+                      id="email"
+                      v-model="createFormData.email"
+                      type="email"
+                      class="form-input"
+                      placeholder="user@example.com"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label" for="phone">Телефон</label>
+                    <input
+                      id="phone"
+                      v-model="createFormData.phone"
+                      type="tel"
+                      class="form-input"
+                      placeholder="+7 (999) 123-45-67"
+                    />
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label" for="role">Роль</label>
+                    <select
+                      id="role"
+                      v-model="createFormData.role"
+                      class="form-select"
+                    >
+                      <option value="user">Пользователь</option>
+                      <option value="admin">Администратор</option>
+                    </select>
+                  </div>
+                </div>
+                <div v-if="createSuccess" class="alert-success">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M10 16C14.4183 16 18 12.4183 18 8C18 3.58172 14.4183 0 10 0C5.58172 0 2 3.58172 2 8C2 12.4183 5.58172 16 10 16Z" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M6.5 8L9 10.5L13.5 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                  <span>Пользователь создан! Email с временным паролем отправлен.</span>
+                </div>
+                <div v-if="createError" class="alert-error">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M10 6V10M10 14H10.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                  <span>{{ createError }}</span>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button class="btn-cancel" @click="showCreateModal = false">Отмена</button>
+              <button class="btn-primary" @click="createUser" :disabled="isCreating">
+                {{ isCreating ? 'Создание...' : 'Создать' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </transition>
     </div>
   </NuxtLayout>
 </template>
@@ -264,6 +361,19 @@ const totalUsers = ref(0);
 const searchDebounce = ref<NodeJS.Timeout | null>(null);
 const showDeleteModal = ref(false);
 const userToDelete = ref<User | null>(null);
+
+// Create user state
+const showCreateModal = ref(false);
+const isCreating = ref(false);
+const createSuccess = ref(false);
+const createError = ref('');
+
+const createFormData = ref({
+  name: '',
+  email: '',
+  phone: '',
+  role: 'user' as 'user' | 'admin',
+});
 
 const filteredUsers = computed(() => {
   let filtered = users.value;
@@ -386,6 +496,42 @@ const confirmDelete = async () => {
     await loadUsers(currentPage.value);
   } catch (error) {
     alert('Не удалось удалить пользователя');
+  }
+};
+
+const createUser = async () => {
+  isCreating.value = true;
+  createError.value = '';
+  createSuccess.value = false;
+
+  try {
+    const { data, error } = await useFetch(`${config.public.apiUrl}/auth/admin/create-user`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${authStore.accessToken}`,
+      },
+      body: createFormData.value,
+    });
+
+    if (error.value) {
+      createError.value = error.value.data?.error?.message || 'Не удалось создать пользователя';
+      return;
+    }
+
+    if (data.value) {
+      createSuccess.value = true;
+      // Reset form after 2 seconds and close modal
+      setTimeout(() => {
+        showCreateModal.value = false;
+        createFormData.value = { name: '', email: '', phone: '', role: 'user' };
+        createSuccess.value = false;
+        loadUsers(1);
+      }, 2000);
+    }
+  } catch (err) {
+    createError.value = 'Произошла ошибка при создании пользователя';
+  } finally {
+    isCreating.value = false;
   }
 };
 
@@ -927,6 +1073,10 @@ useHead({
   animation: modalSlideIn 0.3s ease-out;
 }
 
+.modal-large {
+  max-width: 500px;
+}
+
 @keyframes modalSlideIn {
   from {
     opacity: 0;
@@ -958,6 +1108,11 @@ useHead({
   color: #ef4444;
 }
 
+.create-icon {
+  background: #eff6ff;
+  color: #3b82f6;
+}
+
 .modal-title {
   font-size: 20px;
   font-weight: 600;
@@ -980,6 +1135,70 @@ useHead({
   background: #fef2f2;
   padding: 12px;
   border-radius: 12px;
+}
+
+/* Create Form */
+.create-form {
+  text-align: left;
+}
+
+.form-row {
+  margin-bottom: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.form-input,
+.form-select {
+  padding: 10px 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #1e293b;
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.form-input:focus,
+.form-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-input::placeholder {
+  color: #94a3b8;
+}
+
+.alert-success,
+.alert-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  margin-top: 16px;
+}
+
+.alert-success {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.alert-error {
+  background: #fee2e2;
+  color: #991b1b;
 }
 
 .modal-footer {
@@ -1019,6 +1238,30 @@ useHead({
   transform: translateY(-1px);
 }
 
+.btn-primary {
+  flex: 1;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
 /* Modal Animation */
 .modal-enter-active,
 .modal-leave-active {
@@ -1028,6 +1271,94 @@ useHead({
 .modal-enter-from,
 .modal-leave-to {
   opacity: 0;
+}
+
+/* Create Form Styles */
+.create-form {
+  text-align: left;
+}
+
+.form-row {
+  margin-bottom: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.form-input,
+.form-select {
+  padding: 10px 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #1e293b;
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.form-input:focus,
+.form-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-input::placeholder {
+  color: #94a3b8;
+}
+
+.alert-success,
+.alert-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  margin-top: 16px;
+}
+
+.alert-success {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.alert-error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.btn-primary {
+  flex: 1;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
 /* Responsive */

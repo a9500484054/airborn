@@ -82,7 +82,7 @@
 
 <script setup lang="ts">
 definePageMeta({
-  middleware: ['auth'],
+  middleware: false,
 });
 
 const route = useRoute();
@@ -105,51 +105,53 @@ onMounted(async () => {
 
   try {
     const config = useRuntimeConfig();
-    const apiUrl = config.public.apiUrl;
     
-    const { data, error: fetchError } = await useFetch(`${apiUrl}/auth/verify-email?token=${token}`, {
+    // Client-side fetch instead of useFetch
+    const response = await fetch(`${config.public.apiUrl}/auth/verify-email?token=${token}`, {
       method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
 
-    if (fetchError.value) {
-      throw fetchError.value;
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error?.message || 'Ошибка верификации');
     }
 
-    if (data.value) {
-      const response = data.value as any;
-      if (response.success) {
-        success.value = true;
-        loading.value = false;
-        
-        // Auto redirect after 3 seconds
-        setTimeout(() => {
-          router.push('/login');
-        }, 3000);
-      } else {
-        throw new Error(response.message || 'Ошибка верификации');
-      }
+    if (result.success) {
+      success.value = true;
+      loading.value = false;
+
+      // Auto redirect after 3 seconds
+      setTimeout(() => {
+        router.push('/login');
+      }, 3000);
+    } else {
+      throw new Error(result.message || 'Ошибка верификации');
     }
   } catch (err: any) {
     console.error('Verification error:', err);
-    
+
     // Handle different error types
-    if (err.statusCode === 400) {
+    if (err.message?.includes('400')) {
       error.value = 'Неверный токен верификации';
-    } else if (err.statusCode === 404) {
+    } else if (err.message?.includes('404')) {
       error.value = 'Токен не найден или уже использован';
-    } else if (err.statusCode === 410) {
+    } else if (err.message?.includes('410')) {
       error.value = 'Срок действия ссылки истек. Запросите новое письмо.';
     } else {
-      error.value = err.data?.error?.message || 'Не удалось подтвердить email. Попробуйте позже.';
+      error.value = err.message || 'Не удалось подтвердить email. Попробуйте позже.';
     }
-    
+
     loading.value = false;
   }
 });
 
 const resendVerification = async () => {
   const email = route.query.email as string || authStore.user?.email;
-  
+
   if (!email) {
     error.value = 'Email не указан. Пожалуйста, вернитесь на страницу входа.';
     return;
@@ -159,16 +161,23 @@ const resendVerification = async () => {
 
   try {
     const config = useRuntimeConfig();
-    const { data, error: fetchError } = await useFetch(`${config.public.apiUrl}/auth/resend-verification`, {
+    
+    // Client-side fetch
+    const response = await fetch(`${config.public.apiUrl}/auth/resend-verification`, {
       method: 'POST',
-      body: { email },
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email }),
     });
 
-    if (fetchError.value) {
-      throw fetchError.value;
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error?.message || 'Ошибка при отправке письма');
     }
 
-    if (data.value) {
+    if (result.success) {
       // Show success message
       const successMessage = document.createElement('div');
       successMessage.className = 'toast-success';
@@ -180,12 +189,12 @@ const resendVerification = async () => {
       `;
       document.body.appendChild(successMessage);
       setTimeout(() => successMessage.remove(), 3000);
-      
+
       // Clear error message
       error.value = '';
     }
   } catch (err: any) {
-    const errorMessage = err.data?.error?.message || 'Ошибка при отправке письма. Попробуйте позже.';
+    const errorMessage = err.message || 'Ошибка при отправке письма. Попробуйте позже.';
     alert(errorMessage);
   } finally {
     resending.value = false;
@@ -510,30 +519,30 @@ useHead({
   .verify-state {
     padding: 32px 24px;
   }
-  
+
   .state-content h2 {
     font-size: 24px;
   }
-  
+
   .state-content p {
     font-size: 14px;
   }
-  
+
   .state-actions {
     flex-direction: column;
   }
-  
+
   .btn-primary,
   .btn-outline {
     justify-content: center;
   }
-  
+
   .success-icon,
   .error-icon {
     width: 64px;
     height: 64px;
   }
-  
+
   .success-icon svg,
   .error-icon svg {
     width: 32px;
@@ -545,7 +554,7 @@ useHead({
   .verify-state {
     padding: 24px 20px;
   }
-  
+
   .state-content h2 {
     font-size: 20px;
   }
