@@ -132,6 +132,9 @@
       </div>
     </footer>
 
+    <!-- Cookie Banner -->
+    <CookieBanner />
+
   </div>
 </template>
 
