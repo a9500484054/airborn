@@ -1,12 +1,7 @@
 <template>
   <div class="login-page">
     <!-- Preloader -->
-    <div v-if="isLoading" class="preloader">
-      <div class="preloader-content">
-        <div class="preloader-ring"></div>
-        <p class="preloader-text">AirBorn</p>
-      </div>
-    </div>
+    <Preloader :isLoading="isLoading" />
 
     <div class="login-container">
       <!-- Left Side - Image & Branding -->

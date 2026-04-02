@@ -234,9 +234,6 @@ useHead({
   ]
 });
 
-const isLoading = ref(true);
-const isScrolled = ref(false);
-const mobileMenuOpen = ref(false);
 const isSubmitting = ref(false);
 const formSuccess = ref(false);
 const formError = ref('');
@@ -282,21 +279,10 @@ const steps = [
   { title: 'Монтаж и оплата', desc: 'Профессиональная установка. Оплата после приемки' }
 ];
 
-onMounted(() => {
-  setTimeout(() => {
-    isLoading.value = false;
-  }, 1500);
-
-  window.addEventListener('scroll', () => {
-    isScrolled.value = window.scrollY > 50;
-  });
-});
-
 const config = useRuntimeConfig();
 
 const scrollToForm = () => {
   document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
-  mobileMenuOpen.value = false;
 };
 
 const submitForm = async () => {
@@ -347,176 +333,6 @@ const submitForm = async () => {
 @media (max-width: 768px) {
   .container {
     padding: 0 20px;
-  }
-}
-
-/* Header */
-.header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  background: rgba(255, 255, 255, 0.98);
-  backdrop-filter: blur(20px);
-  z-index: 1000;
-  transition: all 0.3s ease;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.header-scrolled {
-  background: rgba(255, 255, 255, 0.98);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-}
-
-.header-inner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 80px;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.logo-mark {
-  color: #2563eb;
-  display: flex;
-  align-items: center;
-}
-
-.logo-text {
-  font-size: 24px;
-  font-weight: 700;
-  background: linear-gradient(135deg, #1e293b 0%, #2563eb 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.nav {
-  display: flex;
-  gap: 32px;
-}
-
-.nav-link {
-  text-decoration: none;
-  color: #475569;
-  font-weight: 500;
-  transition: color 0.3s ease;
-}
-
-.nav-link:hover {
-  color: #2563eb;
-}
-
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-}
-
-.phone {
-  text-decoration: none;
-  color: #1e293b;
-  font-weight: 600;
-  font-size: 16px;
-}
-
-.btn-primary-small {
-  padding: 8px 20px;
-  background: #1e293b;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.btn-primary-small:hover {
-  background: #2563eb;
-  transform: translateY(-2px);
-}
-
-.btn-login {
-  padding: 8px 20px;
-  background: transparent;
-  color: #475569;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
-
-.btn-login:hover {
-  border-color: #2563eb;
-  color: #2563eb;
-}
-
-.mobile-menu-btn {
-  display: none;
-  flex-direction: column;
-  gap: 6px;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-.mobile-menu-btn span {
-  width: 24px;
-  height: 2px;
-  background: #1e293b;
-  transition: all 0.3s ease;
-}
-
-.mobile-menu {
-  position: fixed;
-  top: 80px;
-  left: 0;
-  right: 0;
-  background: white;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.mobile-nav-link {
-  text-decoration: none;
-  color: #475569;
-  font-weight: 500;
-  padding: 12px 0;
-  border-bottom: 1px solid #f1f5f9;
-}
-
-.btn-primary-full {
-  padding: 12px;
-  background: #1e293b;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: 500;
-  cursor: pointer;
-  margin-top: 8px;
-}
-
-@media (max-width: 1024px) {
-  .nav, .phone {
-    display: none;
-  }
-  
-  .mobile-menu-btn {
-    display: flex;
-  }
-  
-  .header-actions {
-    gap: 12px;
   }
 }
 
@@ -1199,45 +1015,10 @@ const submitForm = async () => {
     grid-template-columns: 1fr;
     gap: 48px;
   }
-  
+
   .footer-links {
     grid-template-columns: 1fr;
     gap: 32px;
   }
-}
-
-/* Preloader */
-.preloader {
-  position: fixed;
-  inset: 0;
-  background: #0f172a;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-}
-
-.preloader-content {
-  text-align: center;
-}
-
-.preloader-ring {
-  width: 60px;
-  height: 60px;
-  margin: 0 auto 20px;
-  border: 3px solid rgba(37, 99, 235, 0.2);
-  border-top-color: #2563eb;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.preloader-text {
-  color: white;
-  font-size: 18px;
-  font-weight: 500;
 }
 </style>

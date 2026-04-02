@@ -1,18 +1,7 @@
 <template>
   <div class="layout-default">
-    <!-- Header -->
-    <div v-if="isLoading" class="preloader">
-      <div class="preloader-content">
-        <div class="logo-animation">
-          <svg width="64" height="64" viewBox="0 0 32 32" fill="none">
-            <path class="logo-path-1" d="M16 4L4 12L16 20L28 12L16 4Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
-            <path class="logo-path-2" d="M4 20L16 28L28 20" stroke="currentColor" stroke-width="1.5" fill="none"/>
-            <circle class="logo-circle" cx="16" cy="12" r="2" fill="currentColor"/>
-          </svg>
-        </div>
-        <p class="preloader-text">AirBorn</p>
-      </div>
-    </div>
+    <!-- Preloader -->
+    <Preloader :isLoading="isLoading" />
 
     <!-- Header -->
     <header class="header" :class="{ 'header-scrolled': isScrolled }">
@@ -142,6 +131,11 @@ onMounted(() => {
   box-sizing: border-box;
 }
 
+a {
+  padding: 0;
+  margin: 0;
+}
+
 .container {
   max-width: 1280px;
   margin: 0 auto;
@@ -170,7 +164,7 @@ onMounted(() => {
   top: 0;
   left: 0;
   right: 0;
-  background: rgba(255, 255, 255, 0.98);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
   z-index: 1000;
   transition: all 0.3s ease;
@@ -179,7 +173,8 @@ onMounted(() => {
 
 .header-scrolled {
   background: rgba(255, 255, 255, 0.98);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border-bottom-color: transparent;
 }
 
 .header-inner {
@@ -187,6 +182,11 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   height: 80px;
+  transition: height 0.3s ease;
+}
+
+.header-scrolled .header-inner {
+  height: 70px;
 }
 
 .logo {
