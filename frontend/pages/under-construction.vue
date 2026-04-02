@@ -1,34 +1,36 @@
 <template>
-  <div class="construction-page">
-    <div class="construction-card">
-      <!-- Icon -->
-      <div class="construction-icon">
-        <svg width="64" height="64" viewBox="0 0 24 24" fill="none">
-          <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="1.5"/>
-          <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="1.5"/>
-          <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="1.5"/>
-          <circle cx="12" cy="12" r="2" fill="currentColor"/>
-        </svg>
+  <NuxtLayout>
+    <div class="construction-page">
+      <div class="construction-card">
+        <!-- Icon -->
+        <div class="construction-icon">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="12" cy="12" r="2" fill="currentColor"/>
+          </svg>
+        </div>
+
+        <!-- Title -->
+        <h1 class="construction-title">Страница в разработке</h1>
+
+        <!-- Description -->
+        <p class="construction-description">
+          Мы работаем над этой страницей.<br>
+          Скоро здесь появится полезная информация.
+        </p>
+
+        <!-- Action Button -->
+        <NuxtLink to="/dashboard" class="back-btn">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M11 14L6 9L11 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          Вернуться на главную
+        </NuxtLink>
       </div>
-
-      <!-- Title -->
-      <h1 class="construction-title">Страница в разработке</h1>
-
-      <!-- Description -->
-      <p class="construction-description">
-        Мы работаем над этой страницей.<br>
-        Скоро здесь появится полезная информация.
-      </p>
-
-      <!-- Action Button -->
-      <NuxtLink to="/dashboard" class="back-btn">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-          <path d="M11 14L6 9L11 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-        Вернуться на главную
-      </NuxtLink>
     </div>
-  </div>
+  </NuxtLayout>
 </template>
 
 <script setup lang="ts">

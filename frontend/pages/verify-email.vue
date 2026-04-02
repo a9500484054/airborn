@@ -1,5 +1,6 @@
 <template>
-  <div class="verify-email-page">
+  <NuxtLayout>
+    <div class="verify-email-page">
     <div class="verify-container">
       <!-- Loading State -->
       <div v-if="loading" class="verify-state">
@@ -77,7 +78,8 @@
         </div>
       </div>
     </div>
-  </div>
+    </div>
+  </NuxtLayout>
 </template>
 
 <script setup lang="ts">
