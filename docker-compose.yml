@@ -36,7 +36,7 @@ services:
       DB_PASSWORD: postgres
       DB_DATABASE: airborn
       JWT_SECRET: airborn-production-jwt-secret-key-2026-change-in-real-deployment
-      JWT_EXPIRATION: 15m
+      JWT_EXPIRATION: 7d
       REFRESH_SECRET: airborn-production-refresh-secret-key-2026-change
       REFRESH_EXPIRATION: 7d
       CORS_ORIGIN: http://localhost:3001
