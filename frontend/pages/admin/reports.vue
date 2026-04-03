@@ -267,7 +267,7 @@ interface Report {
   id: string;
   date: string;
   object: string;
-  hours: number;
+  hours: number | string;
   user: ReportUser;
   userId: string;
   createdAt: string;
@@ -282,6 +282,12 @@ interface ReportsResponse {
     limit: number;
     totalPages: number;
   };
+}
+
+interface ApiResponse {
+  success: boolean;
+  data: ReportsResponse;
+  message: string;
 }
 
 const reports = ref<Report[]>([]);
@@ -352,7 +358,7 @@ const loadReports = async (page: number = 1) => {
     if (filters.value.dateFrom) params.set('dateFrom', filters.value.dateFrom);
     if (filters.value.dateTo) params.set('dateTo', filters.value.dateTo);
 
-    const { data } = await useFetch<ReportsResponse>(
+    const { data } = await useFetch<ApiResponse>(
       `${config.public.apiUrl}/admin/reports?${params.toString()}`,
       {
         headers: {
@@ -361,11 +367,11 @@ const loadReports = async (page: number = 1) => {
       }
     );
 
-    if (data.value) {
-      reports.value = data.value.data;
-      pagination.value.page = data.value.meta.page;
-      pagination.value.total = data.value.meta.total;
-      pagination.value.totalPages = data.value.meta.totalPages;
+    if (data.value?.success && data.value.data) {
+      reports.value = data.value.data.data;
+      pagination.value.page = data.value.data.meta.page;
+      pagination.value.total = data.value.data.meta.total;
+      pagination.value.totalPages = data.value.data.meta.totalPages;
     }
   } catch (error) {
     console.error('Failed to load reports:', error);

@@ -19,7 +19,7 @@
 
       <!-- Stats Overview -->
       <div class="stats-overview">
-        <div class="stat-card">
+        <NuxtLink to="/admin/users" class="stat-card">
           <div class="stat-icon blue">
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
               <path d="M16 20C20.4183 20 24 16.4183 24 12C24 7.58172 20.4183 4 16 4C11.5817 4 8 7.58172 8 12C8 16.4183 11.5817 20 16 20Z" stroke="currentColor" stroke-width="1.5"/>
@@ -30,8 +30,9 @@
             <div class="stat-value">{{ stats.totalUsers }}</div>
             <div class="stat-label">Всего пользователей</div>
           </div>
-        </div>
-        <div class="stat-card">
+        </NuxtLink>
+
+        <NuxtLink to="/admin/projects" class="stat-card">
           <div class="stat-icon green">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
               <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.2"/>
@@ -42,8 +43,9 @@
             <div class="stat-value">{{ stats.totalProjects }}</div>
             <div class="stat-label">Всего проектов</div>
           </div>
-        </div>
-        <div class="stat-card">
+        </NuxtLink>
+
+        <NuxtLink to="/admin/leads" class="stat-card">
           <div class="stat-icon purple">
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
               <path d="M5 9L16 16L27 9M5 23V9L16 16L27 9V23M5 23H27M5 23L12 16M27 23L20 16" stroke="currentColor" stroke-width="1.5"/>
@@ -53,8 +55,9 @@
             <div class="stat-value">{{ stats.activeLeads }}</div>
             <div class="stat-label">Активных заявок</div>
           </div>
-        </div>
-        <div class="stat-card">
+        </NuxtLink>
+
+        <NuxtLink to="/admin/chat" class="stat-card">
           <div class="stat-icon orange">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
               <path d="M21 15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7L3 21V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15Z" stroke="currentColor" stroke-width="1.2"/>
@@ -64,7 +67,7 @@
             <div class="stat-value">{{ stats.totalMessages }}</div>
             <div class="stat-label">Всего сообщений</div>
           </div>
-        </div>
+        </NuxtLink>
       </div>
 
       <!-- Management Cards Grid -->
@@ -120,22 +123,24 @@
           </div>
         </NuxtLink>
 
-        <!-- Settings Card -->
-        <!-- <NuxtLink to="/admin/settings" class="admin-card">
+        <!-- Chat Management Card -->
+        <NuxtLink to="/admin/chat" class="admin-card">
           <div class="card-icon-wrapper orange-bg">
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-              <circle cx="16" cy="16" r="4" stroke="currentColor" stroke-width="1.5"/>
-              <path d="M23.5 9.5L25 11M6.5 21L8 22.5M25 21L23.5 22.5M8 9.5L6.5 11M9 4L11 5.5M21 5.5L23 4M11 26.5L9 28M23 28L21 26.5M4 11H5.5M26.5 11H28M4 21H5.5M26.5 21H28M11 4L9 2.5M21 2.5L23 4M9 29.5L11 28M23 28L21 26.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M24 4H8C5.8 4 4 5.8 4 8V20C4 22.2 5.8 24 8 24H24C26.2 24 28 22.2 28 20V8C28 5.8 26.2 4 24 4Z" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M10 12H22M10 16H18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M8 24L4 28" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M24 24L28 28" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
           </div>
           <div class="card-content">
-            <h2 class="card-title">Настройки</h2>
-            <p class="card-description">Конфигурация системы, уведомления и общие настройки</p>
+            <h2 class="card-title">Чат</h2>
+            <p class="card-description">Просмотр сообщений и управление чатами с пользователями</p>
             <div class="card-footer-admin">
-              <span class="card-link">Настроить →</span>
+              <span class="card-link">Перейти →</span>
             </div>
           </div>
-        </NuxtLink> -->
+        </NuxtLink>
       </div>
 
       <!-- Recent Activity Section -->

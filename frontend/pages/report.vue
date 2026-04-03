@@ -177,7 +177,7 @@ interface Report {
   id: string;
   date: string;
   object: string;
-  hours: number;
+  hours: number | string;
   userId: string;
   createdAt: string;
   updatedAt: string;
@@ -191,6 +191,12 @@ interface ReportsResponse {
     limit: number;
     totalPages: number;
   };
+}
+
+interface ApiResponse {
+  success: boolean;
+  data: ReportsResponse;
+  message: string;
 }
 
 const reports = ref<Report[]>([]);
@@ -218,7 +224,7 @@ const todayDate = computed(() => new Date().toISOString().split('T')[0]);
 const loadReports = async (page: number = 1) => {
   isLoading.value = true;
   try {
-    const { data } = await useFetch<ReportsResponse>(
+    const { data } = await useFetch<ApiResponse>(
       `${config.public.apiUrl}/reports?page=${page}&limit=${pagination.value.limit}`,
       {
         headers: {
@@ -227,11 +233,11 @@ const loadReports = async (page: number = 1) => {
       }
     );
 
-    if (data.value) {
-      reports.value = data.value.data;
-      pagination.value.page = data.value.meta.page;
-      pagination.value.total = data.value.meta.total;
-      pagination.value.totalPages = data.value.meta.totalPages;
+    if (data.value?.success && data.value.data) {
+      reports.value = data.value.data.data;
+      pagination.value.page = data.value.data.meta.page;
+      pagination.value.total = data.value.data.meta.total;
+      pagination.value.totalPages = data.value.data.meta.totalPages;
     }
   } catch (error) {
     console.error('Failed to load reports:', error);
