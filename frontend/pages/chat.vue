@@ -177,7 +177,7 @@
 
                 <!-- File Attachment -->
                 <div v-if="message.fileUrl" class="message-file">
-                  <a :href="getFullUrl(message.fileUrl)" target="_blank" class="file-link">
+                  <!-- <a :href="getFullUrl(message.fileUrl)" target="_blank" class="file-link">
                     <div class="file-icon" :class="getFileIconClass(message.fileType)">
                       {{ getFileIcon(message.fileType) }}
                     </div>
@@ -188,10 +188,17 @@
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                       <path d="M8 2V10M8 10L10 8M8 10L6 8M3 13H13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
                     </svg>
-                  </a>
-                  <img
+                  </a> -->
+                  <!-- <img
                     v-if="message.fileType?.includes('image')"
                     :src="getFullUrl(message.fileUrl)"
+                    alt="Attachment"
+                    class="file-image"
+                    @click="openImagePreview(getFullUrl(message.fileUrl))"
+                  /> -->
+                  <img
+                    v-if="message.fileType?.includes('image')"
+                    :src="message.fileUrl"
                     alt="Attachment"
                     class="file-image"
                     @click="openImagePreview(getFullUrl(message.fileUrl))"
@@ -1046,7 +1053,7 @@ useHead({
   background: #f3f4f6;
   border-radius: 12px;
   margin-bottom: 8px;
-  border-left: 2px solid #3b82f6;
+  border-left: 5px solid #3b82f6;
 }
 
 .message.own-message .message-reply {
