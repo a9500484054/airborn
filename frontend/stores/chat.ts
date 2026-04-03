@@ -302,8 +302,13 @@ export const useChatStore = defineStore('chat', {
     async deleteMessage(messageId: string) {
       try {
         const config = useRuntimeConfig();
+        const authStore = useAuthStore();
+        
         await useFetch(`${config.public.apiUrl}/messages/${messageId}`, {
           method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${authStore.accessToken}`,
+          },
         });
 
         // Remove from local state

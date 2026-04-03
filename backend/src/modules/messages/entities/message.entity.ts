@@ -34,9 +34,9 @@ export class Message {
   fileType: string;
 
   @Column({ type: 'uuid', nullable: true })
-  replyToId: string;
+  replyToId: string | null;
 
-  @ManyToOne(() => Message, { nullable: true })
+  @ManyToOne(() => Message, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'replyToId' })
   replyTo: Message;
 

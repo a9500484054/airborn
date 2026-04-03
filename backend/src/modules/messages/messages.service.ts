@@ -11,12 +11,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like, ILike } from 'typeorm';
 import { Message } from './entities/message.entity';
 import { SendMessageDto } from './dto/message.dto';
+import { UserRole } from '../users/entities/user.entity';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class MessagesService {
   constructor(
     @InjectRepository(Message)
     private messagesRepository: Repository<Message>,
+    private usersService: UsersService,
   ) {}
 
   /**
@@ -105,14 +108,27 @@ export class MessagesService {
   }
 
   /**
-   * Delete message (only own messages)
+   * Delete message (own messages or admin can delete any)
    */
   async remove(id: string, userId: string): Promise<void> {
     const message = await this.findOne(id);
 
-    if (message.userId !== userId) {
+    // Check if user is owner or admin
+    const user = await this.usersService.findByIdWithSensitive(userId);
+    const isOwner = message.userId === userId;
+    const isAdmin = user.role === UserRole.ADMIN;
+
+    if (!isOwner && !isAdmin) {
       throw new ForbiddenException('You can only delete your own messages');
     }
+
+    // Remove replyTo references from messages that reference this message
+    await this.messagesRepository
+      .createQueryBuilder()
+      .update(Message)
+      .set({ replyToId: null })
+      .where('replyToId = :id', { id })
+      .execute();
 
     await this.messagesRepository.remove(message);
   }

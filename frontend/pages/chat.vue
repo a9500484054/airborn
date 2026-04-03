@@ -1421,6 +1421,7 @@ useHead({
   cursor: pointer;
   transition: all 0.2s ease;
   color: white;
+  transform: rotate(180deg);
 }
 
 .send-btn:hover:not(:disabled) {
