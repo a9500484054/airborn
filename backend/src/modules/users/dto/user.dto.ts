@@ -39,6 +39,30 @@ export class CreateUserDto {
   phone?: string;
 }
 
+export class InviteUserDto {
+  @ApiProperty({ example: 'user@example.com', description: 'User email' })
+  @IsNotEmpty({ message: 'Email is required' })
+  @IsEmail({}, { message: 'Invalid email format' })
+  email: string;
+
+  @ApiProperty({ example: 'John Doe', description: 'User full name' })
+  @IsNotEmpty({ message: 'Name is required' })
+  @IsString()
+  @MinLength(2, { message: 'Name must be at least 2 characters' })
+  @MaxLength(100, { message: 'Name must not exceed 100 characters' })
+  name: string;
+
+  @ApiPropertyOptional({ example: '+79991234567', description: 'User phone number' })
+  @IsOptional()
+  @IsPhoneNumber('RU', { message: 'Invalid Russian phone number format' })
+  phone?: string;
+
+  @ApiProperty({ enum: UserRole, description: 'User role', default: UserRole.USER })
+  @IsOptional()
+  @IsEnum(UserRole)
+  role?: UserRole;
+}
+
 export class UpdateUserDto {
   @ApiPropertyOptional({ example: 'John Doe', description: 'User full name' })
   @IsOptional()

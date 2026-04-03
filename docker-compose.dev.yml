@@ -36,6 +36,14 @@ services:
       REFRESH_EXPIRATION: 7d
       CORS_ORIGIN: http://localhost:3001
       UPLOAD_PATH: /app/uploads
+      # Email configuration (development)
+      SMTP_HOST: smtp.yandex.ru
+      SMTP_PORT: 465
+      SMTP_USER: ayedaru@yandex.ru
+      SMTP_PASS: czqegsquukdyldvc
+      EMAIL_FROM: no-reply@airborn.online
+      REQUIRE_EMAIL_VERIFICATION: "true"
+      FRONTEND_URL: http://localhost:3001
     volumes:
       - ./backend:/app
       - ./backend/uploads:/app/uploads

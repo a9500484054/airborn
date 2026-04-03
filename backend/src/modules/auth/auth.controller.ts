@@ -19,10 +19,13 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { Public } from '../../common/decorators/public.decorator';
+import { Roles } from '../../common/decorators/roles.decorator';
 import { CurrentUser, AuthenticatedUser } from '../../common/decorators/current-user.decorator';
+import { UserRole } from '../users/entities/user.entity';
 import { AuthService } from './auth.service';
 import { RegisterDto, LoginDto } from './dto/auth.dto';
 import { ForgotPasswordDto, ResetPasswordDto } from './dto/password-reset.dto';
+import { InviteUserDto } from '../users/dto/user.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -113,5 +116,20 @@ export class AuthController {
   @ApiResponse({ status: 400, description: 'Invalid or expired token' })
   async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
     return this.authService.resetPassword(resetPasswordDto);
+  }
+
+  @Post('admin/create-user')
+  @Roles(UserRole.ADMIN)
+  @HttpCode(HttpStatus.CREATED)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Create a new user (admin only) - sends invitation email with temporary password' })
+  @ApiResponse({ status: 201, description: 'User created and invitation email sent' })
+  @ApiResponse({ status: 400, description: 'Bad request (invalid data)' })
+  @ApiResponse({ status: 409, description: 'Email already registered' })
+  async createUserByAdmin(
+    @Body() inviteUserDto: InviteUserDto,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.authService.inviteUser(inviteUserDto, user.id);
   }
 }

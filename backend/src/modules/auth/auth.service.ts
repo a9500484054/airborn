@@ -12,9 +12,10 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../users/users.service';
-import { User } from '../users/entities/user.entity';
+import { User, UserRole } from '../users/entities/user.entity';
 import { RegisterDto, LoginDto } from './dto/auth.dto';
 import { ForgotPasswordDto, ResetPasswordDto } from './dto/password-reset.dto';
+import { InviteUserDto } from '../users/dto/user.dto';
 import { EmailService } from '../email/email.service';
 
 @Injectable()
@@ -364,5 +365,77 @@ export class AuthService {
       success: true, 
       message: 'Password has been reset successfully. You can now log in with your new password.' 
     };
+  }
+
+  /**
+   * Invite user by admin (create user with temporary password)
+   */
+  async inviteUser(inviteUserDto: InviteUserDto, invitedByUserId: string) {
+    // Check if email already exists
+    const existingUser = await this.usersService.findByEmail(inviteUserDto.email);
+    if (existingUser) {
+      throw new ConflictException('Email already registered');
+    }
+
+    // Generate temporary password
+    const temporaryPassword = this.generateTemporaryPassword();
+
+    // Create user DTO with generated password
+    const createUserDto = {
+      email: inviteUserDto.email,
+      name: inviteUserDto.name,
+      phone: inviteUserDto.phone,
+      password: temporaryPassword,
+      role: inviteUserDto.role || UserRole.USER,
+    };
+
+    // Create user (not verified yet)
+    const user = await this.usersService.createUnverified(createUserDto);
+
+    // Generate verification token
+    const verificationToken = this.generateVerificationToken();
+    const tokenExpires = new Date();
+    tokenExpires.setHours(tokenExpires.getHours() + 24); // 24 hours
+
+    await this.usersService.setVerificationToken(user.id, verificationToken, tokenExpires);
+
+    // Send invitation email with temporary password
+    try {
+      await this.emailService.sendInvitationEmail(
+        user.email,
+        user.name,
+        verificationToken,
+        temporaryPassword,
+      );
+    } catch (error) {
+      console.error('Failed to send invitation email:', error);
+      // Don't fail user creation, just log the error
+    }
+
+    return {
+      success: true,
+      message: 'User invited successfully! Invitation email has been sent.',
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        phone: user.phone,
+        role: user.role,
+        isEmailVerified: user.isEmailVerified,
+        createdAt: user.createdAt,
+      },
+    };
+  }
+
+  /**
+   * Generate temporary password (8 characters with letters and numbers)
+   */
+  private generateTemporaryPassword(): string {
+    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let password = '';
+    for (let i = 0; i < 8; i++) {
+      password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return password;
   }
 }

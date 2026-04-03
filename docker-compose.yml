@@ -44,6 +44,14 @@ services:
       MAX_FILE_SIZE: 20971520
       THROTTLE_TTL: 60
       THROTTLE_LIMIT: 100
+      # Email configuration
+      SMTP_HOST: smtp.yandex.ru
+      SMTP_PORT: 465
+      SMTP_USER: ayedaru@yandex.ru
+      SMTP_PASS: czqegsquukdyldvc
+      EMAIL_FROM: ayedaru@yandex.ru
+      REQUIRE_EMAIL_VERIFICATION: "true"
+      FRONTEND_URL: http://localhost:3001
     volumes:
       - backend_uploads:/app/uploads
     ports:
