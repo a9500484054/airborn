@@ -26,7 +26,7 @@ export default defineNuxtConfig({
         { name: 'description', content: 'AirBorn - Professional project development and innovative solutions' },
       ],
       link: [
-        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' },
       ],
     },
   },
