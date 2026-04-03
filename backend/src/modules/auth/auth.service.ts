@@ -111,7 +111,7 @@ export class AuthService {
 
     // Check if email verification is required
     const requireVerification = this.configService.get<string>('REQUIRE_EMAIL_VERIFICATION') === 'true';
-    
+
     if (requireVerification && !user.isEmailVerified) {
       throw new UnauthorizedException('Please verify your email before logging in. Check your inbox for the verification link.');
     }
@@ -133,11 +133,12 @@ export class AuthService {
         name: user.name,
         role: user.role,
         avatar: user.avatar,
+        phone: user.phone,
+        createdAt: user.createdAt,
         isEmailVerified: user.isEmailVerified,
       },
     };
   }
-
   /**
    * Refresh access token
    */

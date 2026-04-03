@@ -12,6 +12,7 @@ export interface User {
   role: 'user' | 'admin';
   avatar?: string;
   phone?: string;
+  createdAt?: string;
 }
 
 export interface AuthState {
@@ -37,15 +38,15 @@ export const useAuthStore = defineStore('auth', {
     isAdmin(): boolean {
       return this.user?.role === 'admin';
     },
-    
+
     isUser(): boolean {
       return this.user?.role === 'user';
     },
-    
+
     userName(): string {
       return this.user?.name || 'Guest';
     },
-    
+
     userInitials(): string {
       if (!this.user?.name) return 'G';
       return this.user.name
