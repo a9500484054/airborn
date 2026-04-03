@@ -73,7 +73,7 @@
                 </div>
               </div>
             </div>
-            
+
             <div class="info-section">
               <h4>Участники</h4>
               <div class="participants-list">
@@ -108,7 +108,7 @@
             <div class="date-separator">
               <span class="date-text">{{ formatDateSeparator(date) }}</span>
             </div>
-            
+
             <div
               v-for="message in group"
               :key="message.id"
@@ -145,7 +145,7 @@
                     <button
                       v-if="message.user.id === authStore.user?.id || authStore.user?.role === 'admin'"
                       class="menu-item delete-item"
-                      @click="deleteMessage(message.id); openMenuId = null"
+                      @click="confirmDelete(message.id)"
                     >
                       <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                         <path d="M2 4H14M6 4V2.66667C6 2.31304 6.14048 1.97391 6.39052 1.72386C6.64057 1.47381 6.97971 1.33333 7.33333 1.33333H8.66667C9.02029 1.33333 9.35943 1.47381 9.60948 1.72386C9.85952 1.97391 10 2.31304 10 2.66667V4M12.6667 4V12.6667C12.6667 13.0203 12.5262 13.3594 12.2761 13.6095C12.0261 13.8595 11.6869 14 11.3333 14H4.66667C4.31304 14 3.97391 13.8595 3.72386 13.6095C3.47381 13.3594 3.33333 13.0203 3.33333 12.6667V4H12.6667Z" stroke="currentColor" stroke-width="1.2"/>
@@ -258,7 +258,7 @@
               @keydown.enter.exact.prevent="sendMessage"
               rows="1"
             ></textarea>
-            
+
             <label class="file-upload-btn" title="Прикрепить файл">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                 <path d="M10 4V16M4 10H16" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
@@ -271,7 +271,7 @@
                 style="display: none"
               />
             </label>
-            
+
             <button
               type="submit"
               class="send-btn"
@@ -319,6 +319,26 @@
           </div>
         </div>
       </transition>
+
+      <!-- Delete Confirmation Modal -->
+      <transition name="modal">
+        <div v-if="showDeleteModal" class="delete-modal-overlay" @click="cancelDelete">
+          <div class="delete-modal" @click.stop>
+            <div class="delete-modal-icon">
+              <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                <circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="2"/>
+                <path d="M16 16L32 32M32 16L16 32" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h3 class="delete-modal-title">Удалить сообщение?</h3>
+            <p class="delete-modal-text">Это действие нельзя отменить. Сообщение будет удалено навсегда.</p>
+            <div class="delete-modal-actions">
+              <button class="btn-cancel" @click="cancelDelete">Отмена</button>
+              <button class="btn-delete" @click="executeDelete">Удалить</button>
+            </div>
+          </div>
+        </div>
+      </transition>
     </div>
   </NuxtLayout>
 </template>
@@ -337,6 +357,10 @@ const fileInput = ref<HTMLInputElement | null>(null);
 const showInfo = ref(false);
 const previewImage = ref<string | null>(null);
 const openMenuId = ref<string | null>(null);
+
+// Delete confirmation state
+const showDeleteModal = ref(false);
+const messageToDelete = ref<string | null>(null);
 
 const newMessage = ref('');
 const replyTo = ref<any>(null);
@@ -470,9 +494,23 @@ const setReply = (message: any) => {
   replyTo.value = message;
 };
 
-const deleteMessage = async (messageId: string) => {
-  if (!confirm('Удалить это сообщение?')) return;
-  await chatStore.deleteMessage(messageId);
+// Custom delete confirmation
+const confirmDelete = (messageId: string) => {
+  messageToDelete.value = messageId;
+  showDeleteModal.value = true;
+  openMenuId.value = null; // Close menu
+};
+
+const cancelDelete = () => {
+  showDeleteModal.value = false;
+  messageToDelete.value = null;
+};
+
+const executeDelete = async () => {
+  if (messageToDelete.value) {
+    await chatStore.deleteMessage(messageToDelete.value);
+    cancelDelete();
+  }
 };
 
 const toggleMessageMenu = (messageId: string) => {
@@ -491,7 +529,7 @@ const handleFileSelect = (event: Event) => {
   const target = event.target as HTMLInputElement;
   if (target.files && target.files[0]) {
     const file = target.files[0];
-    
+
     if (file.size > 20 * 1024 * 1024) {
       alert('Размер файла не должен превышать 20MB');
       return;
@@ -525,7 +563,7 @@ const formatDateSeparator = (dateString: string) => {
   const today = new Date();
   const yesterday = new Date(today);
   yesterday.setDate(yesterday.getDate() - 1);
-  
+
   if (date.toDateString() === today.toDateString()) {
     return 'Сегодня';
   } else if (date.toDateString() === yesterday.toDateString()) {
@@ -1639,6 +1677,101 @@ useHead({
   color: white;
 }
 
+/* Delete Confirmation Modal */
+.delete-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+  backdrop-filter: blur(4px);
+}
+
+.delete-modal {
+  background: white;
+  border-radius: 20px;
+  padding: 32px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.delete-modal-icon {
+  color: #ef4444;
+  margin-bottom: 20px;
+  opacity: 0.9;
+}
+
+.delete-modal-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1f36;
+  margin: 0 0 12px 0;
+  letter-spacing: -0.02em;
+}
+
+.delete-modal-text {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.5;
+  margin: 0 0 24px 0;
+}
+
+.delete-modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.btn-cancel {
+  padding: 10px 24px;
+  border-radius: 12px;
+  background: #f3f4f6;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-cancel:hover {
+  background: #e5e7eb;
+}
+
+.btn-delete {
+  padding: 10px 24px;
+  border-radius: 12px;
+  background: #ef4444;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-delete:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
 /* Animations */
 .slide-enter-active,
 .slide-leave-active {
@@ -1724,6 +1857,15 @@ useHead({
   
   .message-input-container {
     padding: 12px 16px 16px;
+  }
+  
+  .delete-modal {
+    padding: 24px;
+    margin: 0 16px;
+  }
+  
+  .delete-modal-actions {
+    flex-direction: column;
   }
 }
 
