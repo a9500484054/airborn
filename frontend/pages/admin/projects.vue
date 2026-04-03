@@ -212,13 +212,49 @@
                   @change="handleImagesSelect"
                   style="display: none"
                 />
-                
+
                 <div v-if="formData.images.length" class="image-preview-list">
                   <div v-for="(img, i) in formData.images" :key="i" class="image-preview">
                     <img :src="img" :alt="`Preview ${i + 1}`" />
                     <button type="button" class="remove-image" @click="removeImage(i)">
                       <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                         <path d="M1 1L11 11M11 1L1 11" stroke="currentColor" stroke-width="1.2"/>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Файлы проекта</label>
+                <div class="file-upload-area" @click="$refs.fileInput.click()">
+                  <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                    <path d="M16 6V26M6 16H26" stroke="currentColor" stroke-width="1.5"/>
+                  </svg>
+                  <p>Нажмите для загрузки файлов</p>
+                  <span class="file-hint">Поддерживаются PDF, DOC, DOCX, XLS, XLSX, ZIP (макс. 20MB)</span>
+                </div>
+                <input
+                  ref="fileInput"
+                  type="file"
+                  multiple
+                  accept=".pdf,.doc,.docx,.xls,.xlsx,.zip,.rar,.txt"
+                  @change="handleFilesSelect"
+                  style="display: none"
+                />
+
+                <div v-if="formData.files.length" class="file-preview-list">
+                  <div v-for="(file, i) in formData.files" :key="i" class="file-preview-item">
+                    <div class="file-icon" :class="getFileIconClass(file.name)">
+                      {{ getFileIcon(file.name) }}
+                    </div>
+                    <div class="file-info">
+                      <span class="file-name">{{ file.name }}</span>
+                      <span class="file-size">{{ formatFileSize(file.size) }}</span>
+                    </div>
+                    <button type="button" class="remove-file" @click="removeFile(i)">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" stroke-width="1.2"/>
                       </svg>
                     </button>
                   </div>
@@ -268,6 +304,7 @@ const editingProject = ref<any>(null);
 const isSubmitting = ref(false);
 const submitError = ref('');
 const imageInput = ref<HTMLInputElement | null>(null);
+const fileInput = ref<HTMLInputElement | null>(null);
 
 const formData = ref({
   title: '',
@@ -358,6 +395,76 @@ const handleImagesSelect = async (event: Event) => {
 
 const removeImage = (index: number) => {
   formData.value.images.splice(index, 1);
+};
+
+const handleFilesSelect = async (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  if (!target.files || target.files.length === 0) return;
+
+  const files = Array.from(target.files);
+
+  for (const file of files) {
+    if (file.size > 20 * 1024 * 1024) {
+      alert(`Файл ${file.name} превышает 20MB`);
+      continue;
+    }
+
+    const formDataUpload = new FormData();
+    formDataUpload.append('files', file);
+
+    try {
+      const { data } = await useFetch(`${config.public.apiUrl}/files/upload`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${authStore.accessToken}`,
+        },
+        body: formDataUpload,
+      });
+
+      if (data.value) {
+        const response = data.value as any;
+        const uploadedFile = response.data.files[0];
+        formData.value.files.push({
+          name: uploadedFile.originalName || file.name,
+          url: uploadedFile.url,
+          size: uploadedFile.size || file.size,
+          mimeType: uploadedFile.mimeType,
+        });
+      }
+    } catch (error) {
+      console.error('File upload failed:', error);
+    }
+  }
+};
+
+const removeFile = (index: number) => {
+  formData.value.files.splice(index, 1);
+};
+
+const getFileIcon = (fileName: string) => {
+  const ext = fileName.split('.').pop()?.toLowerCase();
+  if (ext === 'pdf') return '📄';
+  if (['doc', 'docx'].includes(ext || '')) return '📝';
+  if (['xls', 'xlsx'].includes(ext || '')) return '📊';
+  if (['zip', 'rar'].includes(ext || '')) return '📦';
+  return '📎';
+};
+
+const getFileIconClass = (fileName: string) => {
+  const ext = fileName.split('.').pop()?.toLowerCase();
+  if (ext === 'pdf') return 'file-pdf';
+  if (['doc', 'docx'].includes(ext || '')) return 'file-word';
+  if (['xls', 'xlsx'].includes(ext || '')) return 'file-excel';
+  if (['zip', 'rar'].includes(ext || '')) return 'file-archive';
+  return 'file-default';
+};
+
+const formatFileSize = (bytes: number) => {
+  if (bytes === 0) return '0 Б';
+  const k = 1024;
+  const sizes = ['Б', 'КБ', 'МБ', 'ГБ'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
 };
 
 const submitProject = async () => {
@@ -978,6 +1085,107 @@ useHead({
 
 .remove-image:hover {
   background: #ef4444;
+}
+
+/* File Preview List */
+.file-preview-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.file-preview-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.file-preview-item:hover {
+  background: #f1f5f9;
+}
+
+.file-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.file-icon.file-pdf {
+  background: #fef2f2;
+  color: #ef4444;
+}
+
+.file-icon.file-word {
+  background: #eff6ff;
+  color: #3b82f6;
+}
+
+.file-icon.file-excel {
+  background: #f0fdf4;
+  color: #22c55e;
+}
+
+.file-icon.file-archive {
+  background: #fefce8;
+  color: #eab308;
+}
+
+.file-icon.file-default {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.file-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.file-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-size {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.remove-file {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.remove-file:hover {
+  background: #fef2f2;
+  color: #ef4444;
 }
 
 /* Form Actions */

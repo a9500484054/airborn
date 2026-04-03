@@ -10,7 +10,6 @@ import {
   IsNumber,
   MaxLength,
   ValidateNested,
-  IsUrl,
   Min,
   Max,
 } from 'class-validator';
@@ -18,8 +17,8 @@ import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class ProjectFileDto {
-  @ApiProperty({ description: 'File URL' })
-  @IsUrl()
+  @ApiProperty({ description: 'File URL or path' })
+  @IsString()
   url: string;
 
   @ApiProperty({ description: 'File name' })
