@@ -177,7 +177,21 @@
 
                 <!-- File Attachment -->
                 <div v-if="message.fileUrl" class="message-file">
-                  <!-- <a :href="getFullUrl(message.fileUrl)" target="_blank" class="file-link">
+                  <!-- Image preview (no download link) -->
+                  <img
+                    v-if="message.fileType?.includes('image')"
+                    :src="message.fileUrl"
+                    alt="Attachment"
+                    class="file-image"
+                    @click="openImagePreview(getFullUrl(message.fileUrl))"
+                  />
+                  <!-- Download link for non-image files -->
+                  <a
+                    v-else
+                    :href="message.fileUrl"
+                    target="_blank"
+                    class="file-link"
+                  >
                     <div class="file-icon" :class="getFileIconClass(message.fileType)">
                       {{ getFileIcon(message.fileType) }}
                     </div>
@@ -188,21 +202,7 @@
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                       <path d="M8 2V10M8 10L10 8M8 10L6 8M3 13H13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
                     </svg>
-                  </a> -->
-                  <!-- <img
-                    v-if="message.fileType?.includes('image')"
-                    :src="getFullUrl(message.fileUrl)"
-                    alt="Attachment"
-                    class="file-image"
-                    @click="openImagePreview(getFullUrl(message.fileUrl))"
-                  /> -->
-                  <img
-                    v-if="message.fileType?.includes('image')"
-                    :src="message.fileUrl"
-                    alt="Attachment"
-                    class="file-image"
-                    @click="openImagePreview(getFullUrl(message.fileUrl))"
-                  />
+                  </a>
                 </div>
               </div>
             </div>
@@ -1115,68 +1115,145 @@ useHead({
 
 /* File Attachment */
 .message-file {
-  margin-top: 8px;
+  margin-top: 10px;
+  max-width: 260px;
 }
 
 .file-link {
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  padding: 8px 12px;
-  background: #f3f4f6;
-  border-radius: 12px;
+  padding: 10px 14px;
+  background: #f1f5f9;
+  border-radius: 14px;
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .message.own-message .file-link {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
 .file-link:hover {
-  background: #e5e7eb;
-  transform: translateX(2px);
+  background: #e9eef3;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
 .message.own-message .file-link:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.16);
+  transform: translateY(-1px);
 }
 
+/* Иконка файла */
 .file-icon {
-  font-size: 20px;
+  font-size: 24px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 10px;
+  transition: all 0.2s;
 }
 
-.file-icon.file-pdf { color: #ef4444; }
-.file-icon.file-image { color: #a855f7; }
-.file-icon.file-word { color: #3b82f6; }
-.file-icon.file-excel { color: #10b981; }
+.message.own-message .file-icon {
+  background: rgba(255, 255, 255, 0.08);
+}
 
+.file-link:hover .file-icon {
+  transform: scale(1.02);
+}
+
+.file-icon.file-pdf {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+.file-icon.file-image {
+  color: #a855f7;
+  background: rgba(168, 85, 247, 0.1);
+}
+.file-icon.file-word {
+  color: #3b82f6;
+  background: rgba(59, 130, 246, 0.1);
+}
+.file-icon.file-excel {
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.1);
+}
+
+/* Информация о файле */
 .file-info {
   flex: 1;
+  min-width: 0;
 }
 
 .file-name {
   display: block;
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #1f2937;
+  word-break: break-word;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.message.own-message .file-name {
+  color: #f1f5f9;
 }
 
 .file-size {
+  display: block;
   font-size: 10px;
-  opacity: 0.7;
+  font-weight: 500;
+  opacity: 0.55;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  margin-top: 2px;
 }
 
+/* Стрелка скачивания */
+.file-link svg {
+  flex-shrink: 0;
+  opacity: 0.5;
+  transition: all 0.2s;
+}
+
+.file-link:hover svg {
+  opacity: 1;
+  transform: translateY(2px);
+}
+
+.message.own-message .file-link svg {
+  stroke: #e2e8f0;
+  opacity: 0.6;
+}
+
+/* Изображения (превью) */
 .file-image {
-  max-width: 280px;
+  max-width: 260px;
   max-height: 180px;
-  border-radius: 12px;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 16px;
   margin-top: 8px;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .file-image:hover {
-  transform: scale(1.02);
+  transform: scale(1.01);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
 /* Message Actions (three dots menu) */
