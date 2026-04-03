@@ -1048,42 +1048,63 @@ useHead({
 /* Reply Preview */
 .message-reply {
   display: flex;
-  gap: 8px;
-  padding: 8px 12px;
-  background: #f3f4f6;
-  border-radius: 12px;
-  margin-bottom: 8px;
-  border-left: 5px solid #3b82f6;
+  gap: 10px;
+  padding: 10px 14px;
+  background: #f8f9fa;
+  border-radius: 16px;
+  margin-bottom: 10px;
+  border-left: 4px solid #3b82f6;
+  transition: all 0.2s ease;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
 }
 
+/* Улучшенная адаптация для своих сообщений (тёмная тема) */
 .message.own-message .message-reply {
-  background: rgba(255, 255, 255, 0.12);
-  border-left-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.08);
+  border-left-color: #60a5fa;
+  backdrop-filter: blur(2px);
 }
 
 .reply-icon {
-  font-size: 12px;
+  font-size: 14px;
+  opacity: 0.7;
+  flex-shrink: 0;
+  margin-top: 2px;
 }
 
 .reply-content {
   flex: 1;
+  min-width: 0; /* для корректного обрезания текста */
 }
 
 .reply-author {
   font-weight: 600;
-  font-size: 11px;
+  font-size: 12px;
   display: block;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
+  color: #1f2937;
+  letter-spacing: -0.2px;
+}
+
+.message.own-message .reply-author {
+  color: #e5e7eb;
 }
 
 .reply-text {
-  font-size: 11px;
-  opacity: 0.7;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #4b5563;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  word-break: break-word;
 }
+
+.message.own-message .reply-text {
+  color: #ffffff;
+}
+
 
 /* Message Text */
 .message-text {
