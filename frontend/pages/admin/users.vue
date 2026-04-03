@@ -50,7 +50,7 @@
             @input="handleSearch"
           />
         </div>
-        <div class="filter-group">
+        <!-- <div class="filter-group">
           <select v-model="roleFilter" class="filter-select" @change="applyFilters">
             <option value="">Все роли</option>
             <option value="user">Пользователи</option>
@@ -61,6 +61,92 @@
             <option value="active">Активные</option>
             <option value="blocked">Заблокированные</option>
           </select>
+        </div> -->
+        <!-- Замените существующий filter-group на этот код -->
+        <div class="filter-group">
+          <!-- Кастомный Select для ролей -->
+          <div class="custom-select" :class="{ open: isRoleDropdownOpen }">
+            <button class="select-trigger" @click="toggleRoleDropdown" type="button">
+              <span class="select-value">{{ getRoleLabel(roleFilter) }}</span>
+              <svg class="select-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </button>
+            <div class="select-dropdown">
+              <div 
+                class="select-option" 
+                :class="{ selected: roleFilter === '' }"
+                @click="selectRole('')"
+              >
+                <span>Все роли</span>
+                <svg v-if="roleFilter === ''" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M3 8L7 12L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div 
+                class="select-option" 
+                :class="{ selected: roleFilter === 'user' }"
+                @click="selectRole('user')"
+              >
+                <span>Пользователи</span>
+                <svg v-if="roleFilter === 'user'" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M3 8L7 12L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div 
+                class="select-option" 
+                :class="{ selected: roleFilter === 'admin' }"
+                @click="selectRole('admin')"
+              >
+                <span>Администраторы</span>
+                <svg v-if="roleFilter === 'admin'" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M3 8L7 12L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Кастомный Select для статусов -->
+          <div class="custom-select" :class="{ open: isStatusDropdownOpen }">
+            <button class="select-trigger" @click="toggleStatusDropdown" type="button">
+              <span class="select-value">{{ getStatusLabel(statusFilter) }}</span>
+              <svg class="select-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </button>
+            <div class="select-dropdown">
+              <div 
+                class="select-option" 
+                :class="{ selected: statusFilter === '' }"
+                @click="selectStatus('')"
+              >
+                <span>Все статусы</span>
+                <svg v-if="statusFilter === ''" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M3 8L7 12L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div 
+                class="select-option" 
+                :class="{ selected: statusFilter === 'active' }"
+                @click="selectStatus('active')"
+              >
+                <span>🟢 Актив</span>
+                <svg v-if="statusFilter === 'active'" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M3 8L7 12L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div 
+                class="select-option" 
+                :class="{ selected: statusFilter === 'blocked' }"
+                @click="selectStatus('blocked')"
+              >
+                <span>🔴 Блок</span>
+                <svg v-if="statusFilter === 'blocked'" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M3 8L7 12L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -72,102 +158,104 @@
 
       <!-- Users Table -->
       <div v-else-if="filteredUsers.length" class="table-container">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Пользователь</th>
-              <th>Email</th>
-              <th>Телефон</th>
-              <th>Роль</th>
-              <th>Статус</th>
-              <th>Дата регистрации</th>
-              <th>Действия</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="user in filteredUsers" :key="user.id">
-              <td>
-                <div class="user-cell">
-                  <div class="user-avatar" :class="{ 'admin-avatar': user.role === 'admin' }">
-                    {{ getUserInitials(user.name) }}
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Пользователь</th>
+                <th>Email</th>
+                <th>Телефон</th>
+                <th>Роль</th>
+                <th>Статус</th>
+                <th>Дата регистрации</th>
+                <th>Действия</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="user in filteredUsers" :key="user.id">
+                <td>
+                  <div class="user-cell">
+                    <div class="user-avatar" :class="{ 'admin-avatar': user.role === 'admin' }">
+                      {{ getUserInitials(user.name) }}
+                    </div>
+                    <div class="user-info">
+                      <span class="user-name">{{ user.name }}</span>
+                      <span class="user-id">ID: {{ user.id.slice(0, 8) }}</span>
+                    </div>
                   </div>
-                  <div class="user-info">
-                    <span class="user-name">{{ user.name }}</span>
-                    <span class="user-id">ID: {{ user.id.slice(0, 8) }}</span>
+                </td>
+                <td>
+                  <a :href="`mailto:${user.email}`" class="email-link">
+                    {{ user.email }}
+                  </a>
+                </td>
+                <td>
+                  <span v-if="user.phone" class="phone-number">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                      <path d="M10.5 9.5V10.5C10.5 10.7652 10.3946 11.0196 10.2071 11.2071C10.0196 11.3946 9.76522 11.5 9.5 11.5C8.0375 11.3863 6.63264 10.8679 5.4375 10C4.29781 9.15556 3.34444 8.20219 2.5 7.0625C1.63208 5.86736 1.11367 4.4625 1 3C1 2.73478 1.10536 2.48043 1.29289 2.29289C1.48043 2.10536 1.73478 2 2 2H3C3.26522 2 3.51957 2.10536 3.70711 2.29289C3.89464 2.48043 4 2.73478 4 3C4.00008 3.66677 4.09563 4.32941 4.28333 4.96667C4.3455 5.1861 4.33032 5.41958 4.24004 5.62957C4.14976 5.83955 3.98944 6.01216 3.7875 6.11875L2.925 6.5875C3.76443 8.04028 5.18444 9.19597 6.8375 9.7L7.30625 8.8375C7.41284 8.63556 7.58545 8.47524 7.79543 8.38496C8.00542 8.29468 8.2389 8.2795 8.45833 8.34167C9.09559 8.52937 9.75823 8.62492 10.425 8.625C10.6902 8.625 10.9446 8.73036 11.1321 8.91789C11.3196 9.10543 11.425 9.35978 11.425 9.625V10.625Z" stroke="currentColor" stroke-width="0.8"/>
+                    </svg>
+                    {{ user.phone || '—' }}
+                  </span>
+                </td>
+                <td>
+                  <div class="role-selector" :class="{ 'admin-mode': user.role === 'admin' }">
+                    <select
+                      :value="user.role"
+                      class="role-select"
+                      @change="updateUserRole(user.id, ($event.target as HTMLSelectElement).value)"
+                    >
+                      <option value="user">👤 Пользователь</option>
+                      <option value="admin">⚙️ Администратор</option>
+                    </select>
                   </div>
-                </div>
-              </td>
-              <td>
-                <a :href="`mailto:${user.email}`" class="email-link">
-                  {{ user.email }}
-                </a>
-              </td>
-              <td>
-                <span v-if="user.phone" class="phone-number">
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                    <path d="M10.5 9.5V10.5C10.5 10.7652 10.3946 11.0196 10.2071 11.2071C10.0196 11.3946 9.76522 11.5 9.5 11.5C8.0375 11.3863 6.63264 10.8679 5.4375 10C4.29781 9.15556 3.34444 8.20219 2.5 7.0625C1.63208 5.86736 1.11367 4.4625 1 3C1 2.73478 1.10536 2.48043 1.29289 2.29289C1.48043 2.10536 1.73478 2 2 2H3C3.26522 2 3.51957 2.10536 3.70711 2.29289C3.89464 2.48043 4 2.73478 4 3C4.00008 3.66677 4.09563 4.32941 4.28333 4.96667C4.3455 5.1861 4.33032 5.41958 4.24004 5.62957C4.14976 5.83955 3.98944 6.01216 3.7875 6.11875L2.925 6.5875C3.76443 8.04028 5.18444 9.19597 6.8375 9.7L7.30625 8.8375C7.41284 8.63556 7.58545 8.47524 7.79543 8.38496C8.00542 8.29468 8.2389 8.2795 8.45833 8.34167C9.09559 8.52937 9.75823 8.62492 10.425 8.625C10.6902 8.625 10.9446 8.73036 11.1321 8.91789C11.3196 9.10543 11.425 9.35978 11.425 9.625V10.625Z" stroke="currentColor" stroke-width="0.8"/>
-                  </svg>
-                  {{ user.phone || '—' }}
-                </span>
-              </td>
-              <td>
-                <div class="role-selector" :class="{ 'admin-mode': user.role === 'admin' }">
-                  <select
-                    :value="user.role"
-                    class="role-select"
-                    @change="updateUserRole(user.id, ($event.target as HTMLSelectElement).value)"
-                  >
-                    <option value="user">👤 Пользователь</option>
-                    <option value="admin">⚙️ Администратор</option>
-                  </select>
-                </div>
-              </td>
-              <td>
-                <div class="status-badge" :class="user.isBlocked ? 'status-blocked' : 'status-active'">
-                  <span class="status-dot"></span>
-                  <span>{{ user.isBlocked ? 'Заблокирован' : 'Активен' }}</span>
-                </div>
-              </td>
-              <td>
-                <div class="date-cell">
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                    <path d="M10 2H2C1.44772 2 1 2.44772 1 3V10C1 10.5523 1.44772 11 2 11H10C10.5523 11 11 10.5523 11 10V3C11 2.44772 10.5523 2 10 2Z" stroke="currentColor" stroke-width="0.8"/>
-                    <path d="M4 1V3M8 1V3M1 5H11" stroke="currentColor" stroke-width="0.8"/>
-                  </svg>
-                  <span>{{ formatDate(user.createdAt) }}</span>
-                </div>
-              </td>
-              <td>
-                <div class="actions-cell">
-                  <button
-                    class="action-btn"
-                    :class="user.isBlocked ? 'unblock' : 'block'"
-                    @click="toggleBlock(user)"
-                    :title="user.isBlocked ? 'Разблокировать' : 'Заблокировать'"
-                  >
-                    <svg v-if="!user.isBlocked" width="14" height="14" viewBox="0 0 14 14" fill="none">
-                      <rect x="2" y="5" width="10" height="7" rx="1" stroke="currentColor" stroke-width="1.2"/>
-                      <path d="M4 5V3.5C4 2.67157 4.67157 2 5.5 2H8.5C9.32843 2 10 2.67157 10 3.5V5" stroke="currentColor" stroke-width="1.2"/>
+                </td>
+                <td>
+                  <div class="status-badge" :class="user.isBlocked ? 'status-blocked' : 'status-active'">
+                    <span class="status-dot"></span>
+                    <span>{{ user.isBlocked ? 'Заблокирован' : 'Активен' }}</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="date-cell">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                      <path d="M10 2H2C1.44772 2 1 2.44772 1 3V10C1 10.5523 1.44772 11 2 11H10C10.5523 11 11 10.5523 11 10V3C11 2.44772 10.5523 2 10 2Z" stroke="currentColor" stroke-width="0.8"/>
+                      <path d="M4 1V3M8 1V3M1 5H11" stroke="currentColor" stroke-width="0.8"/>
                     </svg>
-                    <svg v-else width="14" height="14" viewBox="0 0 14 14" fill="none">
-                      <path d="M11 2L3 12M3 2L11 12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-                    </svg>
-                    {{ user.isBlocked ? 'Разблок.' : 'Блок.' }}
-                  </button>
-                  <button
-                    class="action-btn delete"
-                    @click="deleteUser(user)"
-                    title="Удалить"
-                  >
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                      <path d="M2 3.5H12M5.5 6.5V9.5M8.5 6.5V9.5M3.5 3.5L4 11.5C4 11.832 4.1317 12.1503 4.36612 12.3847C4.60054 12.6191 4.91884 12.7508 5.25083 12.7508H8.74917C9.08116 12.7508 9.39946 12.6191 9.63388 12.3847C9.8683 12.1503 10 11.832 10 11.5L10.5 3.5M5 3.5V2.5C5 2.23478 5.10536 1.98043 5.29289 1.79289C5.48043 1.60536 5.73478 1.5 6 1.5H8C8.26522 1.5 8.51957 1.60536 8.70711 1.79289C8.89464 1.98043 9 2.23478 9 2.5V3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-                    </svg>
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                    <span>{{ formatDate(user.createdAt) }}</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="actions-cell">
+                    <button
+                      class="action-btn"
+                      :class="user.isBlocked ? 'unblock' : 'block'"
+                      @click="toggleBlock(user)"
+                      :title="user.isBlocked ? 'Разблокировать' : 'Заблокировать'"
+                    >
+                      <svg v-if="!user.isBlocked" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <rect x="2" y="5" width="10" height="7" rx="1" stroke="currentColor" stroke-width="1.2"/>
+                        <path d="M4 5V3.5C4 2.67157 4.67157 2 5.5 2H8.5C9.32843 2 10 2.67157 10 3.5V5" stroke="currentColor" stroke-width="1.2"/>
+                      </svg>
+                      <svg v-else width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path d="M11 2L3 12M3 2L11 12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                      </svg>
+                      {{ user.isBlocked ? 'Разблок.' : 'Блок.' }}
+                    </button>
+                    <button
+                      class="action-btn delete"
+                      @click="deleteUser(user)"
+                      title="Удалить"
+                    >
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path d="M2 3.5H12M5.5 6.5V9.5M8.5 6.5V9.5M3.5 3.5L4 11.5C4 11.832 4.1317 12.1503 4.36612 12.3847C4.60054 12.6191 4.91884 12.7508 5.25083 12.7508H8.74917C9.08116 12.7508 9.39946 12.6191 9.63388 12.3847C9.8683 12.1503 10 11.832 10 11.5L10.5 3.5M5 3.5V2.5C5 2.23478 5.10536 1.98043 5.29289 1.79289C5.48043 1.60536 5.73478 1.5 6 1.5H8C8.26522 1.5 8.51957 1.60536 8.70711 1.79289C8.89464 1.98043 9 2.23478 9 2.5V3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
         <!-- Pagination -->
         <div v-if="totalPages > 1" class="pagination">
@@ -388,6 +476,62 @@ const filteredUsers = computed(() => {
   }
   
   return filtered;
+});
+
+// Dropdown states
+const isRoleDropdownOpen = ref(false);
+const isStatusDropdownOpen = ref(false);
+
+// Helper functions for custom selects
+const getRoleLabel = (value: string) => {
+  if (value === 'user') return '👤 Пользователи';
+  if (value === 'admin') return '⚙️ Администраторы';
+  return 'Все роли';
+};
+
+const getStatusLabel = (value: string) => {
+  if (value === 'active') return '🟢 Активные';
+  if (value === 'blocked') return '🔴 Заблокированные';
+  return 'Все статусы';
+};
+
+const toggleRoleDropdown = () => {
+  isRoleDropdownOpen.value = !isRoleDropdownOpen.value;
+  isStatusDropdownOpen.value = false;
+};
+
+const toggleStatusDropdown = () => {
+  isStatusDropdownOpen.value = !isStatusDropdownOpen.value;
+  isRoleDropdownOpen.value = false;
+};
+
+const selectRole = (value: string) => {
+  roleFilter.value = value;
+  isRoleDropdownOpen.value = false;
+  applyFilters();
+};
+
+const selectStatus = (value: string) => {
+  statusFilter.value = value;
+  isStatusDropdownOpen.value = false;
+  applyFilters();
+};
+
+// Close dropdowns when clicking outside
+const handleClickOutside = (event: MouseEvent) => {
+  const target = event.target as HTMLElement;
+  if (!target.closest('.custom-select')) {
+    isRoleDropdownOpen.value = false;
+    isStatusDropdownOpen.value = false;
+  }
+};
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside);
 });
 
 onMounted(async () => {
@@ -1405,6 +1549,141 @@ useHead({
   
   .modal-footer {
     flex-direction: column;
+  }
+}
+
+.admin-users-page {
+  width: 100%;
+  max-width: none;
+  padding: 0 20px;
+}
+
+.table-container {
+  background: white;
+  border-radius: 20px;
+  border: 1px solid #eef2ff;
+  overflow: hidden;
+  width: 100%;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 1000px;
+}
+
+/* Custom Select Styles */
+.custom-select {
+  position: relative;
+  min-width: 160px;
+}
+
+.select-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 14px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #1e293b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.select-trigger:hover {
+  border-color: #3b82f6;
+  background: #f8fafc;
+}
+
+.custom-select.open .select-trigger {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.select-arrow {
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.custom-select.open .select-arrow {
+  transform: rotate(180deg);
+}
+
+.select-value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.select-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: all 0.2s ease;
+}
+
+.custom-select.open .select-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.select-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #1e293b;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.select-option:hover {
+  background: #f8fafc;
+}
+
+.select-option.selected {
+  background: #eff6ff;
+  color: #3b82f6;
+}
+
+.select-option svg {
+  color: #3b82f6;
+}
+
+@media (max-width: 768px) {
+  .custom-select {
+    min-width: 0;
+    flex: 1;
+  }
+  
+  .select-trigger {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+  
+  .select-option {
+    font-size: 13px;
+    padding: 8px 12px;
   }
 }
 </style>

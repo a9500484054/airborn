@@ -154,13 +154,13 @@
           <div class="project-content">
             <div class="project-header">
               <h3 class="project-title">{{ project.title }}</h3>
-              <div class="project-menu" @click.stop="toggleProjectMenu(project.id)">
+              <!-- <div class="project-menu" @click.stop="toggleProjectMenu(project.id)">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                   <circle cx="10" cy="5" r="1.5" fill="currentColor"/>
                   <circle cx="10" cy="10" r="1.5" fill="currentColor"/>
                   <circle cx="10" cy="15" r="1.5" fill="currentColor"/>
                 </svg>
-              </div>
+              </div> -->
             </div>
             <p class="project-description">{{ project.shortDescription }}</p>
             <div class="project-progress" v-if="project.progress !== undefined">
