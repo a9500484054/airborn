@@ -28,7 +28,7 @@ export class AdminStatsService {
    */
   async getStats() {
     const [totalUsers, totalProjects, totalLeads, totalMessages] = await Promise.all([
-      this.usersRepository.count(),
+      this.usersRepository.count({ where: { isDeleted: false } }),
       this.projectsRepository.count(),
       this.leadsRepository.count(),
       this.messagesRepository.count(),

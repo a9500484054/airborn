@@ -62,7 +62,7 @@
           </div>
           <div class="stat-info">
             <div class="stat-value">{{ stats.totalMessages }}</div>
-            <div class="stat-label">Всего чатов</div>
+            <div class="stat-label">Всего сообщений</div>
           </div>
         </div>
       </div>
