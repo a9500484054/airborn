@@ -26,13 +26,13 @@
           </div>
         </div>
         <div class="header-right">
-          <button class="info-btn" @click="showInfo = !showInfo" :class="{ active: showInfo }">
+          <!-- <button class="info-btn" @click="showInfo = !showInfo" :class="{ active: showInfo }">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
               <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.2"/>
               <path d="M10 8V14M10 6H10.01" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
             </svg>
             <span>Инфо</span>
-          </button>
+          </button> -->
         </div>
       </div>
 
@@ -143,7 +143,7 @@
                       <span>Ответить</span>
                     </button>
                     <button
-                      v-if="message.user.id === authStore.user?.id"
+                      v-if="message.user.id === authStore.user?.id || authStore.user?.role === 'admin'"
                       class="menu-item delete-item"
                       @click="deleteMessage(message.id); openMenuId = null"
                     >
@@ -1177,11 +1177,6 @@ useHead({
   transition: all 0.2s ease;
 }
 
-.message.own-message .message-actions-wrapper {
-  right: auto;
-  left: 8px;
-}
-
 .message:hover .message-actions-wrapper {
   opacity: 1;
   visibility: visible;
@@ -1222,10 +1217,11 @@ useHead({
   visibility: visible;
 }
 
+
 .message-menu {
   position: absolute;
   top: 100%;
-  right: 0;
+  left: 0;
   margin-top: 4px;
   background: white;
   border-radius: 12px;
@@ -1236,9 +1232,9 @@ useHead({
 }
 
 .message.own-message .message-menu {
-  right: auto;
-  left: 0;
+ left: -131px;
 }
+
 
 .menu-item {
   display: flex;
