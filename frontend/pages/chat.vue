@@ -4,26 +4,34 @@
       <!-- Chat Header -->
       <div class="chat-header">
         <div class="header-left">
-          <h1 class="page-title">Чат команды</h1>
-          <div class="chat-status">
-            <div class="status-indicator" :class="{ online: chatStore.isConnected }">
-              <span class="status-dot"></span>
-              <span class="status-text">{{ chatStore.isConnected ? 'Подключено' : 'Отключено' }}</span>
-            </div>
-            <div v-if="typingUsers.length" class="typing-indicator">
-              <span class="typing-dots">
-                <span></span><span></span><span></span>
-              </span>
-              <span>{{ typingUsers.join(', ') }} печатает...</span>
+          <div class="chat-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M21 15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7L3 21V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+          </div>
+          <div class="header-info">
+            <h1 class="page-title">Командный чат</h1>
+            <div class="chat-status">
+              <div class="status-indicator" :class="{ online: chatStore.isConnected }">
+                <span class="status-dot"></span>
+                <span class="status-text">{{ chatStore.isConnected ? 'Онлайн' : 'Офлайн' }}</span>
+              </div>
+              <div v-if="typingUsers.length" class="typing-indicator">
+                <span class="typing-dots">
+                  <span></span><span></span><span></span>
+                </span>
+                <span>{{ typingUsers.join(', ') }} печатает...</span>
+              </div>
             </div>
           </div>
         </div>
         <div class="header-right">
-          <button class="info-btn" @click="showInfo = !showInfo">
+          <button class="info-btn" @click="showInfo = !showInfo" :class="{ active: showInfo }">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
               <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.2"/>
               <path d="M10 8V14M10 6H10.01" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
             </svg>
+            <span>Инфо</span>
           </button>
         </div>
       </div>
@@ -33,28 +41,50 @@
         <div v-if="showInfo" class="chat-info-sidebar">
           <div class="info-header">
             <h3>Информация о чате</h3>
-            <button class="close-info" @click="showInfo = false">✕</button>
+            <button class="close-info" @click="showInfo = false">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path d="M1 1L17 17M17 1L1 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </button>
           </div>
           <div class="info-content">
-            <div class="info-stat">
-              <span class="stat-label">Участников онлайн</span>
-              <span class="stat-value">{{ onlineUsers }}</span>
+            <div class="info-stats">
+              <div class="info-stat">
+                <div class="stat-icon">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.2"/>
+                    <path d="M10 6V10L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div class="stat-details">
+                  <span class="stat-label">Участников онлайн</span>
+                  <span class="stat-value">{{ onlineUsers }}</span>
+                </div>
+              </div>
+              <div class="info-stat">
+                <div class="stat-icon">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M3 5H17M3 10H17M3 15H12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div class="stat-details">
+                  <span class="stat-label">Всего сообщений</span>
+                  <span class="stat-value">{{ chatStore.messages.length }}</span>
+                </div>
+              </div>
             </div>
-            <div class="info-stat">
-              <span class="stat-label">Всего сообщений</span>
-              <span class="stat-value">{{ chatStore.messages.length }}</span>
-            </div>
-            <div class="info-divider"></div>
+            
             <div class="info-section">
               <h4>Участники</h4>
               <div class="participants-list">
                 <div v-for="user in participants" :key="user.id" class="participant-item">
-                  <div class="participant-avatar">{{ getUserInitials(user.name) }}</div>
+                  <div class="participant-avatar" :class="{ 'avatar-online': user.online }">
+                    {{ getUserInitials(user.name) }}
+                    <span v-if="user.online" class="online-badge"></span>
+                  </div>
                   <div class="participant-info">
                     <span class="participant-name">{{ user.name }}</span>
-                    <span class="participant-status" :class="{ online: user.online }">
-                      {{ user.online ? 'онлайн' : 'офлайн' }}
-                    </span>
+                    <span class="participant-role">Участник</span>
                   </div>
                 </div>
               </div>
@@ -102,7 +132,7 @@
 
                 <!-- Reply Preview -->
                 <div v-if="message.replyTo" class="message-reply">
-                  <div class="reply-avatar">↩️</div>
+                  <div class="reply-icon">↩️</div>
                   <div class="reply-content">
                     <span class="reply-author">{{ message.replyTo.user?.name || 'Unknown' }}</span>
                     <span class="reply-text">{{ message.replyTo.content || 'Вложение' }}</span>
@@ -121,8 +151,8 @@
                       {{ getFileIcon(message.fileType) }}
                     </div>
                     <div class="file-info">
-                      <span class="file-name">Скачать файл</span>
-                      <span class="file-type">{{ getFileType(message.fileType) }}</span>
+                      <span class="file-name">{{ getFileType(message.fileType) }}</span>
+                      <span class="file-size">Скачать</span>
                     </div>
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                       <path d="M8 2V10M8 10L10 8M8 10L6 8M3 13H13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
@@ -139,14 +169,14 @@
 
                 <!-- Message Actions -->
                 <div class="message-actions">
-                  <button class="action-btn" @click="setReply(message)" title="Ответить">
+                  <button class="action-btn reply-btn" @click="setReply(message)" title="Ответить">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                       <path d="M3 8L7 4M3 8L7 12M3 8H13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
                     </svg>
                   </button>
                   <button
                     v-if="message.user.id === authStore.user?.id"
-                    class="action-btn delete"
+                    class="action-btn delete-btn"
                     @click="deleteMessage(message.id)"
                     title="Удалить"
                   >
@@ -179,11 +209,15 @@
         <transition name="slide-up">
           <div v-if="replyTo" class="reply-preview-bar">
             <div class="reply-info">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M3 8L7 4M3 8L7 12M3 8H13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-              </svg>
-              <span class="reply-label">Ответ для {{ replyTo.user.name }}</span>
-              <span class="reply-text">{{ replyTo.content || 'Вложение' }}</span>
+              <div class="reply-badge">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M2 7L6 3M2 7L6 11M2 7H12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="reply-details">
+                <span class="reply-label">Ответ для {{ replyTo.user.name }}</span>
+                <span class="reply-text">{{ replyTo.content || 'Вложение' }}</span>
+              </div>
             </div>
             <button class="cancel-reply" @click="replyTo = null">
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -258,7 +292,11 @@
         <div v-if="previewImage" class="image-preview-modal" @click="previewImage = null">
           <div class="modal-content" @click.stop>
             <img :src="previewImage" alt="Preview" />
-            <button class="close-modal" @click="previewImage = null">✕</button>
+            <button class="close-modal" @click="previewImage = null">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M1 1L19 19M19 1L1 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </button>
           </div>
         </div>
       </transition>
@@ -542,6 +580,10 @@ useHead({
   max-width: 1400px;
   margin: 0 auto;
   position: relative;
+  background: #ffffff;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 /* Chat Header */
@@ -549,61 +591,81 @@ useHead({
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 24px;
+  padding: 16px 24px;
   background: white;
-  border-bottom: 1px solid #eef2ff;
-  border-radius: 20px 20px 0 0;
+  border-bottom: 1px solid #f0f2f5;
 }
 
 .header-left {
   display: flex;
   align-items: center;
-  gap: 24px;
-  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.chat-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .page-title {
-  font-size: 24px;
-  font-weight: 700;
-  color: #0f172a;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1f36;
   margin: 0;
+  letter-spacing: -0.01em;
 }
 
 .chat-status {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 }
 
 .status-indicator {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .status-dot {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: #ef4444;
+  transition: all 0.2s ease;
 }
 
 .status-indicator.online .status-dot {
   background: #10b981;
-  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.15);
 }
 
 .status-text {
-  color: #64748b;
+  color: #6b7280;
 }
 
 .typing-indicator {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13px;
+  font-size: 12px;
   color: #3b82f6;
+  background: #eff6ff;
+  padding: 4px 10px;
+  border-radius: 20px;
 }
 
 .typing-dots {
@@ -637,20 +699,28 @@ useHead({
 }
 
 .header-right .info-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 12px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4b5563;
   transition: all 0.2s ease;
 }
 
 .header-right .info-btn:hover {
-  background: #f1f5f9;
+  background: #f3f4f6;
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+
+.header-right .info-btn.active {
+  background: #eff6ff;
   border-color: #3b82f6;
   color: #3b82f6;
 }
@@ -658,12 +728,12 @@ useHead({
 /* Chat Info Sidebar */
 .chat-info-sidebar {
   position: absolute;
-  top: 80px;
-  right: 0;
+  top: 73px;
+  right: 24px;
   width: 320px;
   background: white;
-  border-radius: 20px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 20px 35px -8px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.02);
   z-index: 10;
   overflow: hidden;
 }
@@ -673,25 +743,32 @@ useHead({
   justify-content: space-between;
   align-items: center;
   padding: 16px 20px;
-  border-bottom: 1px solid #eef2ff;
+  border-bottom: 1px solid #f0f2f5;
 }
 
 .info-header h3 {
   font-size: 16px;
   font-weight: 600;
-  color: #0f172a;
+  color: #1a1f36;
+  margin: 0;
 }
 
 .close-info {
-  background: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: transparent;
   border: none;
-  font-size: 20px;
   cursor: pointer;
-  color: #94a3b8;
-  transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  transition: all 0.2s ease;
 }
 
 .close-info:hover {
+  background: #f3f4f6;
   color: #ef4444;
 }
 
@@ -699,33 +776,54 @@ useHead({
   padding: 20px;
 }
 
+.info-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
 .info-stat {
   display: flex;
-  justify-content: space-between;
-  padding: 12px 0;
+  align-items: center;
+  gap: 12px;
+}
+
+.stat-icon {
+  width: 36px;
+  height: 36px;
+  background: #f3f4f6;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+}
+
+.stat-details {
+  flex: 1;
 }
 
 .stat-label {
-  color: #64748b;
-  font-size: 14px;
+  display: block;
+  font-size: 12px;
+  color: #9ca3af;
+  margin-bottom: 2px;
 }
 
 .stat-value {
+  font-size: 18px;
   font-weight: 600;
-  color: #0f172a;
-}
-
-.info-divider {
-  height: 1px;
-  background: #eef2ff;
-  margin: 12px 0;
+  color: #1a1f36;
 }
 
 .info-section h4 {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  color: #0f172a;
-  margin-bottom: 12px;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 16px;
 }
 
 .participants-list {
@@ -741,8 +839,8 @@ useHead({
 }
 
 .participant-avatar {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: 10px;
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   color: white;
@@ -751,6 +849,19 @@ useHead({
   justify-content: center;
   font-size: 12px;
   font-weight: 600;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.participant-avatar.avatar-online .online-badge {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 10px;
+  height: 10px;
+  background: #10b981;
+  border-radius: 50%;
+  border: 2px solid white;
 }
 
 .participant-info {
@@ -759,31 +870,46 @@ useHead({
 
 .participant-name {
   display: block;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
-  color: #0f172a;
+  color: #1a1f36;
 }
 
-.participant-status {
+.participant-role {
   font-size: 11px;
-  color: #94a3b8;
-}
-
-.participant-status.online {
-  color: #10b981;
+  color: #9ca3af;
 }
 
 /* Messages Container */
 .messages-container {
   flex: 1;
   overflow-y: auto;
-  padding: 24px;
-  background: #ffffff;
+  padding: 20px 24px;
+  background: #fafbfc;
   transition: all 0.3s ease;
 }
 
 .messages-container.with-sidebar {
   padding-right: 360px;
+}
+
+/* Custom Scrollbar */
+.messages-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.messages-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.messages-container::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.messages-container::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
 .loading-more {
@@ -792,14 +918,14 @@ useHead({
   justify-content: center;
   gap: 8px;
   padding: 16px;
-  color: #64748b;
+  color: #6b7280;
   font-size: 13px;
 }
 
 .spinner-small {
-  width: 20px;
-  height: 20px;
-  border: 2px solid #e2e8f0;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #e5e7eb;
   border-top-color: #3b82f6;
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
@@ -811,7 +937,7 @@ useHead({
 
 /* Message Group */
 .message-group {
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .date-separator {
@@ -822,17 +948,18 @@ useHead({
 .date-text {
   display: inline-block;
   padding: 4px 12px;
-  background: #f1f5f9;
+  background: #e5e7eb;
   border-radius: 20px;
-  font-size: 12px;
-  color: #64748b;
+  font-size: 11px;
+  font-weight: 500;
+  color: #6b7280;
 }
 
 /* Message */
 .message {
   display: flex;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 8px;
+  margin-bottom: 10px;
 }
 
 .message.own-message {
@@ -840,24 +967,25 @@ useHead({
 }
 
 .message-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: 10px;
   font-weight: 600;
   flex-shrink: 0;
 }
 
 .message-content {
-  max-width: 70%;
-  background: #f8fafc;
-  padding: 12px 16px;
-  border-radius: 16px;
+  max-width: 60%;
+  background: white;
+  padding: 8px 12px;
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
 }
 
 .message.own-message .message-content {
@@ -869,14 +997,14 @@ useHead({
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: 12px;
-  margin-bottom: 6px;
+  gap: 8px;
+  margin-bottom: 4px;
 }
 
 .message-author {
   font-weight: 600;
-  font-size: 13px;
-  color: #0f172a;
+  font-size: 11px;
+  color: #374151;
 }
 
 .message.own-message .message-author {
@@ -884,12 +1012,12 @@ useHead({
 }
 
 .message-time {
-  font-size: 11px;
-  color: #94a3b8;
+  font-size: 9px;
+  color: #9ca3af;
 }
 
 .message.own-message .message-time {
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.6);
 }
 
 /* Reply Preview */
@@ -897,13 +1025,19 @@ useHead({
   display: flex;
   gap: 8px;
   padding: 8px 12px;
-  background: rgba(0, 0, 0, 0.05);
+  background: #f3f4f6;
   border-radius: 12px;
   margin-bottom: 8px;
+  border-left: 2px solid #3b82f6;
 }
 
 .message.own-message .message-reply {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.12);
+  border-left-color: rgba(255, 255, 255, 0.3);
+}
+
+.reply-icon {
+  font-size: 12px;
 }
 
 .reply-content {
@@ -912,13 +1046,13 @@ useHead({
 
 .reply-author {
   font-weight: 600;
-  font-size: 12px;
+  font-size: 11px;
   display: block;
   margin-bottom: 2px;
 }
 
 .reply-text {
-  font-size: 12px;
+  font-size: 11px;
   opacity: 0.7;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -943,23 +1077,27 @@ useHead({
   align-items: center;
   gap: 12px;
   padding: 8px 12px;
-  background: rgba(0, 0, 0, 0.05);
+  background: #f3f4f6;
   border-radius: 12px;
   text-decoration: none;
   transition: all 0.2s ease;
 }
 
 .message.own-message .file-link {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .file-link:hover {
-  background: rgba(0, 0, 0, 0.1);
+  background: #e5e7eb;
   transform: translateX(2px);
 }
 
+.message.own-message .file-link:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
 .file-icon {
-  font-size: 24px;
+  font-size: 20px;
 }
 
 .file-icon.file-pdf { color: #ef4444; }
@@ -973,18 +1111,18 @@ useHead({
 
 .file-name {
   display: block;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
 }
 
-.file-type {
-  font-size: 11px;
+.file-size {
+  font-size: 10px;
   opacity: 0.7;
 }
 
 .file-image {
-  max-width: 300px;
-  max-height: 200px;
+  max-width: 280px;
+  max-height: 180px;
   border-radius: 12px;
   margin-top: 8px;
   cursor: pointer;
@@ -998,7 +1136,7 @@ useHead({
 /* Message Actions */
 .message-actions {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   margin-top: 8px;
   opacity: 0;
   transition: opacity 0.2s ease;
@@ -1009,22 +1147,40 @@ useHead({
 }
 
 .action-btn {
-  background: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: #f3f4f6;
   border: none;
   cursor: pointer;
-  padding: 4px;
-  border-radius: 6px;
-  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
   transition: all 0.2s ease;
 }
 
+.message.own-message .action-btn {
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.7);
+}
+
 .action-btn:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: #e5e7eb;
   color: #3b82f6;
 }
 
-.action-btn.delete:hover {
+.message.own-message .action-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.action-btn.delete-btn:hover {
   color: #ef4444;
+}
+
+.message.own-message .delete-btn:hover {
+  color: #f87171;
 }
 
 /* Empty Chat */
@@ -1034,36 +1190,36 @@ useHead({
 }
 
 .empty-icon {
-  color: #cbd5e1;
+  color: #d1d5db;
   margin-bottom: 20px;
 }
 
 .empty-chat h3 {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 600;
-  color: #0f172a;
+  color: #374151;
   margin-bottom: 8px;
 }
 
 .empty-chat p {
-  color: #64748b;
+  color: #9ca3af;
+  font-size: 14px;
 }
 
 /* Message Input */
 .message-input-container {
-  padding: 20px 24px;
+  padding: 16px 24px 20px;
   background: white;
-  border-top: 1px solid #eef2ff;
-  border-radius: 0 0 20px 20px;
+  border-top: 1px solid #f0f2f5;
 }
 
 .reply-preview-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 16px;
+  padding: 10px 14px;
   margin-bottom: 12px;
-  background: #f8fafc;
+  background: #f9fafb;
   border-radius: 12px;
   border-left: 3px solid #3b82f6;
 }
@@ -1071,35 +1227,54 @@ useHead({
 .reply-info {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  flex: 1;
+}
+
+.reply-badge {
+  width: 24px;
+  height: 24px;
+  background: #eff6ff;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3b82f6;
+}
+
+.reply-details {
   flex: 1;
 }
 
 .reply-label {
-  font-size: 12px;
+  display: block;
+  font-size: 11px;
   font-weight: 600;
   color: #3b82f6;
+  margin-bottom: 2px;
 }
 
 .reply-text {
-  font-size: 12px;
-  color: #64748b;
-  opacity: 0.8;
+  font-size: 11px;
+  color: #6b7280;
 }
 
 .cancel-reply {
-  background: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: transparent;
   border: none;
   cursor: pointer;
-  padding: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #94a3b8;
-  transition: color 0.2s ease;
+  color: #9ca3af;
+  transition: all 0.2s ease;
 }
 
 .cancel-reply:hover {
+  background: #f3f4f6;
   color: #ef4444;
 }
 
@@ -1115,45 +1290,48 @@ useHead({
 
 .message-input {
   flex: 1;
-  padding: 12px 16px;
-  border: 1px solid #e2e8f0;
-  border-radius: 20px;
+  padding: 12px 18px;
+  border: 1px solid #e5e7eb;
+  border-radius: 24px;
   font-size: 14px;
   font-family: inherit;
   resize: none;
   max-height: 100px;
   transition: all 0.2s ease;
+  background: #f9fafb;
 }
 
 .message-input:focus {
   outline: none;
   border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.08);
 }
 
 .file-upload-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 22px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  width: 42px;
+  height: 42px;
+  border-radius: 21px;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
+  color: #6b7280;
 }
 
 .file-upload-btn:hover {
-  background: #f1f5f9;
+  background: #e5e7eb;
   border-color: #3b82f6;
   color: #3b82f6;
 }
 
 .send-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 22px;
+  width: 42px;
+  height: 42px;
+  border-radius: 21px;
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   border: none;
   display: flex;
@@ -1179,9 +1357,9 @@ useHead({
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 16px;
+  padding: 10px 14px;
   margin-top: 12px;
-  background: #f8fafc;
+  background: #f9fafb;
   border-radius: 12px;
 }
 
@@ -1192,7 +1370,7 @@ useHead({
 }
 
 .file-icon-small {
-  font-size: 28px;
+  font-size: 24px;
 }
 
 .file-details {
@@ -1201,29 +1379,32 @@ useHead({
 }
 
 .file-name {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
-  color: #0f172a;
+  color: #1a1f36;
 }
 
 .file-size {
-  font-size: 11px;
-  color: #94a3b8;
+  font-size: 10px;
+  color: #9ca3af;
 }
 
 .remove-file {
-  background: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: transparent;
   border: none;
   cursor: pointer;
-  padding: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #94a3b8;
-  transition: color 0.2s ease;
+  color: #9ca3af;
+  transition: all 0.2s ease;
 }
 
 .remove-file:hover {
+  background: #f3f4f6;
   color: #ef4444;
 }
 
@@ -1231,12 +1412,13 @@ useHead({
 .image-preview-modal {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.92);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
   cursor: pointer;
+  backdrop-filter: blur(4px);
 }
 
 .modal-content {
@@ -1250,21 +1432,25 @@ useHead({
   max-width: 100%;
   max-height: 90vh;
   object-fit: contain;
-  border-radius: 12px;
+  border-radius: 16px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
 .close-modal {
   position: absolute;
-  top: -40px;
-  right: -40px;
-  width: 36px;
-  height: 36px;
-  border-radius: 18px;
+  top: -48px;
+  right: -48px;
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
   background: white;
   border: none;
-  font-size: 20px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: all 0.2s ease;
+  color: #1f2937;
 }
 
 .close-modal:hover {
@@ -1276,7 +1462,7 @@ useHead({
 /* Animations */
 .slide-enter-active,
 .slide-leave-active {
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .slide-enter-from,
@@ -1298,7 +1484,7 @@ useHead({
 
 .modal-enter-active,
 .modal-leave-active {
-  transition: opacity 0.3s ease;
+  transition: opacity 0.25s ease;
 }
 
 .modal-enter-from,
@@ -1313,21 +1499,31 @@ useHead({
   }
   
   .chat-info-sidebar {
-    width: 280px;
+    right: 16px;
+    width: 300px;
+  }
+  
+  .message-content {
+    max-width: 75%;
   }
 }
 
 @media (max-width: 768px) {
   .chat-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+    padding: 12px 16px;
   }
   
-  .header-left {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+  .chat-icon {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .page-title {
+    font-size: 16px;
+  }
+  
+  .messages-container {
+    padding: 16px;
   }
   
   .message-content {
@@ -1336,13 +1532,18 @@ useHead({
   
   .chat-info-sidebar {
     width: 100%;
+    right: 0;
     top: auto;
     bottom: 0;
     border-radius: 20px 20px 0 0;
   }
   
   .messages-container.with-sidebar {
-    padding-right: 24px;
+    padding-right: 16px;
+  }
+  
+  .message-input-container {
+    padding: 12px 16px 16px;
   }
 }
 
@@ -1357,6 +1558,21 @@ useHead({
   
   .input-wrapper {
     gap: 8px;
+  }
+  
+  .message-input {
+    padding: 10px 14px;
+  }
+  
+  .file-upload-btn,
+  .send-btn {
+    width: 38px;
+    height: 38px;
+  }
+  
+  .close-modal {
+    top: -40px;
+    right: 0;
   }
 }
 </style>
