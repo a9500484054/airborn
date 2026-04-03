@@ -186,7 +186,8 @@
               </div>
               <div class="meta-item">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <path d="M7 1V3.66667M7 10.3333V13M3.66667 7H1M13 7H10.3333M10.5 10.5L8.75 8.75M10.5 3.5L8.75 5.25M3.5 3.5L5.25 5.25M3.5 10.5L5.25 8.75" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                  <path d="M2.33333 2.33333H11.6667C12.5833 2.33333 13.3333 3.08333 13.3333 4V10C13.3333 10.9167 12.5833 11.6667 11.6667 11.6667H2.33333C1.41667 11.6667 0.666667 10.9167 0.666667 10V4C0.666667 3.08333 1.41667 2.33333 2.33333 2.33333Z" stroke="currentColor" stroke-width="1.2"/>
+                  <path d="M13.3333 4L7 8L0.666667 4" stroke="currentColor" stroke-width="1.2"/>
                 </svg>
                 <span>{{ project.files?.length || 0 }} файлов</span>
               </div>
