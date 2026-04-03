@@ -50,7 +50,7 @@
             </svg>
           </div>
           <div class="stat-info">
-            <div class="stat-value">{{ stats.activeProjects }}</div>
+            <div class="stat-value">{{ stats.activeLeads }}</div>
             <div class="stat-label">Активных заявок</div>
           </div>
         </div>
@@ -175,47 +175,38 @@ definePageMeta({
   roles: ['admin'],
 });
 
-// Mock data - replace with real API calls
+const authStore = useAuthStore();
+
+// Fetch real stats from API
 const stats = ref({
-  totalUsers: 156,
-  totalProjects: 42,
-  activeProjects: 28,
-  totalMessages: 1243,
-  unreadLeads: 8
+  totalUsers: 0,
+  totalProjects: 0,
+  activeLeads: 0,
+  totalMessages: 0,
 });
 
-const recentActivities = ref([
-  {
-    id: 1,
-    type: 'user',
-    text: 'Новый пользователь Иван Петров зарегистрировался',
-    time: '5 минут назад'
-  },
-  {
-    id: 2,
-    type: 'project',
-    text: 'Проект "Вентиляция ТЦ" был обновлен',
-    time: '15 минут назад'
-  },
-  {
-    id: 3,
-    type: 'lead',
-    text: 'Новая заявка от компании ООО "СтройИнвест"',
-    time: '1 час назад'
-  },
-  {
-    id: 4,
-    type: 'user',
-    text: 'Роль пользователя Елена Смирнова изменена на администратора',
-    time: '3 часа назад'
-  },
-  {
-    id: 5,
-    type: 'project',
-    text: 'Добавлен новый проект "Монтаж кондиционеров в бизнес-центре"',
-    time: '5 часов назад'
+const isLoading = ref(true);
+
+onMounted(async () => {
+  try {
+    const config = useRuntimeConfig();
+    const { data } = await useFetch(`${config.public.apiUrl}/admin/stats`, {
+      headers: {
+        Authorization: `Bearer ${authStore.accessToken}`,
+      },
+    });
+
+    if (data.value) {
+      const response = data.value as any;
+      // Handle double-nested response structure
+      stats.value = response.data?.data || response.data || {};
+    }
+  } catch (error) {
+    console.error('Failed to fetch admin stats:', error);
+  } finally {
+    isLoading.value = false;
   }
-]);
+});
 
 useHead({
   title: 'Админ-панель - AirBorn',
