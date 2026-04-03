@@ -50,7 +50,7 @@
           </div>
           <div class="stat-info">
             <div class="stat-value">{{ stats.activeProjects }}</div>
-            <div class="stat-label">Активных проектов</div>
+            <div class="stat-label">Активных заявок</div>
           </div>
         </div>
         <div class="stat-card">
@@ -61,7 +61,7 @@
           </div>
           <div class="stat-info">
             <div class="stat-value">{{ stats.totalMessages }}</div>
-            <div class="stat-label">Всего сообщений</div>
+            <div class="stat-label">Всего чатов</div>
           </div>
         </div>
       </div>
@@ -141,7 +141,7 @@
       </div>
 
       <!-- Recent Activity Section -->
-      <div class="recent-activity">
+      <!-- <div class="recent-activity">
         <div class="section-header">
           <h2 class="section-title">Последняя активность</h2>
           <button class="view-all-btn">
@@ -166,7 +166,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </NuxtLayout>
 </template>

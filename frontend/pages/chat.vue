@@ -168,23 +168,35 @@
                 </div>
               </div>
 
-              <!-- Message Actions (floating on hover) -->
-              <div class="message-actions-floating" :class="{ 'own-message': message.user.id === authStore.user?.id }">
-                <button class="action-btn reply-btn" @click="setReply(message)" title="Ответить">
+              <!-- Message Actions (three dots menu) -->
+              <div class="message-actions-wrapper" :class="{ 'own-message': message.user.id === authStore.user?.id }">
+                <button class="message-menu-btn" @click="toggleMessageMenu(message.id)" :class="{ 'menu-open': openMenuId === message.id }">
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path d="M3 8L7 4M3 8L7 12M3 8H13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                    <circle cx="8" cy="3" r="1.5" fill="currentColor"/>
+                    <circle cx="8" cy="8" r="1.5" fill="currentColor"/>
+                    <circle cx="8" cy="13" r="1.5" fill="currentColor"/>
                   </svg>
                 </button>
-                <button
-                  v-if="message.user.id === authStore.user?.id"
-                  class="action-btn delete-btn"
-                  @click="deleteMessage(message.id)"
-                  title="Удалить"
-                >
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path d="M2 4H14M6 4V2.66667C6 2.31304 6.14048 1.97391 6.39052 1.72386C6.64057 1.47381 6.97971 1.33333 7.33333 1.33333H8.66667C9.02029 1.33333 9.35943 1.47381 9.60948 1.72386C9.85952 1.97391 10 2.31304 10 2.66667V4M12.6667 4V12.6667C12.6667 13.0203 12.5262 13.3594 12.2761 13.6095C12.0261 13.8595 11.6869 14 11.3333 14H4.66667C4.31304 14 3.97391 13.8595 3.72386 13.6095C3.47381 13.3594 3.33333 13.0203 3.33333 12.6667V4H12.6667Z" stroke="currentColor" stroke-width="1.2"/>
-                  </svg>
-                </button>
+
+                <!-- Dropdown Menu -->
+                <div v-if="openMenuId === message.id" class="message-menu">
+                  <button class="menu-item" @click="setReply(message); openMenuId = null">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M3 8L7 4M3 8L7 12M3 8H13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                    </svg>
+                    <span>Ответить</span>
+                  </button>
+                  <button
+                    v-if="message.user.id === authStore.user?.id"
+                    class="menu-item delete-item"
+                    @click="deleteMessage(message.id); openMenuId = null"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M2 4H14M6 4V2.66667C6 2.31304 6.14048 1.97391 6.39052 1.72386C6.64057 1.47381 6.97971 1.33333 7.33333 1.33333H8.66667C9.02029 1.33333 9.35943 1.47381 9.60948 1.72386C9.85952 1.97391 10 2.31304 10 2.66667V4M12.6667 4V12.6667C12.6667 13.0203 12.5262 13.3594 12.2761 13.6095C12.0261 13.8595 11.6869 14 11.3333 14H4.66667C4.31304 14 3.97391 13.8595 3.72386 13.6095C3.47381 13.3594 3.33333 13.0203 3.33333 12.6667V4H12.6667Z" stroke="currentColor" stroke-width="1.2"/>
+                    </svg>
+                    <span>Удалить</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -317,6 +329,7 @@ const messagesContainer = ref<HTMLElement | null>(null);
 const fileInput = ref<HTMLInputElement | null>(null);
 const showInfo = ref(false);
 const previewImage = ref<string | null>(null);
+const openMenuId = ref<string | null>(null);
 
 const newMessage = ref('');
 const replyTo = ref<any>(null);
@@ -453,6 +466,10 @@ const setReply = (message: any) => {
 const deleteMessage = async (messageId: string) => {
   if (!confirm('Удалить это сообщение?')) return;
   await chatStore.deleteMessage(messageId);
+};
+
+const toggleMessageMenu = (messageId: string) => {
+  openMenuId.value = openMenuId.value === messageId ? null : messageId;
 };
 
 const startTyping = () => {
@@ -1133,41 +1150,26 @@ useHead({
   transform: scale(1.02);
 }
 
-/* Message Actions (floating on hover) */
+/* Message Actions (three dots menu) */
 .message {
   position: relative;
 }
 
-.message-actions-floating {
+.message-actions-wrapper {
   position: absolute;
-  top: 50%;
-  right: -48px;
-  transform: translateY(-50%);
-  display: flex;
-  gap: 4px;
-  padding: 4px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.04);
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.2s ease;
+  top: 8px;
+  right: -40px;
   z-index: 5;
 }
 
-.message.own-message .message-actions-floating {
+.message.own-message .message-actions-wrapper {
   right: auto;
-  left: -48px;
+  left: -40px;
 }
 
-.message:hover .message-actions-floating {
-  opacity: 1;
-  visibility: visible;
-}
-
-.message-actions-floating .action-btn {
-  width: 32px;
-  height: 32px;
+.message-menu-btn {
+  width: 28px;
+  height: 28px;
   border-radius: 8px;
   background: transparent;
   border: none;
@@ -1175,18 +1177,64 @@ useHead({
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #6b7280;
+  color: #9ca3af;
   transition: all 0.2s ease;
 }
 
-.message-actions-floating .action-btn:hover {
+.message-menu-btn:hover {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.message-menu-btn.menu-open {
   background: #f3f4f6;
   color: #3b82f6;
 }
 
-.message-actions-floating .action-btn.delete-btn:hover {
-  background: #fef2f2;
+.message-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  padding: 6px;
+  min-width: 160px;
+  z-index: 10;
+}
+
+.message.own-message .message-menu {
+  right: auto;
+  left: 0;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+  transition: all 0.15s ease;
+}
+
+.menu-item:hover {
+  background: #f3f4f6;
+}
+
+.menu-item.delete-item {
   color: #ef4444;
+}
+
+.menu-item.delete-item:hover {
+  background: #fef2f2;
 }
 
 /* Empty Chat */
