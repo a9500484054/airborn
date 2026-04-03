@@ -183,7 +183,7 @@
                     :src="message.fileUrl"
                     alt="Attachment"
                     class="file-image"
-                    @click="openImagePreview(getFullUrl(message.fileUrl))"
+                    @click="openImagePreview(message.fileUrl)"
                   />
                   <!-- Download link for non-image files -->
                   <a

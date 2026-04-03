@@ -21,8 +21,9 @@
       <div class="stats-overview">
         <div class="stat-card">
           <div class="stat-icon blue">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M12 2V4M12 20V22M4 12H2M6 12H4M20 12H22M18 12H20M18.5 5.5L17 7M5.5 5.5L7 7M5.5 18.5L7 17M18.5 18.5L17 17M12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8Z" stroke="currentColor" stroke-width="1.2"/>
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+              <path d="M16 20C20.4183 20 24 16.4183 24 12C24 7.58172 20.4183 4 16 4C11.5817 4 8 7.58172 8 12C8 16.4183 11.5817 20 16 20Z" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M4 28C5.5 25.5 10 22 16 22C22 22 26.5 25.5 28 28" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
           </div>
           <div class="stat-info">
@@ -44,8 +45,8 @@
         </div>
         <div class="stat-card">
           <div class="stat-icon purple">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M20 12V18H4V12M12 2V14M12 14L9 11M12 14L15 11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+              <path d="M5 9L16 16L27 9M5 23V9L16 16L27 9V23M5 23H27M5 23L12 16M27 23L20 16" stroke="currentColor" stroke-width="1.5"/>
             </svg>
           </div>
           <div class="stat-info">
@@ -79,9 +80,8 @@
           <div class="card-content">
             <h2 class="card-title">Пользователи</h2>
             <p class="card-description">Управление учетными записями, ролями и правами доступа</p>
-            <div class="card-footer">
+            <div class="card-footer-admin">
               <span class="card-link">Управление →</span>
-              <div class="card-badge">{{ stats.totalUsers }}</div>
             </div>
           </div>
         </NuxtLink>
@@ -98,9 +98,8 @@
           <div class="card-content">
             <h2 class="card-title">Проекты</h2>
             <p class="card-description">Создание, редактирование и управление портфолио проектов</p>
-            <div class="card-footer">
+            <div class="card-footer-admin">
               <span class="card-link">Управление →</span>
-              <div class="card-badge">{{ stats.totalProjects }}</div>
             </div>
           </div>
         </NuxtLink>
@@ -115,15 +114,14 @@
           <div class="card-content">
             <h2 class="card-title">Заявки</h2>
             <p class="card-description">Просмотр и обработка контактных форм и заявок клиентов</p>
-            <div class="card-footer">
+            <div class="card-footer-admin">
               <span class="card-link">Просмотр →</span>
-              <div class="card-badge warning">{{ stats.unreadLeads }}</div>
             </div>
           </div>
         </NuxtLink>
 
         <!-- Settings Card -->
-        <NuxtLink to="/admin/settings" class="admin-card">
+        <!-- <NuxtLink to="/admin/settings" class="admin-card">
           <div class="card-icon-wrapper orange-bg">
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
               <circle cx="16" cy="16" r="4" stroke="currentColor" stroke-width="1.5"/>
@@ -133,11 +131,11 @@
           <div class="card-content">
             <h2 class="card-title">Настройки</h2>
             <p class="card-description">Конфигурация системы, уведомления и общие настройки</p>
-            <div class="card-footer">
+            <div class="card-footer-admin">
               <span class="card-link">Настроить →</span>
             </div>
           </div>
-        </NuxtLink>
+        </NuxtLink> -->
       </div>
 
       <!-- Recent Activity Section -->
@@ -412,7 +410,7 @@ useHead({
   margin-bottom: 16px;
 }
 
-.card-footer {
+.card-footer-admin {
   display: flex;
   justify-content: space-between;
   align-items: center;

@@ -17,21 +17,21 @@
             </div>
             <div class="stats-badge-info">
               <span class="stats-badge-value">{{ projectsStore.projects.length }}</span>
-              <span class="stats-badge-label">всего проектов</span>
             </div>
           </div>
-          <NuxtLink to="/admin" class="back-link">
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-              <path d="M11 14L6 9L11 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-            Назад
-          </NuxtLink>
+
           <button class="create-btn" @click="showCreateModal = true">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
               <path d="M10 4V16M4 10H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
             Создать проект
           </button>
+          <NuxtLink to="/admin" class="back-link">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M11 14L6 9L11 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            Назад
+          </NuxtLink>
         </div>
       </div>
 

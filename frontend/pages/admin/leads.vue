@@ -16,7 +16,6 @@
             </div>
             <div class="stats-badge-info">
               <span class="stats-badge-value">{{ totalLeads }}</span>
-              <span class="stats-badge-label">всего заявок</span>
             </div>
           </div>
           <NuxtLink to="/admin" class="back-link">

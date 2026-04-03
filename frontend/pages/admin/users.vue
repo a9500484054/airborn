@@ -24,7 +24,6 @@
             </div>
             <div class="stats-badge-info">
               <span class="stats-badge-value">{{ totalUsers }}</span>
-              <span class="stats-badge-label">всего пользователей</span>
             </div>
           </div>
           <NuxtLink to="/admin" class="back-link">
