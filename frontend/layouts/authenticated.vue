@@ -49,18 +49,34 @@
           </div>
           <span>Чат</span>
         </NuxtLink>
+        <NuxtLink to="/report" class="sidebar-link" :class="{ active: $route.path === '/report' || $route.path.startsWith('/report') }">
+          <div class="link-icon-wrapper">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <rect x="3" y="2" width="14" height="16" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+              <path d="M7 6H13M7 9H13M7 12H10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <span>Табель</span>
+        </NuxtLink>
 
         <template v-if="authStore.isAdmin">
           <div class="sidebar-divider"></div>
-          <NuxtLink to="/admin" class="sidebar-link" :class="{ active: $route.path.startsWith('/admin') }">
+          <NuxtLink to="/admin" class="sidebar-link" :class="{ active: $route.path === '/admin' }">
             <div class="link-icon-wrapper">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path d="M10 12.5C12.0711 12.5 13.75 10.8211 13.75 8.75C13.75 6.67893 12.0711 5 10 5C7.92893 5 6.25 6.67893 6.25 8.75C6.25 10.8211 7.92893 12.5 10 12.5Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
-                <path d="M15.5 16.25C14.5 15 12.5 13.75 10 13.75C7.5 13.75 5.5 15 4.5 16.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                <circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                <path d="M10 2L12.5 7.5L18 8.5L14 12.5L15 18L10 15.5L5 18L6 12.5L2 8.5L7.5 7.5L10 2Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
               </svg>
             </div>
             <span>Администрирование</span>
+          </NuxtLink>
+          <NuxtLink to="/admin/reports" class="sidebar-link" :class="{ active: $route.path === '/admin/reports' }">
+            <div class="link-icon-wrapper">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <rect x="3" y="2" width="14" height="16" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                <path d="M7 6H13M7 9H13M7 12H10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <span>Все отчёты</span>
           </NuxtLink>
         </template>
       </nav>
@@ -205,6 +221,13 @@
             <path d="M8 8H16M8 12H12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
           <span>Проекты</span>
+        </NuxtLink>
+        <NuxtLink to="/report" class="nav-item" :class="{ active: $route.path.startsWith('/projects') }">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+            <path d="M8 8H16M8 12H12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span>табель</span>
         </NuxtLink>
       </nav>
     </div>

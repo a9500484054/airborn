@@ -17,6 +17,7 @@ import { FilesModule } from './modules/files/files.module';
 import { WebsocketModule } from './websocket/websocket.module';
 import { EmailModule } from './modules/email/email.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { ReportsModule } from './modules/reports/reports.module';
 
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 
@@ -68,6 +69,7 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
     WebsocketModule,
     EmailModule,
     AdminModule,
+    ReportsModule,
   ],
   providers: [
     {
