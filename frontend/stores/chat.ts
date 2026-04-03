@@ -100,6 +100,13 @@ export const useChatStore = defineStore('chat', {
         // Avoid duplicates
         const exists = this.messages.some(m => m.id === message.id);
         if (!exists) {
+          // If message has replyToId but not replyTo object, find it in existing messages
+          if (message.replyToId && !message.replyTo) {
+            const repliedMessage = this.messages.find(m => m.id === message.replyToId);
+            if (repliedMessage) {
+              message.replyTo = repliedMessage;
+            }
+          }
           // Add to end (newest at bottom)
           this.messages.push(message);
         }
