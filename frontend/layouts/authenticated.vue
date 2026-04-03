@@ -179,6 +179,34 @@
       <main class="page-content">
         <slot />
       </main>
+
+      <!-- Mobile Bottom Navigation -->
+      <nav v-if="$route.path !== '/chat'" class="mobile-bottom-nav">
+        <NuxtLink to="/dashboard" class="nav-item" :class="{ active: $route.path === '/dashboard' }">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M3 9L12 3L21 9L12 15L3 9Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+            <path d="M6 12.5V18.5C6 19.0523 6.44772 19.5 7 19.5H17C17.5523 19.5 18 19.0523 18 18.5V12.5" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          </svg>
+          <span>Дашборд</span>
+        </NuxtLink>
+
+        <NuxtLink to="/chat" class="nav-item nav-item-chat" :class="{ active: $route.path === '/chat' }">
+          <div class="chat-icon-wrapper">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M21 15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7L3 21V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+          </div>
+          <span>Чат</span>
+        </NuxtLink>
+
+        <NuxtLink to="/projects" class="nav-item" :class="{ active: $route.path.startsWith('/projects') }">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+            <path d="M8 8H16M8 12H12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span>Проекты</span>
+        </NuxtLink>
+      </nav>
     </div>
   </div>
 </template>
@@ -745,5 +773,100 @@ onUnmounted(() => {
 .page-content::-webkit-scrollbar-thumb {
   background: #cbd5e1;
   border-radius: 3px;
+}
+
+/* Mobile Bottom Navigation */
+.mobile-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #e2e8f0;
+  padding: 8px 16px;
+  padding-bottom: calc(8px + env(safe-area-inset-bottom));
+  z-index: 90;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  color: #64748b;
+  text-decoration: none;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.nav-item svg {
+  transition: all 0.2s ease;
+}
+
+.nav-item:hover {
+  color: #3b82f6;
+  background: #f8fafc;
+}
+
+.nav-item.active {
+  color: #3b82f6;
+}
+
+.nav-item.active svg {
+  stroke: #3b82f6;
+}
+
+/* Chat Icon Highlight */
+.nav-item-chat {
+  position: relative;
+}
+
+.chat-icon-wrapper {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  transition: all 0.2s ease;
+  margin-top: -20px;
+}
+
+.chat-icon-wrapper svg {
+  stroke: white;
+}
+
+.nav-item-chat:hover .chat-icon-wrapper {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+}
+
+.nav-item-chat.active .chat-icon-wrapper {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.4);
+}
+
+.nav-item-chat span {
+  margin-top: 4px;
+}
+
+@media (max-width: 768px) {
+  .mobile-bottom-nav {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+  
+  .page-content {
+    padding-bottom: 80px;
+  }
 }
 </style>

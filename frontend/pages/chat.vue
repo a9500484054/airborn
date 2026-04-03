@@ -408,6 +408,9 @@ onMounted(async () => {
     chatStore.connect(authStore.accessToken);
   }
 
+  // Disable body scroll on chat page
+  document.body.style.overflow = 'hidden';
+
   setTimeout(() => {
     scrollToBottom();
   }, 500);
@@ -422,6 +425,8 @@ onBeforeUnmount(() => {
   if (typingTimeout.value) {
     clearTimeout(typingTimeout.value);
   }
+  // Restore body scroll when leaving chat page
+  document.body.style.overflow = '';
 });
 
 const scrollToBottom = () => {
