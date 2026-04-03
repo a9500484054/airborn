@@ -113,7 +113,7 @@
               v-for="message in group"
               :key="message.id"
               class="message"
-              :class="{ 
+              :class="{
                 'own-message': message.user.id === authStore.user?.id,
                 'has-reply': message.replyTo
               }"
@@ -122,7 +122,7 @@
               <div v-if="message.user.id !== authStore.user?.id" class="message-avatar">
                 {{ getUserInitials(message.user.name) }}
               </div>
-              
+
               <div class="message-content">
                 <!-- Message Header -->
                 <div class="message-header">
@@ -166,25 +166,25 @@
                     @click="openImagePreview(getFullUrl(message.fileUrl))"
                   />
                 </div>
+              </div>
 
-                <!-- Message Actions -->
-                <div class="message-actions">
-                  <button class="action-btn reply-btn" @click="setReply(message)" title="Ответить">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M3 8L7 4M3 8L7 12M3 8H13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-                    </svg>
-                  </button>
-                  <button
-                    v-if="message.user.id === authStore.user?.id"
-                    class="action-btn delete-btn"
-                    @click="deleteMessage(message.id)"
-                    title="Удалить"
-                  >
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M2 4H14M6 4V2.66667C6 2.31304 6.14048 1.97391 6.39052 1.72386C6.64057 1.47381 6.97971 1.33333 7.33333 1.33333H8.66667C9.02029 1.33333 9.35943 1.47381 9.60948 1.72386C9.85952 1.97391 10 2.31304 10 2.66667V4M12.6667 4V12.6667C12.6667 13.0203 12.5262 13.3594 12.2761 13.6095C12.0261 13.8595 11.6869 14 11.3333 14H4.66667C4.31304 14 3.97391 13.8595 3.72386 13.6095C3.47381 13.3594 3.33333 13.0203 3.33333 12.6667V4H12.6667Z" stroke="currentColor" stroke-width="1.2"/>
-                    </svg>
-                  </button>
-                </div>
+              <!-- Message Actions (floating on hover) -->
+              <div class="message-actions-floating" :class="{ 'own-message': message.user.id === authStore.user?.id }">
+                <button class="action-btn reply-btn" @click="setReply(message)" title="Ответить">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M3 8L7 4M3 8L7 12M3 8H13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                  </svg>
+                </button>
+                <button
+                  v-if="message.user.id === authStore.user?.id"
+                  class="action-btn delete-btn"
+                  @click="deleteMessage(message.id)"
+                  title="Удалить"
+                >
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M2 4H14M6 4V2.66667C6 2.31304 6.14048 1.97391 6.39052 1.72386C6.64057 1.47381 6.97971 1.33333 7.33333 1.33333H8.66667C9.02029 1.33333 9.35943 1.47381 9.60948 1.72386C9.85952 1.97391 10 2.31304 10 2.66667V4M12.6667 4V12.6667C12.6667 13.0203 12.5262 13.3594 12.2761 13.6095C12.0261 13.8595 11.6869 14 11.3333 14H4.66667C4.31304 14 3.97391 13.8595 3.72386 13.6095C3.47381 13.3594 3.33333 13.0203 3.33333 12.6667V4H12.6667Z" stroke="currentColor" stroke-width="1.2"/>
+                  </svg>
+                </button>
               </div>
             </div>
           </div>
@@ -1133,24 +1133,43 @@ useHead({
   transform: scale(1.02);
 }
 
-/* Message Actions */
-.message-actions {
+/* Message Actions (floating on hover) */
+.message {
+  position: relative;
+}
+
+.message-actions-floating {
+  position: absolute;
+  top: 50%;
+  right: -48px;
+  transform: translateY(-50%);
   display: flex;
-  gap: 6px;
-  margin-top: 8px;
+  gap: 4px;
+  padding: 4px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.04);
   opacity: 0;
-  transition: opacity 0.2s ease;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  z-index: 5;
 }
 
-.message:hover .message-actions {
+.message.own-message .message-actions-floating {
+  right: auto;
+  left: -48px;
+}
+
+.message:hover .message-actions-floating {
   opacity: 1;
+  visibility: visible;
 }
 
-.action-btn {
-  width: 28px;
-  height: 28px;
+.message-actions-floating .action-btn {
+  width: 32px;
+  height: 32px;
   border-radius: 8px;
-  background: #f3f4f6;
+  background: transparent;
   border: none;
   cursor: pointer;
   display: flex;
@@ -1160,27 +1179,14 @@ useHead({
   transition: all 0.2s ease;
 }
 
-.message.own-message .action-btn {
-  background: rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.action-btn:hover {
-  background: #e5e7eb;
+.message-actions-floating .action-btn:hover {
+  background: #f3f4f6;
   color: #3b82f6;
 }
 
-.message.own-message .action-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-}
-
-.action-btn.delete-btn:hover {
+.message-actions-floating .action-btn.delete-btn:hover {
+  background: #fef2f2;
   color: #ef4444;
-}
-
-.message.own-message .delete-btn:hover {
-  color: #f87171;
 }
 
 /* Empty Chat */
