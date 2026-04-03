@@ -24,7 +24,7 @@ import { CurrentUser, AuthenticatedUser } from '../../common/decorators/current-
 import { UserRole } from '../users/entities/user.entity';
 import { AuthService } from './auth.service';
 import { RegisterDto, LoginDto } from './dto/auth.dto';
-import { ForgotPasswordDto, ResetPasswordDto } from './dto/password-reset.dto';
+import { ForgotPasswordDto, ResetPasswordDto, ChangePasswordDto } from './dto/password-reset.dto';
 import { InviteUserDto } from '../users/dto/user.dto';
 
 @ApiTags('auth')
@@ -116,6 +116,19 @@ export class AuthController {
   @ApiResponse({ status: 400, description: 'Invalid or expired token' })
   async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
     return this.authService.resetPassword(resetPasswordDto);
+  }
+
+  @Post('change-password')
+  @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Change password (for authenticated users)' })
+  @ApiResponse({ status: 200, description: 'Password changed successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid current password' })
+  async changePassword(
+    @Body() changePasswordDto: ChangePasswordDto,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.authService.changePassword(user.id, changePasswordDto);
   }
 
   @Post('admin/create-user')

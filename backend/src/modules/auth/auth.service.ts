@@ -14,7 +14,7 @@ import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../users/users.service';
 import { User, UserRole } from '../users/entities/user.entity';
 import { RegisterDto, LoginDto } from './dto/auth.dto';
-import { ForgotPasswordDto, ResetPasswordDto } from './dto/password-reset.dto';
+import { ForgotPasswordDto, ResetPasswordDto, ChangePasswordDto } from './dto/password-reset.dto';
 import { InviteUserDto } from '../users/dto/user.dto';
 import { EmailService } from '../email/email.service';
 
@@ -437,5 +437,26 @@ export class AuthService {
       password += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     return password;
+  }
+
+  /**
+   * Change password (for authenticated users)
+   */
+  async changePassword(userId: string, changePasswordDto: ChangePasswordDto) {
+    const user = await this.usersService.findByIdWithSensitive(userId);
+
+    // Validate current password
+    const isCurrentPasswordValid = await user.validatePassword(changePasswordDto.currentPassword);
+    if (!isCurrentPasswordValid) {
+      throw new UnauthorizedException('Current password is incorrect');
+    }
+
+    // Update password
+    await this.usersService.updatePassword(user.id, changePasswordDto.newPassword);
+
+    return {
+      success: true,
+      message: 'Password has been changed successfully',
+    };
   }
 }

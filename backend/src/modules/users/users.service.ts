@@ -146,6 +146,7 @@ export class UsersService {
     const user = await this.usersRepository.findOne({
       where: { id, isDeleted: false },
       withDeleted: true,
+      select: ['id', 'email', 'passwordHash', 'name', 'phone', 'role', 'avatar', 'isBlocked', 'isDeleted', 'refreshToken', 'isEmailVerified', 'createdAt', 'updatedAt'],
     });
 
     if (!user) {
