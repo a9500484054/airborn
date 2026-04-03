@@ -13,7 +13,7 @@ export class EmailService {
   private emailFrom: string;
 
   constructor(private configService: ConfigService) {
-    this.emailFrom = this.configService.get<string>('EMAIL_FROM') || 'ayedaru@yandex.ru';
+    this.emailFrom = this.configService.get<string>('EMAIL_FROM') || 'airbornonline@yandex.ru';
     
     // Configure transporter for Yandex SMTP
     this.transporter = nodemailer.createTransport({

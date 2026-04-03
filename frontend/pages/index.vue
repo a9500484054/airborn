@@ -170,7 +170,7 @@
                   </svg>
                   <div>
                     <strong>Email</strong>
-                    <a href="mailto:airborn.online@yandex.ru">airborn.online@yandex.ru</a>
+                    <a href="mailto:airbornonline@yandex.ru">airbornonline@yandex.ru</a>
                   </div>
                 </div>
                 <div class="contact-info-item">
