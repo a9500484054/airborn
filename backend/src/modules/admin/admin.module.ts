@@ -8,12 +8,13 @@ import { User } from '../users/entities/user.entity';
 import { Project } from '../projects/entities/project.entity';
 import { Lead } from '../leads/entities/lead.entity';
 import { Message } from '../messages/entities/message.entity';
+import { Report } from '../reports/entities/report.entity';
 import { AdminStatsService } from './admin-stats.service';
 import { AdminStatsController } from './admin-stats.controller';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Project, Lead, Message]),
+    TypeOrmModule.forFeature([User, Project, Lead, Message, Report]),
   ],
   controllers: [AdminStatsController],
   providers: [AdminStatsService],

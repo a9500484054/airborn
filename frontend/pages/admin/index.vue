@@ -57,15 +57,16 @@
           </div>
         </NuxtLink>
 
-        <NuxtLink to="/admin/chat" class="stat-card">
+        <NuxtLink to="/admin/reports" class="stat-card">
           <div class="stat-icon orange">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M21 15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7L3 21V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15Z" stroke="currentColor" stroke-width="1.2"/>
+              <rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="1.2"/>
+              <path d="M9 9H15M9 12H15M9 15H12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
             </svg>
           </div>
           <div class="stat-info">
-            <div class="stat-value">{{ stats.totalMessages }}</div>
-            <div class="stat-label">Всего сообщений</div>
+            <div class="stat-value">{{ stats.totalReports }}</div>
+            <div class="stat-label">Всего отчётов</div>
           </div>
         </NuxtLink>
       </div>
@@ -124,18 +125,16 @@
         </NuxtLink>
 
         <!-- Chat Management Card -->
-        <NuxtLink to="/admin/chat" class="admin-card">
+        <NuxtLink to="/admin/reports" class="admin-card">
           <div class="card-icon-wrapper orange-bg">
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-              <path d="M24 4H8C5.8 4 4 5.8 4 8V20C4 22.2 5.8 24 8 24H24C26.2 24 28 22.2 28 20V8C28 5.8 26.2 4 24 4Z" stroke="currentColor" stroke-width="1.5"/>
-              <path d="M10 12H22M10 16H18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-              <path d="M8 24L4 28" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-              <path d="M24 24L28 28" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <rect x="6" y="4" width="20" height="24" rx="2" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M12 10H20M12 14H20M12 18H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
           </div>
           <div class="card-content">
-            <h2 class="card-title">Чат</h2>
-            <p class="card-description">Просмотр сообщений и управление чатами с пользователями</p>
+            <h2 class="card-title">Отчёты</h2>
+            <p class="card-description">Просмотр и управление табелями учёта времени сотрудников</p>
             <div class="card-footer-admin">
               <span class="card-link">Перейти →</span>
             </div>
@@ -188,6 +187,7 @@ const stats = ref({
   totalProjects: 0,
   activeLeads: 0,
   totalMessages: 0,
+  totalReports: 0,
 });
 
 const isLoading = ref(true);
