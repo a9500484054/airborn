@@ -124,6 +124,37 @@
               </div>
 
               <div class="message-content">
+                <!-- Message Actions (three dots menu) -->
+                <div class="message-actions-wrapper" :class="{ 'own-message': message.user.id === authStore.user?.id }">
+                  <button class="message-menu-btn" @click.stop="toggleMessageMenu(message.id)" :class="{ 'menu-open': openMenuId === message.id }">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <circle cx="8" cy="3" r="1.5" fill="currentColor"/>
+                      <circle cx="8" cy="8" r="1.5" fill="currentColor"/>
+                      <circle cx="8" cy="13" r="1.5" fill="currentColor"/>
+                    </svg>
+                  </button>
+
+                  <!-- Dropdown Menu -->
+                  <div v-if="openMenuId === message.id" class="message-menu">
+                    <button class="menu-item" @click="setReply(message); openMenuId = null">
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M3 8L7 4M3 8L7 12M3 8H13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                      </svg>
+                      <span>Ответить</span>
+                    </button>
+                    <button
+                      v-if="message.user.id === authStore.user?.id"
+                      class="menu-item delete-item"
+                      @click="deleteMessage(message.id); openMenuId = null"
+                    >
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M2 4H14M6 4V2.66667C6 2.31304 6.14048 1.97391 6.39052 1.72386C6.64057 1.47381 6.97971 1.33333 7.33333 1.33333H8.66667C9.02029 1.33333 9.35943 1.47381 9.60948 1.72386C9.85952 1.97391 10 2.31304 10 2.66667V4M12.6667 4V12.6667C12.6667 13.0203 12.5262 13.3594 12.2761 13.6095C12.0261 13.8595 11.6869 14 11.3333 14H4.66667C4.31304 14 3.97391 13.8595 3.72386 13.6095C3.47381 13.3594 3.33333 13.0203 3.33333 12.6667V4H12.6667Z" stroke="currentColor" stroke-width="1.2"/>
+                      </svg>
+                      <span>Удалить</span>
+                    </button>
+                  </div>
+                </div>
+
                 <!-- Message Header -->
                 <div class="message-header">
                   <span class="message-author">{{ message.user.name }}</span>
@@ -132,7 +163,7 @@
 
                 <!-- Reply Preview -->
                 <div v-if="message.replyTo" class="message-reply">
-                  <div class="reply-icon">↩️</div>
+                  <!-- <div class="reply-icon">↩️</div> -->
                   <div class="reply-content">
                     <span class="reply-author">{{ message.replyTo.user?.name || 'Unknown' }}</span>
                     <span class="reply-text">{{ message.replyTo.content || 'Вложение' }}</span>
@@ -165,37 +196,6 @@
                     class="file-image"
                     @click="openImagePreview(getFullUrl(message.fileUrl))"
                   />
-                </div>
-              </div>
-
-              <!-- Message Actions (three dots menu) -->
-              <div class="message-actions-wrapper" :class="{ 'own-message': message.user.id === authStore.user?.id }">
-                <button class="message-menu-btn" @click="toggleMessageMenu(message.id)" :class="{ 'menu-open': openMenuId === message.id }">
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <circle cx="8" cy="3" r="1.5" fill="currentColor"/>
-                    <circle cx="8" cy="8" r="1.5" fill="currentColor"/>
-                    <circle cx="8" cy="13" r="1.5" fill="currentColor"/>
-                  </svg>
-                </button>
-
-                <!-- Dropdown Menu -->
-                <div v-if="openMenuId === message.id" class="message-menu">
-                  <button class="menu-item" @click="setReply(message); openMenuId = null">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M3 8L7 4M3 8L7 12M3 8H13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-                    </svg>
-                    <span>Ответить</span>
-                  </button>
-                  <button
-                    v-if="message.user.id === authStore.user?.id"
-                    class="menu-item delete-item"
-                    @click="deleteMessage(message.id); openMenuId = null"
-                  >
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M2 4H14M6 4V2.66667C6 2.31304 6.14048 1.97391 6.39052 1.72386C6.64057 1.47381 6.97971 1.33333 7.33333 1.33333H8.66667C9.02029 1.33333 9.35943 1.47381 9.60948 1.72386C9.85952 1.97391 10 2.31304 10 2.66667V4M12.6667 4V12.6667C12.6667 13.0203 12.5262 13.3594 12.2761 13.6095C12.0261 13.8595 11.6869 14 11.3333 14H4.66667C4.31304 14 3.97391 13.8595 3.72386 13.6095C3.47381 13.3594 3.33333 13.0203 3.33333 12.6667V4H12.6667Z" stroke="currentColor" stroke-width="1.2"/>
-                    </svg>
-                    <span>Удалить</span>
-                  </button>
                 </div>
               </div>
             </div>
@@ -600,17 +600,18 @@ useHead({
   background: #ffffff;
   border-radius: 24px;
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
-/* Chat Header */
+/* ===== CHAT HEADER ===== */
 .chat-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 24px;
+  padding: 20px 28px;
   background: white;
   border-bottom: 1px solid #f0f2f5;
+  backdrop-filter: blur(10px);
 }
 
 .header-left {
@@ -1155,40 +1156,63 @@ useHead({
   position: relative;
 }
 
+.message-content {
+  position: relative;
+}
+
 .message-actions-wrapper {
   position: absolute;
   top: 8px;
-  right: -40px;
+  right: 8px;
   z-index: 5;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
 }
 
 .message.own-message .message-actions-wrapper {
   right: auto;
-  left: -40px;
+  left: 8px;
+}
+
+.message:hover .message-actions-wrapper {
+  opacity: 1;
+  visibility: visible;
 }
 
 .message-menu-btn {
   width: 28px;
   height: 28px;
   border-radius: 8px;
-  background: transparent;
+  background: rgba(255, 255, 255, 0.8);
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #9ca3af;
+  color: #6b7280;
   transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+
+.message.own-message .message-menu-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .message-menu-btn:hover {
-  background: #f3f4f6;
-  color: #6b7280;
+  background: rgba(255, 255, 255, 0.95);
+  color: #3b82f6;
+}
+
+.message.own-message .message-menu-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  color: white;
 }
 
 .message-menu-btn.menu-open {
-  background: #f3f4f6;
-  color: #3b82f6;
+  opacity: 1;
+  visibility: visible;
 }
 
 .message-menu {
