@@ -222,13 +222,13 @@ export const useChatStore = defineStore('chat', {
       try {
         const config = useRuntimeConfig();
         const authStore = useAuthStore();
-        
+
         if (!authStore.accessToken) {
           console.warn('No access token, skipping message load');
           this.isLoading = false;
           return;
         }
-        
+
         const { data } = await useFetch(`${config.public.apiUrl}/messages?page=${page}&limit=${limit}`, {
           headers: {
             Authorization: `Bearer ${authStore.accessToken}`,
@@ -250,15 +250,11 @@ export const useChatStore = defineStore('chat', {
           }
 
           this.page = page;
-          this.hasMore = page < response.data.meta.totalPages;
-          
-          // Scroll to bottom after loading messages
-          setTimeout(() => {
-            const container = document.querySelector('.messages-container');
-            if (container && page === 1) {
-              container.scrollTop = container.scrollHeight;
-            }
-          }, 100);
+
+          // Update hasMore based on server response AND client-side check
+          const serverHasMore = page < response.data.meta.totalPages;
+          const clientHasMore = newMessages.length >= limit;
+          this.hasMore = serverHasMore && clientHasMore;
         }
       } catch (error: any) {
         console.error('Failed to load messages:', error);

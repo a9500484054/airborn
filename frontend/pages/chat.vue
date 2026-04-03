@@ -94,7 +94,7 @@
       </transition>
 
       <!-- Messages Container -->
-      <div class="messages-container" ref="messagesContainer" :class="{ 'with-sidebar': showInfo }">
+      <div class="messages-container" ref="messagesContainer" @scroll="handleScroll" :class="{ 'with-sidebar': showInfo }">
         <!-- Loading More Messages -->
         <div v-if="chatStore.isLoading && chatStore.page > 1" class="loading-more">
           <div class="spinner-small"></div>
@@ -435,6 +435,40 @@ const scrollToBottom = () => {
       messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
     }
   }, 100);
+};
+
+// Infinite scroll handler
+const handleScroll = () => {
+  if (!messagesContainer.value) return;
+
+  const container = messagesContainer.value;
+  const scrollTop = container.scrollTop;
+  const threshold = 100; // pixels from top to trigger load
+
+  if (scrollTop < threshold && chatStore.hasMore && !chatStore.isLoading) {
+    loadMoreWithScrollPosition();
+  }
+};
+
+const loadMoreWithScrollPosition = async () => {
+  if (!messagesContainer.value) return;
+
+  // Save current scroll height and position
+  const oldScrollHeight = messagesContainer.value.scrollHeight;
+  const oldScrollTop = messagesContainer.value.scrollTop;
+
+  // Load more messages
+  await chatStore.loadMore();
+
+  // Wait for DOM update
+  await nextTick();
+
+  // Restore scroll position
+  if (messagesContainer.value) {
+    const newScrollHeight = messagesContainer.value.scrollHeight;
+    const heightDifference = newScrollHeight - oldScrollHeight;
+    messagesContainer.value.scrollTop = oldScrollTop + heightDifference;
+  }
 };
 
 const handleInput = () => {
