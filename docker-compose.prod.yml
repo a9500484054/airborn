@@ -1,102 +1,115 @@
+version: '3.8'
+
 services:
-  # PostgreSQL Database
   postgres:
     image: postgres:15-alpine
     container_name: airborn-postgres
-    restart: unless-stopped
+    restart: always
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-changeme}
       POSTGRES_DB: airborn
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
     networks:
       - airborn-network
+    # Убираем публикацию порта, используем внутреннюю сеть
+    expose:
+      - "5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  # Backend (NestJS)
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     container_name: airborn-backend
-    restart: unless-stopped
+    restart: always
     environment:
       NODE_ENV: production
       PORT: 3000
       DB_HOST: postgres
       DB_PORT: 5432
       DB_USERNAME: postgres
-      DB_PASSWORD: postgres
+      DB_PASSWORD: ${DB_PASSWORD:-changeme}
       DB_DATABASE: airborn
-      JWT_SECRET: airborn-production-jwt-secret-key-2026-change-in-real-deployment
+      JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRATION: 7d
-      REFRESH_SECRET: airborn-production-refresh-secret-key-2026-change
+      REFRESH_SECRET: ${REFRESH_SECRET}
       REFRESH_EXPIRATION: 7d
-      CORS_ORIGIN: http://localhost:3011
+      CORS_ORIGIN: ${CORS_ORIGIN:-https://airborn.online}
       UPLOAD_PATH: /app/uploads
       MAX_FILE_SIZE: 20971520
       THROTTLE_TTL: 60
       THROTTLE_LIMIT: 100
-      # Email configuration
       SMTP_HOST: smtp.yandex.ru
       SMTP_PORT: 465
       SMTP_USER: airbornonline@yandex.ru
-      SMTP_PASS: omrhvzxardmrdgdh
+      SMTP_PASS: ${SMTP_PASS}
       EMAIL_FROM: airbornonline@yandex.ru
       REQUIRE_EMAIL_VERIFICATION: "true"
-      FRONTEND_URL: http://localhost:3011
+      FRONTEND_URL: ${FRONTEND_URL}
     volumes:
       - backend_uploads:/app/uploads
-    ports:
-      - "3010:3000"
+    networks:
+      - airborn-network
     depends_on:
       postgres:
         condition: service_healthy
-    networks:
-      - airborn-network
-    command: ["node", "dist/main.js"]
+    # Не публикуем порт 3000 наружу
+    expose:
+      - "3000"
 
-  # Frontend (Nuxt)
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        NUXT_PUBLIC_API_URL: http://localhost:3000/api
+        NUXT_PUBLIC_API_URL: https://airborn.online/api
     container_name: airborn-frontend
-    restart: unless-stopped
+    restart: always
     environment:
-      NUXT_PUBLIC_API_URL: http://localhost:3000/api
-      NUXT_PUBLIC_WS_URL: ws://localhost:3000/chat
-    ports:
-      - "3001:3000"
-    depends_on:
-      - backend
+      NUXT_PUBLIC_API_URL: https://airborn.online/api
+      NUXT_PUBLIC_WS_URL: wss://airborn.online/chat
     networks:
       - airborn-network
+    depends_on:
+      - backend
+    # Не публикуем порт 3000 наружу
+    expose:
+      - "3000"
 
-  # Nginx Reverse Proxy
   nginx:
     image: nginx:alpine
     container_name: airborn-nginx
-    restart: unless-stopped
+    restart: always
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+      - ./docker/nginx/ssl:/etc/nginx/ssl
       - ./docker/nginx/logs:/var/log/nginx
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
     depends_on:
       - backend
       - frontend
     networks:
       - airborn-network
+    command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
+
+  certbot:
+    image: certbot/certbot
+    container_name: airborn-certbot
+    volumes:
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
 networks:
   airborn-network:
@@ -104,6 +117,4 @@ networks:
 
 volumes:
   postgres_data:
-    driver: local
   backend_uploads:
-    driver: local
