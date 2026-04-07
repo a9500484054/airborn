@@ -107,16 +107,16 @@
 
           <div class="footer-links">
             <div class="footer-column">
-              <h4>Услуги</h4>
+              <!-- <h4>Услуги</h4>
               <NuxtLink to="/under-construction" class="footer-link">Кондиционирование</NuxtLink>
               <NuxtLink to="/under-construction" class="footer-link">Вентиляция</NuxtLink>
-              <NuxtLink to="/under-construction" class="footer-link">Обслуживание</NuxtLink>
+              <NuxtLink to="/under-construction" class="footer-link">Обслуживание</NuxtLink> -->
             </div>
             <div class="footer-column">
-              <h4>Компания</h4>
+              <!-- <h4>Компания</h4>
               <NuxtLink to="/under-construction" class="footer-link">О нас</NuxtLink>
               <NuxtLink to="/under-construction" class="footer-link">Проекты</NuxtLink>
-              <NuxtLink to="/under-construction" class="footer-link">Отзывы</NuxtLink>
+              <NuxtLink to="/under-construction" class="footer-link">Отзывы</NuxtLink> -->
             </div>
             <div class="footer-column">
               <h4>Правовая информация</h4>

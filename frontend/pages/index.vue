@@ -11,53 +11,63 @@
         
         <div class="container">
           <div class="hero-content">
-            <div class="hero-badge">
-              <span class="badge-dot"></span>
-              Работаем в СПб и Ленобласти
-            </div>
-            
-            <h1 class="hero-title">
-              Профессиональный монтаж
-              <span class="title-gradient">вентиляции и кондиционирования</span>
-            </h1>
-            
-            <p class="hero-description">
-              Монтируем системы «под ключ» с гарантией 12 месяцев. 
-              Бесплатный выезд инженера в день обращения.
-            </p>
-            
-            <div class="hero-stats">
-              <div class="stat">
-                <div class="stat-number">500+</div>
-                <div class="stat-label">Выполненных проектов</div>
+            <div class="hero-card">
+              <div class="hero-badge">
+                <span class="badge-dot"></span>
+                Работаем в СПб и Ленобласти
               </div>
-              <div class="stat-divider"></div>
-              <div class="stat">
-                <div class="stat-number">12 лет</div>
-                <div class="stat-label">Опыта на рынке</div>
+              
+              <h1 class="hero-title">
+                Профессиональный монтаж
+                <span class="title-gradient">вентиляции и кондиционирования</span>
+              </h1>
+              
+              <p class="hero-description">
+                Монтируем системы «под ключ» с гарантией 12 месяцев. 
+                Бесплатный выезд инженера в день обращения.
+              </p>
+              
+              <div class="hero-stats">
+                <div class="stat">
+                  <div class="stat-number">500+</div>
+                  <div class="stat-label">Выполненных проектов</div>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                  <div class="stat-number">12 лет</div>
+                  <div class="stat-label">Опыта на рынке</div>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                  <div class="stat-number">24/7</div>
+                  <div class="stat-label">Техподдержка</div>
+                </div>
               </div>
-              <div class="stat-divider"></div>
-              <div class="stat">
-                <div class="stat-number">24/7</div>
-                <div class="stat-label">Техподдержка</div>
+              
+              <div class="hero-actions">
+                <button @click="scrollToForm" class="btn-primary-hero">
+                  Рассчитать стоимость
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M4.16663 10H15.8333M15.8333 10L10.8333 5M15.8333 10L10.8333 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                </button>
+                <a href="tel:+79650212288" class="btn-outline-hero">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M18.3334 14.0833V16.5C18.334 16.789 18.2653 17.074 18.1335 17.3299C18.0018 17.5858 17.811 17.8049 17.5778 17.9692C17.3446 18.1336 17.076 18.2385 16.7946 18.2757C16.5133 18.3128 16.2276 18.2813 15.9584 18.1833C13.0719 17.2007 10.4706 15.5151 8.39166 13.275C6.17864 11.1732 4.50927 8.56192 3.54166 5.65833C3.44587 5.39193 3.4151 5.10596 3.45193 4.82516C3.48876 4.54436 3.59218 4.27618 3.75444 4.04296C3.91669 3.80973 4.13316 3.61808 4.38624 3.48471C4.63933 3.35134 4.92166 3.28023 5.20833 3.27708H7.625C7.958 3.27518 8.28134 3.37946 8.54855 3.57425C8.81576 3.76904 9.0134 4.04403 9.1125 4.35833C9.30618 4.99811 9.57218 5.61353 9.90417 6.19167C10.0825 6.50452 10.1658 6.86214 10.1445 7.22062C10.1232 7.57909 9.99833 7.92375 9.7875 8.2125L8.85417 9.4375C9.9669 11.3462 11.5675 12.8609 13.5125 13.8542L14.7625 12.9583C15.0492 12.7546 15.3903 12.6338 15.744 12.6117C16.0977 12.5897 16.4504 12.6672 16.7583 12.8354C17.3499 13.1689 17.974 13.4468 18.625 13.6667C18.9435 13.7671 19.2214 13.9669 19.4167 14.2372C19.612 14.5075 19.7145 14.8345 19.7083 15.1688V18.3333H19.7083Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                  Позвонить
+                </a>
               </div>
-            </div>
-            
-            <div class="hero-actions">
-              <button @click="scrollToForm" class="btn-primary-hero">
-                Рассчитать стоимость
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path d="M4.16663 10H15.8333M15.8333 10L10.8333 5M15.8333 10L10.8333 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                </svg>
-              </button>
-              <a href="tel:+79650212288" class="btn-outline-hero">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path d="M18.3334 14.0833V16.5C18.334 16.789 18.2653 17.074 18.1335 17.3299C18.0018 17.5858 17.811 17.8049 17.5778 17.9692C17.3446 18.1336 17.076 18.2385 16.7946 18.2757C16.5133 18.3128 16.2276 18.2813 15.9584 18.1833C13.0719 17.2007 10.4706 15.5151 8.39166 13.275C6.17864 11.1732 4.50927 8.56192 3.54166 5.65833C3.44587 5.39193 3.4151 5.10596 3.45193 4.82516C3.48876 4.54436 3.59218 4.27618 3.75444 4.04296C3.91669 3.80973 4.13316 3.61808 4.38624 3.48471C4.63933 3.35134 4.92166 3.28023 5.20833 3.27708H7.625C7.958 3.27518 8.28134 3.37946 8.54855 3.57425C8.81576 3.76904 9.0134 4.04403 9.1125 4.35833C9.30618 4.99811 9.57218 5.61353 9.90417 6.19167C10.0825 6.50452 10.1658 6.86214 10.1445 7.22062C10.1232 7.57909 9.99833 7.92375 9.7875 8.2125L8.85417 9.4375C9.9669 11.3462 11.5675 12.8609 13.5125 13.8542L14.7625 12.9583C15.0492 12.7546 15.3903 12.6338 15.744 12.6117C16.0977 12.5897 16.4504 12.6672 16.7583 12.8354C17.3499 13.1689 17.974 13.4468 18.625 13.6667C18.9435 13.7671 19.2214 13.9669 19.4167 14.2372C19.612 14.5075 19.7145 14.8345 19.7083 15.1688V18.3333H19.7083Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                </svg>
-                Позвонить
-              </a>
             </div>
           </div>
+
+          <!-- <div class="hero-image-wrapper">
+            <div class="hero-image-container">
+              <img src="/img/hero-img.png" alt="Монтаж вентиляции и кондиционирования" class="hero-image" />
+              <div class="hero-image-overlay"></div>
+              <div class="hero-image-glow"></div>
+            </div>
+          </div> -->
         </div>
       </section>
 
@@ -72,11 +82,16 @@
           <div class="projects-carousel">
             <div class="carousel-wrapper">
               <div class="carousel-track" :style="{ transform: `translateX(-${carouselPosition}px)` }">
-                <div 
+                <!-- <div 
                   class="project-card" 
                   v-for="(project, index) in projects" 
                   :key="index"
                   @click="openProjectModal(index)"
+                > -->
+                <div 
+                  class="project-card" 
+                  v-for="(project, index) in projects" 
+                  :key="index"
                 >
                   <div class="project-image">
                     <img :src="project.image" :alt="project.title" class="project-img" />
@@ -92,12 +107,12 @@
                         <li v-for="(work, idx) in project.works" :key="idx">{{ work }}</li>
                       </ul>
                     </div>
-                    <button class="btn-view-project">
+                    <!-- <button class="btn-view-project">
                       Подробнее
                       <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
                         <path d="M4.16663 10H15.8333M15.8333 10L10.8333 5M15.8333 10L10.8333 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                       </svg>
-                    </button>
+                    </button> -->
                   </div>
                 </div>
               </div>
@@ -122,10 +137,11 @@
                   @click="goToSlide(index)"
                 ></span>
               </div>
+              
               <button 
                 class="carousel-btn carousel-next" 
                 @click="nextProject"
-                :disabled="currentIndex >= visibleProjects.length - 1"
+                :disabled="currentIndex >= visibleProjects - 1"
               >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                   <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -133,7 +149,7 @@
               </button>
             </div>
           </div>
-        </div>
+        </div>{{ visibleProjects }}
       </section>
 
       <!-- Project Modal -->
@@ -453,7 +469,7 @@ const selectedProject = ref<any>(null);
 const cardWidth = ref(380); // Card width + gap
 
 const visibleProjects = computed(() => {
-  return Math.min(projects.length, 3);
+  return Math.min(projects.length, 2);
 });
 
 const carouselPosition = computed(() => {
@@ -606,7 +622,30 @@ const submitForm = async () => {
   position: absolute;
   inset: 0;
   z-index: 0;
+  background-image: url('./img/hero-img.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* filter: brightness(0.1); */
+  background-position-y: -982px;
 }
+
+@media (max-width: 992px) {
+  .hero-bg {
+    background-position-y: -440px;
+  }
+}
+@media (max-width: 768px) {
+  .hero-bg {
+    background-position-y: 0;
+  }
+}
+/* .hero-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgb(255 255 255 / 68%); 
+  z-index: 1;
+} */
 
 .hero-gradient {
   position: absolute;
@@ -624,8 +663,15 @@ const submitForm = async () => {
 .hero-content {
   position: relative;
   z-index: 1;
-  max-width: 800px;
+
   padding: 120px 0 80px;
+}
+
+.hero-card {
+  padding: 20px;
+  max-width: 900px;
+  background-color: #ffffffcf;
+  border-radius: 8px;
 }
 
 .hero-badge {
@@ -633,10 +679,10 @@ const submitForm = async () => {
   align-items: center;
   gap: 8px;
   padding: 6px 16px;
-  background: #f1f5f9;
+  background: #2f71f0;
   border-radius: 100px;
   font-size: 14px;
-  color: #475569;
+  color: #f7fbfe;
   margin-bottom: 32px;
 }
 
@@ -668,7 +714,7 @@ const submitForm = async () => {
 
 .hero-description {
   font-size: 18px;
-  color: #475569;
+  color: #0f172a;
   line-height: 1.6;
   margin-bottom: 48px;
   max-width: 600px;
@@ -747,6 +793,7 @@ const submitForm = async () => {
   font-weight: 500;
   text-decoration: none;
   transition: all 0.3s ease;
+  background-color: #fff;
 }
 
 .btn-outline-hero:hover {
@@ -784,6 +831,113 @@ const submitForm = async () => {
 
 }
 
+/* Hero Image Styles */
+.hero-image-wrapper {
+  position: absolute;
+  top: 50%;
+  right: -80px;
+  transform: translateY(-50%);
+  z-index: 0;
+  opacity: 0.9;
+}
+
+.hero-image-container {
+  position: relative;
+  width: 700px;
+  height: 500px;
+  overflow: hidden;
+  border-radius: 32px;
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.15);
+}
+
+.hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.hero-image-container:hover .hero-image {
+  transform: scale(1.05);
+}
+
+.hero-image-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.2) 0%, rgba(37, 99, 235, 0.1) 100%);
+  pointer-events: none;
+}
+
+.hero-image-glow {
+  position: absolute;
+  inset: -20px;
+  background: radial-gradient(circle at 50% 50%, rgba(37, 99, 235, 0.2) 0%, transparent 70%);
+  filter: blur(40px);
+  z-index: -1;
+}
+
+@media (max-width: 1440px) {
+  .hero-image-wrapper {
+    right: -40px;
+  }
+  
+  .hero-image-container {
+    width: 600px;
+    height: 430px;
+  }
+}
+
+@media (max-width: 1280px) {
+  .hero-image-wrapper {
+    right: -20px;
+  }
+  
+  .hero-image-container {
+    width: 500px;
+    height: 360px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .hero-image-wrapper {
+    right: -10px;
+  }
+  
+  .hero-image-container {
+    width: 450px;
+    height: 320px;
+    border-radius: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-image-wrapper {
+    position: relative;
+    top: auto;
+    right: auto;
+    transform: none;
+    margin-top: 40px;
+    opacity: 1;
+  }
+  
+  .hero-image-container {
+    width: 100%;
+    height: 300px;
+    border-radius: 20px;
+  }
+  
+  .hero-content {
+    padding: 100px 0 40px;
+  }
+}
+
+@media (max-width: 433px) {
+  .hero-image-container {
+    height: 250px;
+    border-radius: 16px;
+  }
+}
+
 /* Services Section */
 .services {
   padding: 100px 0;
@@ -795,7 +949,7 @@ const submitForm = async () => {
 }
 
 .section-header.center {
-  text-align: center;
+  /* text-align: center; */
 }
 
 .section-badge {
@@ -1330,7 +1484,7 @@ const submitForm = async () => {
   background: #ffffff;
   border-radius: 24px;
   overflow: hidden;
-  cursor: pointer;
+  /* cursor: pointer; */
   transition: all 0.3s ease;
   border: 1px solid #eef2ff;
 }

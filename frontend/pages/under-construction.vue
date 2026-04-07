@@ -4,11 +4,10 @@
       <div class="construction-card">
         <!-- Icon -->
         <div class="construction-icon">
-          <svg width="64" height="64" viewBox="0 0 24 24" fill="none">
-            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="1.5"/>
-            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="1.5"/>
-            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="1.5"/>
-            <circle cx="12" cy="12" r="2" fill="currentColor"/>
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <path d="M16 4L4 12L16 20L28 12L16 4Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+            <path d="M4 20L16 28L28 20" stroke="currentColor" stroke-width="1.5" fill="none"/>
+            <circle cx="16" cy="12" r="2" fill="currentColor"/>
           </svg>
         </div>
 

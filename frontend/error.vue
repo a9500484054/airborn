@@ -30,26 +30,14 @@
 
         <!-- Actions -->
         <div class="error-actions">
-          <NuxtLink to="/dashboard" class="btn-primary">
+          <NuxtLink to="/" class="btn-primary">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
               <path d="M11 14L6 9L11 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
             На главную
           </NuxtLink>
-          <button class="btn-secondary" @click="handleError">
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-              <path d="M3 9H15M3 9L7 5M3 9L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-            Назад
-          </button>
         </div>
 
-        <!-- Help Link -->
-        <div class="help-link">
-          <NuxtLink to="/chat">
-            Нужна помощь? Обратитесь в поддержку
-          </NuxtLink>
-        </div>
       </div>
     </div>
   </NuxtLayout>
@@ -73,7 +61,7 @@ useHead({
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 15% 20px;
 }
 
 .not-found-card {
