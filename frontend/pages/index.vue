@@ -61,6 +61,114 @@
         </div>
       </section>
 
+      <!-- Projects Carousel Section -->
+      <section class="projects">
+        <div class="container">
+          <div class="section-header center">
+            <span class="section-badge">Наши проекты</span>
+            <h2 class="section-title">Реализованные<br>проекты</h2>
+          </div>
+
+          <div class="projects-carousel">
+            <div class="carousel-wrapper">
+              <div class="carousel-track" :style="{ transform: `translateX(-${carouselPosition}px)` }">
+                <div 
+                  class="project-card" 
+                  v-for="(project, index) in projects" 
+                  :key="index"
+                  @click="openProjectModal(index)"
+                >
+                  <div class="project-image">
+                    <img :src="project.image" :alt="project.title" class="project-img" />
+                    <div class="project-period">{{ project.period }}</div>
+                  </div>
+                  <div class="project-content">
+                    <h3 class="project-title">{{ project.title }}</h3>
+                    <p class="project-address">{{ project.address }}</p>
+                    <p class="project-desc">{{ project.description }}</p>
+                    <div class="project-works">
+                      <h4>Выполненные работы:</h4>
+                      <ul>
+                        <li v-for="(work, idx) in project.works" :key="idx">{{ work }}</li>
+                      </ul>
+                    </div>
+                    <button class="btn-view-project">
+                      Подробнее
+                      <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                        <path d="M4.16663 10H15.8333M15.8333 10L10.8333 5M15.8333 10L10.8333 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="carousel-controls">
+              <button 
+                class="carousel-btn carousel-prev" 
+                @click="prevProject"
+                :disabled="currentIndex === 0"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </button>
+              <div class="carousel-indicators">
+                <span 
+                  v-for="(_, index) in visibleProjects" 
+                  :key="index"
+                  class="indicator"
+                  :class="{ active: index === currentIndex }"
+                  @click="goToSlide(index)"
+                ></span>
+              </div>
+              <button 
+                class="carousel-btn carousel-next" 
+                @click="nextProject"
+                :disabled="currentIndex >= visibleProjects.length - 1"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Project Modal -->
+      <div v-if="showModal" class="modal-overlay" @click="closeModal">
+        <div class="modal-content" @click.stop>
+          <button class="modal-close" @click="closeModal">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+          
+          <div class="modal-body" v-if="selectedProject">
+            <div class="modal-image">
+              <img :src="selectedProject.image" :alt="selectedProject.title" class="modal-img" />
+              <div class="modal-period">{{ selectedProject.period }}</div>
+            </div>
+            
+            <div class="modal-info">
+              <h2 class="modal-title">{{ selectedProject.title }}</h2>
+              <p class="modal-address">{{ selectedProject.address }}</p>
+              <div class="modal-section">
+                <h3>Описание проекта</h3>
+                <p>{{ selectedProject.description }}</p>
+              </div>
+              <div class="modal-section">
+                <h3>Выполненные работы</h3>
+                <ul class="modal-works">
+                  <li v-for="(work, idx) in selectedProject.works" :key="idx">{{ work }}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Services Section -->
       <section id="services" class="services">
         <div class="container">
@@ -290,6 +398,106 @@ const config = useRuntimeConfig();
 const scrollToForm = () => {
   document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
 };
+
+// Projects Carousel Data
+const projects = [
+  {
+    period: 'Сен 2024 - Июль 2025',
+    title: 'Школа «Бугры»',
+    address: 'Ленинградская обл., Всеволожский р-н, пос. Бугры, массив «Центральное»',
+    description: 'Объект начального и среднего общего образования на 1383 места.',
+    image: '/img/image 447.jpg',
+    works: [
+      'Монтаж систем отопления и вентиляции.',
+      'Пусконаладочные работы.'
+    ]
+  },
+  {
+    period: 'Март 2025 - по наст. время',
+    title: 'Жилой комплекс со встроенными помещениями и автостоянкой',
+    address: 'Санкт-Петербург, В.О., Шкиперский проток, д. 19, лит. А',
+    description: 'Многоквартирный жилой дом с коммерческими помещениями и подземной парковкой.',
+    image: '/img/image 450.jpg',
+    works: [
+      'Монтаж систем отопления и вентиляции.'
+    ]
+  },
+  {
+    period: 'Авг 2025 - Сен 2025',
+    title: 'Фитнес-центр «URBANFIT»',
+    address: 'г. Санкт-Петербург, пр. Большевиков, д. 7, корп. 2, 1 этаж',
+    description: 'Коммерческий объект, фитнес-центр премиум-класса.',
+    image: '/img/image 451.jpg',
+    works: [
+      'Монтаж систем вентиляции и кондиционирования.',
+      'Комплексная поставка материалов и оборудования.'
+    ]
+  },
+  {
+    period: 'Август 2025',
+    title: 'Ресторан «Евразия»',
+    address: 'г. Санкт-Петербург, г. Колпино, ул. Пролетарская, д. 7',
+    description: 'Ресторан общественного питания.',
+    image: '/img/image 447.jpg',
+    works: [
+      'Монтаж систем вентиляции и кондиционирования.',
+      'Поставка материалов и оборудования.'
+    ]
+  }
+];
+
+// Carousel State
+const currentIndex = ref(0);
+const showModal = ref(false);
+const selectedProject = ref<any>(null);
+const cardWidth = ref(380); // Card width + gap
+
+const visibleProjects = computed(() => {
+  return Math.min(projects.length, 3);
+});
+
+const carouselPosition = computed(() => {
+  return currentIndex.value * cardWidth.value;
+});
+
+const nextProject = () => {
+  if (currentIndex.value < projects.length - visibleProjects.value) {
+    currentIndex.value++;
+  }
+};
+
+const prevProject = () => {
+  if (currentIndex.value > 0) {
+    currentIndex.value--;
+  }
+};
+
+const goToSlide = (index: number) => {
+  if (index >= 0 && index < projects.length - visibleProjects.value + 1) {
+    currentIndex.value = index;
+  }
+};
+
+const openProjectModal = (index: number) => {
+  selectedProject.value = projects[index];
+  showModal.value = true;
+  document.body.style.overflow = 'hidden';
+};
+
+const closeModal = () => {
+  showModal.value = false;
+  selectedProject.value = null;
+  document.body.style.overflow = '';
+};
+
+// Close modal on ESC
+if (process.client) {
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeModal();
+    }
+  });
+}
 
 const formatPhone = (event: Event) => {
   const input = event.target as HTMLInputElement;
@@ -1092,6 +1300,424 @@ const submitForm = async () => {
   .footer-links {
     grid-template-columns: 1fr;
     gap: 32px;
+  }
+}
+
+/* Projects Carousel Section */
+.projects {
+  padding: 100px 0;
+  background: #f8fafc;
+}
+
+.projects-carousel {
+  position: relative;
+}
+
+.carousel-wrapper {
+  overflow: hidden;
+  margin: 0 -16px;
+}
+
+.carousel-track {
+  display: flex;
+  gap: 32px;
+  transition: transform 0.5s ease-in-out;
+  padding: 16px 0;
+}
+
+.project-card {
+  min-width: calc(33.333% - 22px);
+  background: #ffffff;
+  border-radius: 24px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid #eef2ff;
+}
+
+.project-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  border-color: #2563eb;
+}
+
+.project-image {
+  position: relative;
+  height: 200px;
+  background: linear-gradient(135deg, #e0e7ff 0%, #dbeafe 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.project-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.project-card:hover .project-img {
+  transform: scale(1.05);
+}
+
+.project-placeholder svg {
+  color: #2563eb;
+  opacity: 0.5;
+}
+
+.project-period {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: #0f172a;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.project-content {
+  padding: 24px;
+}
+
+.project-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+
+.project-address {
+  color: #64748b;
+  font-size: 14px;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.project-desc {
+  color: #475569;
+  font-size: 14px;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.project-works {
+  margin-bottom: 20px;
+}
+
+.project-works h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 12px;
+}
+
+.project-works ul {
+  list-style: none;
+  padding: 0;
+}
+
+.project-works li {
+  color: #475569;
+  font-size: 13px;
+  padding: 4px 0;
+  line-height: 1.5;
+}
+
+.project-works li::before {
+  content: '• ';
+  color: #2563eb;
+  font-weight: 700;
+}
+
+.btn-view-project {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: transparent;
+  color: #2563eb;
+  border: 1px solid #2563eb;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  justify-content: center;
+}
+
+.btn-view-project:hover {
+  background: #2563eb;
+  color: white;
+}
+
+.carousel-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 40px;
+}
+
+.carousel-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #0f172a;
+}
+
+.carousel-btn:hover:not(:disabled) {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: white;
+}
+
+.carousel-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.carousel-indicators {
+  display: flex;
+  gap: 8px;
+}
+
+.indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.indicator.active {
+  background: #2563eb;
+  width: 32px;
+  border-radius: 5px;
+}
+
+.indicator:hover:not(.active) {
+  background: #cbd5e1;
+}
+
+@media (max-width: 1024px) {
+  .project-card {
+    min-width: calc(50% - 16px);
+  }
+}
+
+@media (max-width: 768px) {
+  .project-card {
+    min-width: calc(100% - 16px);
+  }
+  
+  .carousel-controls {
+    gap: 16px;
+  }
+  
+  .carousel-btn {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Project Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  background: #ffffff;
+  border-radius: 32px;
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #0f172a;
+  z-index: 10;
+}
+
+.modal-close:hover {
+  background: #e2e8f0;
+  transform: rotate(90deg);
+}
+
+.modal-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+
+.modal-image {
+  position: relative;
+  height: 100%;
+  min-height: 400px;
+  background: linear-gradient(135deg, #e0e7ff 0%, #dbeafe 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 32px 0 0 32px;
+}
+
+.modal-placeholder svg {
+  color: #2563eb;
+  opacity: 0.5;
+}
+
+.modal-period {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: #0f172a;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.modal-info {
+  padding: 40px;
+}
+
+.modal-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 16px;
+  line-height: 1.3;
+}
+
+.modal-address {
+  color: #64748b;
+  font-size: 15px;
+  margin-bottom: 32px;
+  line-height: 1.6;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.modal-section {
+  margin-bottom: 32px;
+}
+
+.modal-section h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 16px;
+}
+
+.modal-section p {
+  color: #475569;
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+.modal-works {
+  list-style: none;
+  padding: 0;
+}
+
+.modal-works li {
+  color: #475569;
+  font-size: 15px;
+  padding: 8px 0;
+  line-height: 1.6;
+  padding-left: 24px;
+  position: relative;
+}
+
+.modal-works li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: #10b981;
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .modal-body {
+    grid-template-columns: 1fr;
+  }
+  
+  .modal-image {
+    min-height: 250px;
+    border-radius: 32px 32px 0 0;
+  }
+  
+  .modal-info {
+    padding: 32px;
+  }
+  
+  .modal-title {
+    font-size: 24px;
+  }
+  
+  .modal-content {
+    border-radius: 24px;
   }
 }
 </style>
