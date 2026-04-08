@@ -1157,7 +1157,7 @@ useHead({
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   color: white;
   display: flex;
-  align-items: center;
+  /* align-items: center; */
   justify-content: center;
   font-size: 10px;
   font-weight: 600;
