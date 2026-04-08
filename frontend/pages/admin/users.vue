@@ -906,6 +906,7 @@ useHead({
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 184px;
 }
 
 .user-avatar {
@@ -963,6 +964,7 @@ useHead({
   gap: 6px;
   font-size: 13px;
   color: #475569;
+  width: 132px;
 }
 
 .phone-number svg {

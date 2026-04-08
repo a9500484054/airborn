@@ -3,7 +3,7 @@
     <!-- Sidebar -->
     <aside class="sidebar" :class="{ 'sidebar-mobile-open': mobileMenuOpen }">
       <div class="sidebar-header">
-        <NuxtLink to="/dashboard" class="logo">
+        <NuxtLink to="/" class="logo">
           <div class="logo-icon-wrapper">
             <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
               <path d="M16 4L4 12L16 20L28 12L16 4Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
@@ -215,13 +215,13 @@
           <span>Чат</span>
         </NuxtLink>
 
-        <NuxtLink to="/projects" class="nav-item" :class="{ active: $route.path.startsWith('/projects') }">
+        <!-- <NuxtLink to="/projects" class="nav-item" :class="{ active: $route.path.startsWith('/projects') }">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
             <path d="M8 8H16M8 12H12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
           <span>Проекты</span>
-        </NuxtLink>
+        </NuxtLink> -->
         <NuxtLink to="/report" class="nav-item" :class="{ active: $route.path.startsWith('/projects') }">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
@@ -576,6 +576,7 @@ onUnmounted(() => {
   flex-direction: column;
   min-height: 100vh;
   overflow-x: hidden;
+
 }
 
 /* Top Bar */
@@ -592,6 +593,8 @@ onUnmounted(() => {
   z-index: 50;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   min-height: 65px;
+  position: fixed; 
+  width: 100%;
 }
 
 .mobile-menu-btn {
@@ -731,6 +734,8 @@ onUnmounted(() => {
   }
   
   .auth-content {
+    margin-bottom: 4rem;
+    margin-top: 75px;
     margin-left: 0;
   }
   
@@ -812,6 +817,18 @@ onUnmounted(() => {
   padding-bottom: calc(8px + env(safe-area-inset-bottom));
   z-index: 90;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+  
+}
+
+.mobile-bottom-nav::after {
+  content: '';
+  position: fixed;
+  bottom: -100px; /* высота блока */
+  left: 0;
+  right: 0;
+  height: 100px;
+  background: white;
+  z-index: -1;
 }
 
 .nav-item {

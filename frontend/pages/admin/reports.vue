@@ -699,6 +699,10 @@ useHead({
   background: #f9fafb;
 }
 
+.user-cell {
+  min-width: 182px;
+}
+
 .user-cell .user-info {
   display: flex;
   align-items: center;
@@ -729,6 +733,7 @@ useHead({
 
 .hours-cell {
   text-align: center;
+  min-width: 86px
 }
 
 .hours-badge {

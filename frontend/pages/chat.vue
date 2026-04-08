@@ -33,6 +33,15 @@
             </svg>
             <span>Инфо</span>
           </button> -->
+          <NuxtLink to="/report">
+            <div class="report-btn">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                <path d="M8 8H16M8 12H12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              <span>Создать отчет</span>
+            </div>
+          </NuxtLink>
         </div>
       </div>
 
@@ -702,6 +711,7 @@ useHead({
   display: flex;
   align-items: center;
   gap: 16px;
+  /* width: 100%; */
 }
 
 .chat-icon {
@@ -1936,4 +1946,26 @@ useHead({
     right: 0;
   }
 }
+
+
+.report-btn {
+  padding: 8px 20px;
+  background: #1e293b;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  width: 133px;
+  width: 169px;
+  display: flex;
+}
+
+.report-btn svg{
+  margin-right: .5rem;
+}
+
+
 </style>

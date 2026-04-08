@@ -406,7 +406,7 @@ const handleResetPassword = async () => {
 
 .form-input {
   width: 100%;
-  padding: 12px 16px 12px 48px;
+  padding: 12px 16px;
   border: 1px solid #e2e8f0;
   border-radius: 12px;
   font-size: 16px;

@@ -180,14 +180,16 @@
               <div class="meta-item">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                   <path d="M2.33333 2.33333H11.6667C12.403 2.33333 13 2.93029 13 3.66667V11.6667C13 12.403 12.403 13 11.6667 13H2.33333C1.59695 13 1 12.403 1 11.6667V3.66667C1 2.93029 1.59695 2.33333 2.33333 2.33333Z" stroke="currentColor" stroke-width="1.2"/>
-                  <path d="M4.66667 5.66667H9.33333M4.66667 8.33333H7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                  <circle cx="4.5" cy="5.5" r="1.5" stroke="currentColor" stroke-width="1.2"/>
+                  <path d="M13 10L10 7L7 10L4.5 7.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
                 </svg>
                 <span>{{ project.images?.length || 0 }} фото</span>
               </div>
               <div class="meta-item">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <path d="M2.33333 2.33333H11.6667C12.5833 2.33333 13.3333 3.08333 13.3333 4V10C13.3333 10.9167 12.5833 11.6667 11.6667 11.6667H2.33333C1.41667 11.6667 0.666667 10.9167 0.666667 10V4C0.666667 3.08333 1.41667 2.33333 2.33333 2.33333Z" stroke="currentColor" stroke-width="1.2"/>
-                  <path d="M13.3333 4L7 8L0.666667 4" stroke="currentColor" stroke-width="1.2"/>
+                  <path d="M3.66667 1H9L12.3333 4.33333V11.6667C12.3333 12.403 11.7363 13 11 13H3.66667C2.93029 13 2.33333 12.403 2.33333 11.6667V2.33333C2.33333 1.59695 2.93029 1 3.66667 1Z" stroke="currentColor" stroke-width="1.2"/>
+                  <path d="M9 1V4.33333H12.3333" stroke="currentColor" stroke-width="1.2"/>
+                  <path d="M5 7H9M5 9.5H7.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
                 </svg>
                 <span>{{ project.files?.length || 0 }} файлов</span>
               </div>

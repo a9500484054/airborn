@@ -610,6 +610,7 @@ useHead({
   border-radius: 20px;
   font-size: 13px;
   font-weight: 600;
+  min-width: 69px;
 }
 
 .btn-delete {
