@@ -726,7 +726,7 @@ useHead({
 }
 
 .hours-cell {
-  text-align: center;
+  /* text-align: center; */
   min-width: 86px
 }
 

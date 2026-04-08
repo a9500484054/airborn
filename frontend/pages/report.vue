@@ -597,7 +597,7 @@ useHead({
 }
 
 .hours-cell {
-  text-align: center;
+  /* text-align: center; */
 }
 
 .hours-badge {

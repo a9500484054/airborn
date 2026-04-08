@@ -19,6 +19,7 @@ import { ConfigService } from '@nestjs/config';
 import { MessagesService } from '../modules/messages/messages.service';
 import { SendMessageDto } from '../modules/messages/dto/message.dto';
 import { UsersService } from '../modules/users/users.service';
+import { PushNotificationService } from '../modules/push-notification/push-notification.service';
 
 interface JwtPayload {
   sub: string;
@@ -47,6 +48,7 @@ export class ChatGateway
     private configService: ConfigService,
     private messagesService: MessagesService,
     private usersService: UsersService,
+    private pushNotificationService: PushNotificationService,
   ) {}
 
   afterInit(server: Server) {
@@ -124,8 +126,7 @@ export class ChatGateway
       // Create message in database
       const message = await this.messagesService.create(data, userId);
 
-      // Broadcast to all connected clients
-      this.server.emit('new_message', {
+      const messageData = {
         id: message.id,
         content: message.content,
         fileUrl: message.fileUrl,
@@ -138,7 +139,27 @@ export class ChatGateway
           avatar: user.avatar,
         },
         createdAt: message.createdAt,
+      };
+
+      // Broadcast to all connected clients
+      this.server.emit('new_message', messageData);
+
+      // Send push notification to offline users
+      const pushPayload = JSON.stringify({
+        title: `AirBorn - ${user.name}`,
+        body: message.content || '📎 Вложение',
+        icon: '/logo.svg',
+        badge: '/logo.svg',
+        data: { 
+          url: '/chat',
+          messageId: message.id,
+          senderId: user.id,
+          senderName: user.name,
+        },
       });
+
+      // Отправляем push всем кроме отправителя
+      await this.pushNotificationService.sendToOthers(userId, pushPayload);
 
       return { event: 'message_sent', data: message };
     } catch (error) {

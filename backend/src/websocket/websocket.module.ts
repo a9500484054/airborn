@@ -8,6 +8,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ChatGateway } from './chat.gateway';
 import { MessagesModule } from '../modules/messages/messages.module';
 import { UsersModule } from '../modules/users/users.module';
+import { PushNotificationModule } from '../modules/push-notification/push-notification.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { UsersModule } from '../modules/users/users.module';
     }),
     MessagesModule,
     UsersModule,
+    PushNotificationModule,
   ],
   providers: [ChatGateway],
   exports: [ChatGateway],

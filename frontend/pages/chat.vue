@@ -26,13 +26,22 @@
           </div>
         </div>
         <div class="header-right">
-          <!-- <button class="info-btn" @click="showInfo = !showInfo" :class="{ active: showInfo }">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.2"/>
-              <path d="M10 8V14M10 6H10.01" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+          <!-- Push Notification Button -->
+          <button 
+            class="notification-btn" 
+            :class="{ enabled: pushNotifications.isSubscribed.value }"
+            @click="toggleNotifications"
+            :title="pushNotifications.isSubscribed.value ? 'Уведомления включены' : 'Включить уведомления'"
+          >
+            <svg v-if="!pushNotifications.isSubscribed.value" width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M10 2C7.24 2 5 4.24 5 7V10L3 13V14H17V13L15 10V7C15 4.24 12.76 2 10 2Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M8 14V15C8 16.1 8.9 17 10 17C11.1 17 12 16.1 12 15V14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
-            <span>Инфо</span>
-          </button> -->
+            <svg v-else width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M10 2C7.24 2 5 4.24 5 7V10L3 13V14H17V13L15 10V7C15 4.24 12.76 2 10 2Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M8 14V15C8 16.1 8.9 17 10 17C11.1 17 12 16.1 12 15V14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
           <NuxtLink to="/report">
             <div class="report-btn">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -361,6 +370,7 @@ definePageMeta({
 
 const authStore = useAuthStore();
 const chatStore = useChatStore();
+const pushNotifications = usePushNotifications();
 const messagesContainer = ref<HTMLElement | null>(null);
 const fileInput = ref<HTMLInputElement | null>(null);
 const showInfo = ref(false);
@@ -417,6 +427,9 @@ onMounted(async () => {
     chatStore.connect(authStore.accessToken);
   }
 
+  // Инициализация push-уведомлений
+  await pushNotifications.initialize();
+
   // Disable body scroll on chat page
   document.body.style.overflow = 'hidden';
 
@@ -424,6 +437,15 @@ onMounted(async () => {
     scrollToBottom();
   }, 500);
 });
+
+// Toggle push notifications
+const toggleNotifications = async () => {
+  if (pushNotifications.isSubscribed.value) {
+    await pushNotifications.unsubscribe();
+  } else {
+    await pushNotifications.enableNotifications();
+  }
+};
 
 watch(() => chatStore.messages.length, () => {
   scrollToBottom();
@@ -809,7 +831,9 @@ useHead({
     transform: translateY(-4px);
   }
 }
-
+.header-right {
+  display: flex;
+}
 .header-right .info-btn {
   display: flex;
   align-items: center;
@@ -835,6 +859,40 @@ useHead({
   background: #eff6ff;
   border-color: #3b82f6;
   color: #3b82f6;
+}
+
+/* Notification Button */
+.header-right .notification-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+  color: #6b7280;
+  transition: all 0.2s ease;
+  margin-right: 8px;
+}
+
+.header-right .notification-btn:hover {
+  background: #e5e7eb;
+  color: #3b82f6;
+  border-color: #3b82f6;
+}
+
+.header-right .notification-btn.enabled {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  border-color: #3b82f6;
+  color: white;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.header-right .notification-btn.enabled:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 }
 
 /* Chat Info Sidebar */
@@ -1958,13 +2016,21 @@ useHead({
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 14px;
-  width: 133px;
   width: 169px;
   display: flex;
 }
 
 .report-btn svg{
   margin-right: .5rem;
+}
+
+@media (max-width: 480px) {
+  .report-btn {
+    width: auto;
+  }
+  .report-btn span{
+    display: none;
+  }
 }
 
 

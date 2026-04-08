@@ -18,6 +18,7 @@ import { WebsocketModule } from './websocket/websocket.module';
 import { EmailModule } from './modules/email/email.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { ReportsModule } from './modules/reports/reports.module';
+import { PushNotificationModule } from './modules/push-notification/push-notification.module';
 
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 
@@ -70,6 +71,7 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
     EmailModule,
     AdminModule,
     ReportsModule,
+    PushNotificationModule,
   ],
   providers: [
     {
