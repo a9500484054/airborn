@@ -85,7 +85,13 @@
       <div class="sidebar-footer">
         <div class="user-menu-bottom" @click="toggleUserMenu">
           <div class="user-avatar-bottom">
-            {{ authStore.userInitials }}
+            <img
+              v-if="authStore.user?.avatar"
+              :src="getFullAvatarUrl(authStore.user.avatar)"
+              :alt="authStore.userName"
+              class="avatar-img"
+            />
+            <span v-else>{{ authStore.userInitials }}</span>
           </div>
           <div class="user-info-bottom">
             <div class="user-name-bottom">{{ authStore.userName }}</div>
@@ -236,9 +242,18 @@
 
 <script setup lang="ts">
 const authStore = useAuthStore();
+const config = useRuntimeConfig();
 const mobileMenuOpen = ref(false);
 const userMenuOpen = ref(false);
 const userMenuOpenMobile = ref(false);
+
+// Get full avatar URL
+const getFullAvatarUrl = (avatar: string) => {
+  if (!avatar) return '';
+  if (avatar.startsWith('http://') || avatar.startsWith('https://')) return avatar;
+  const apiUrl = config.public.apiUrl.replace('/api', '');
+  return `${apiUrl}${avatar}`;
+};
 
 const handleLogout = async () => {
   userMenuOpen.value = false;
@@ -454,6 +469,14 @@ onUnmounted(() => {
   font-size: 16px;
   flex-shrink: 0;
   box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+  overflow: hidden;
+}
+
+.user-avatar-bottom .avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
 }
 
 .user-info-bottom {

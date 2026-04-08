@@ -176,7 +176,13 @@
                 <td>
                   <div class="user-cell">
                     <div class="user-avatar" :class="{ 'admin-avatar': user.role === 'admin' }">
-                      {{ getUserInitials(user.name) }}
+                      <img
+                        v-if="user.avatar"
+                        :src="getFullAvatarUrl(user.avatar)"
+                        :alt="user.name"
+                        class="avatar-img"
+                      />
+                      <span v-else>{{ getUserInitials(user.name) }}</span>
                     </div>
                     <div class="user-info">
                       <span class="user-name">{{ user.name }}</span>
@@ -703,6 +709,13 @@ const getUserInitials = (name: string) => {
     .slice(0, 2);
 };
 
+const getFullAvatarUrl = (avatar: string) => {
+  if (!avatar) return '';
+  if (avatar.startsWith('http://') || avatar.startsWith('https://')) return avatar;
+  const apiUrl = config.public.apiUrl.replace('/api', '');
+  return `${apiUrl}${avatar}`;
+};
+
 useHead({
   title: 'Управление пользователями - AirBorn',
 });
@@ -921,6 +934,13 @@ useHead({
   font-weight: 600;
   font-size: 14px;
   flex-shrink: 0;
+  overflow: hidden;
+}
+
+.user-avatar .avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .user-avatar.admin-avatar {

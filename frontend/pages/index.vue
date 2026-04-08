@@ -87,10 +87,10 @@
               :pagination="{ clickable: true }"
               :navigation="true"
               :breakpoints="{
-                640: { slidesPerView: 1.2, spaceBetween: 24 },
-                768: { slidesPerView: 1.5, spaceBetween: 28 },
+                640: { slidesPerView: 1, spaceBetween: 24 },
+                768: { slidesPerView: 1, spaceBetween: 28 },
                 1024: { slidesPerView: 2, spaceBetween: 32 },
-                1280: { slidesPerView: 2.5, spaceBetween: 32 }
+                1280: { slidesPerView: 2, spaceBetween: 32 }
               }"
               :grab-cursor="true"
               :free-mode="false"
@@ -102,7 +102,6 @@
               >
                 <div
                   class="project-card"
-                  @click="openProjectModal(index)"
                 >
                   <div class="project-image">
                     <img :src="project.image" :alt="project.title" class="project-img" loading="lazy" />
@@ -583,7 +582,7 @@ const submitForm = async () => {
   position: absolute;
   inset: 0;
   z-index: 0;
-  background-image: url('./img/hero-img.png');
+  background-image: url('/img/hero-img.png');
   background-repeat: no-repeat;
   background-size: cover;
   /* filter: brightness(0.1); */
@@ -1426,6 +1425,7 @@ const submitForm = async () => {
 
 .projects-carousel {
   position: relative;
+  overflow: hidden;
 }
 
 .swiper-container {
@@ -1442,6 +1442,7 @@ const submitForm = async () => {
 
 :deep(.swiper-button-next),
 :deep(.swiper-button-prev) {
+  display: none;
   width: 48px;
   height: 48px;
   border-radius: 50%;
@@ -1491,7 +1492,7 @@ const submitForm = async () => {
   background: #ffffff;
   border-radius: 24px;
   overflow: hidden;
-  cursor: pointer;
+  /* cursor: pointer; */
   transition: all 0.3s ease;
   border: 1px solid #eef2ff;
   height: 100%;

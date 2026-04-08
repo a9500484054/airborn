@@ -101,7 +101,13 @@
                 <td class="user-cell">
                   <div class="user-info">
                     <div class="user-avatar-sm">
-                      {{ getUserInitials(report.user?.name || 'Unknown') }}
+                      <img
+                        v-if="report.user?.avatar"
+                        :src="getFullAvatarUrl(report.user.avatar)"
+                        :alt="report.user?.name || 'Unknown'"
+                        class="avatar-img"
+                      />
+                      <span v-else>{{ getUserInitials(report.user?.name || 'Unknown') }}</span>
                     </div>
                     <span class="user-name">{{ report.user?.name || 'Unknown' }}</span>
                   </div>
@@ -400,6 +406,14 @@ const getUserInitials = (name: string) => {
     .join('')
     .toUpperCase()
     .slice(0, 2);
+};
+
+// Get full avatar URL
+const getFullAvatarUrl = (avatar: string) => {
+  if (!avatar) return '';
+  if (avatar.startsWith('http://') || avatar.startsWith('https://')) return avatar;
+  const apiUrl = config.public.apiUrl.replace('/api', '');
+  return `${apiUrl}${avatar}`;
 };
 
 // Format date
@@ -715,6 +729,13 @@ useHead({
   font-size: 11px;
   font-weight: 600;
   flex-shrink: 0;
+  overflow: hidden;
+}
+
+.user-avatar-sm .avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .user-name {

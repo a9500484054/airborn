@@ -27,7 +27,7 @@
         </div>
         <div class="header-right">
           <!-- Push Notification Button -->
-          <button 
+          <!-- <button 
             class="notification-btn" 
             :class="{ enabled: pushNotifications.isSubscribed.value }"
             @click="toggleNotifications"
@@ -41,7 +41,7 @@
               <path d="M10 2C7.24 2 5 4.24 5 7V10L3 13V14H17V13L15 10V7C15 4.24 12.76 2 10 2Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M8 14V15C8 16.1 8.9 17 10 17C11.1 17 12 16.1 12 15V14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
-          </button>
+          </button> -->
           <NuxtLink to="/report">
             <div class="report-btn">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -138,7 +138,13 @@
             >
               <!-- Avatar (only for non-own messages) -->
               <div v-if="message.user.id !== authStore.user?.id" class="message-avatar">
-                {{ getUserInitials(message.user.name) }}
+                <img
+                  v-if="message.user.avatar"
+                  :src="getFullAvatarUrl(message.user.avatar)"
+                  :alt="message.user.name"
+                  class="avatar-img"
+                />
+                <span v-else class="avatar-initials">{{ getUserInitials(message.user.name) }}</span>
               </div>
 
               <div class="message-content">
@@ -370,7 +376,7 @@ definePageMeta({
 
 const authStore = useAuthStore();
 const chatStore = useChatStore();
-const pushNotifications = usePushNotifications();
+// const pushNotifications = usePushNotifications();
 const messagesContainer = ref<HTMLElement | null>(null);
 const fileInput = ref<HTMLInputElement | null>(null);
 const showInfo = ref(false);
@@ -428,7 +434,7 @@ onMounted(async () => {
   }
 
   // Инициализация push-уведомлений
-  await pushNotifications.initialize();
+  // await pushNotifications.initialize();
 
   // Disable body scroll on chat page
   document.body.style.overflow = 'hidden';
@@ -439,13 +445,13 @@ onMounted(async () => {
 });
 
 // Toggle push notifications
-const toggleNotifications = async () => {
-  if (pushNotifications.isSubscribed.value) {
-    await pushNotifications.unsubscribe();
-  } else {
-    await pushNotifications.enableNotifications();
-  }
-};
+// const toggleNotifications = async () => {
+//   if (pushNotifications.isSubscribed.value) {
+//     await pushNotifications.unsubscribe();
+//   } else {
+//     await pushNotifications.enableNotifications();
+//   }
+// };
 
 watch(() => chatStore.messages.length, () => {
   scrollToBottom();
@@ -655,6 +661,14 @@ const getFullUrl = (path: string) => {
   return `${apiUrl}${path}`;
 };
 
+const getFullAvatarUrl = (avatar: string) => {
+  if (!avatar) return '';
+  if (avatar.startsWith('http://') || avatar.startsWith('https://')) return avatar;
+  const config = useRuntimeConfig();
+  const apiUrl = config.public.apiUrl.replace('/api', '');
+  return `${apiUrl}${avatar}`;
+};
+
 const formatFileSize = (bytes: number) => {
   if (bytes === 0) return '0 Б';
   const k = 1024;
@@ -862,7 +876,7 @@ useHead({
 }
 
 /* Notification Button */
-.header-right .notification-btn {
+/* .header-right .notification-btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -893,7 +907,7 @@ useHead({
 .header-right .notification-btn.enabled:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
-}
+} */
 
 /* Chat Info Sidebar */
 .chat-info-sidebar {
