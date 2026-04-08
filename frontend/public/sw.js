@@ -98,18 +98,26 @@ self.addEventListener('notificationclose', (event) => {
   console.log('[SW] Notification closed');
 });
 
-// Кэширование статики
+// Кэширование статики (только GET запросы)
 self.addEventListener('fetch', (event) => {
   // Пропускаем нестандартные схемы
   if (!event.request.url.startsWith('http')) {
     return;
   }
 
+  // Кэшируем ТОЛЬКО GET запросы для статики (изображения, шрифты, CSS, JS)
+  if (event.request.method !== 'GET') {
+    return; // Не трогаем POST, PUT, DELETE и т.д.
+  }
+
   // Для изображений и шрифтов используем cache-first
-  if (
+  const isStaticAsset = 
     event.request.destination === 'image' ||
-    event.request.destination === 'font'
-  ) {
+    event.request.destination === 'font' ||
+    event.request.destination === 'style' ||
+    event.request.destination === 'script';
+
+  if (isStaticAsset) {
     event.respondWith(
       caches.match(event.request).then((response) => {
         if (response) {
@@ -133,18 +141,24 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Для остальных запросов - network-first
-  event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        if (response && response.status === 200) {
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
-          });
-        }
-        return response;
-      })
-      .catch(() => caches.match(event.request))
-  );
+  // Для HTML страниц используем network-first
+  if (event.request.destination === 'document') {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          if (response && response.status === 200) {
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, responseToCache);
+            });
+          }
+          return response;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  // Для всего остального (включая API) - только network без кэша
+  event.respondWith(fetch(event.request));
 });
