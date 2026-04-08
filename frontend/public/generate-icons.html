@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор иконок AirBorn</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            margin-top: 0;
+            color: #1f2937;
+        }
+        .icons-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .icon-card {
+            text-align: center;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 8px;
+        }
+        .icon-card canvas {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .icon-card h3 {
+            margin: 10px 0 5px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+        button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 5px;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+        }
+        .buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .instructions {
+            margin-top: 30px;
+            padding: 20px;
+            background: #eff6ff;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+        }
+        .instructions h3 {
+            margin-top: 0;
+            color: #1e40af;
+        }
+        .instructions ol {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .instructions li {
+            margin: 5px 0;
+            color: #374151;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Генератор иконок AirBorn</h1>
+        <p>Нажмите на кнопки ниже, чтобы скачать иконки разных размеров.</p>
+
+        <div class="icons-preview" id="iconsPreview"></div>
+
+        <div class="buttons">
+            <button onclick="downloadIcon('favicon-16x16.png', 16)">Скачать favicon-16x16.png</button>
+            <button onclick="downloadIcon('favicon-32x32.png', 32)">Скачать favicon-32x32.png</button>
+            <button onclick="downloadIcon('apple-touch-icon.png', 180)">Скачать apple-touch-icon.png (180x180)</button>
+            <button onclick="downloadIcon('icon-192x192.png', 192)">Скачать icon-192x192.png</button>
+            <button onclick="downloadIcon('icon-512x512.png', 512)">Скачать icon-512x512.png</button>
+            <button onclick="downloadIcon('og-image.jpg', 1200, true)">Скачать og-image.jpg (1200x630)</button>
+            <button onclick="downloadAll()" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">📦 Скачать все иконки</button>
+        </div>
+
+        <div class="instructions">
+            <h3>📋 Инструкция:</h3>
+            <ol>
+                <li>Нажмите "Скачать все иконки" или скачайте каждую по отдельности</li>
+                <li>Переместите все файлы в папку <code>frontend/public/</code></li>
+                <li>Пересоберите Docker образ: <code>docker compose build --no-cache frontend</code></li>
+                <li>Для OG image создайте изображение 1200x630 с логотипом</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        const sizes = [16, 32, 180, 192, 512];
+
+        // Создаём превью иконок
+        function createIconsPreview() {
+            const container = document.getElementById('iconsPreview');
+            sizes.forEach(size => {
+                const card = document.createElement('div');
+                card.className = 'icon-card';
+                const canvas = document.createElement('canvas');
+                canvas.width = Math.min(size, 100);
+                canvas.height = Math.min(size, 100);
+                canvas.id = `preview-${size}`;
+                card.innerHTML = `<h3>${size}x${size}</h3>`;
+                card.insertBefore(canvas, card.firstChild);
+                container.appendChild(card);
+                drawIcon(canvas, size);
+            });
+        }
+
+        function drawIcon(canvas, size, isOG = false) {
+            const ctx = canvas.getContext('2d');
+            
+            if (isOG) {
+                // OG Image - большое изображение с текстом
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Фон с градиентом
+                const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+                gradient.addColorStop(0, '#3b82f6');
+                gradient.addColorStop(1, '#2563eb');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Логотип по центру
+                const logoSize = Math.min(canvas.width, canvas.height) * 0.3;
+                const logoX = (canvas.width - logoSize) / 2;
+                const logoY = (canvas.height - logoSize) / 2 - 40;
+                
+                drawLogo(ctx, logoX, logoY, logoSize);
+                
+                // Текст
+                ctx.fillStyle = '#ffffff';
+                ctx.font = `bold ${canvas.width * 0.06}px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('AirBorn', canvas.width / 2, canvas.height / 2 + logoSize / 2 + 20);
+                
+                ctx.font = `${canvas.width * 0.03}px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`;
+                ctx.fillText('Professional project development', canvas.width / 2, canvas.height / 2 + logoSize / 2 + 60);
+                
+                return;
+            }
+            
+            // Обычная иконка
+            const padding = size * 0.1;
+            const iconSize = size - padding * 2;
+            const radius = iconSize * 0.3;
+
+            // Фон с градиентом
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#3b82f6');
+            gradient.addColorStop(1, '#2563eb');
+            ctx.fillStyle = gradient;
+            
+            // Скруглённый прямоугольник
+            ctx.beginPath();
+            ctx.moveTo(padding + radius, padding);
+            ctx.lineTo(padding + iconSize - radius, padding);
+            ctx.quadraticCurveTo(padding + iconSize, padding, padding + iconSize, padding + radius);
+            ctx.lineTo(padding + iconSize, padding + iconSize - radius);
+            ctx.quadraticCurveTo(padding + iconSize, padding + iconSize, padding + iconSize - radius, padding + iconSize);
+            ctx.lineTo(padding + radius, padding + iconSize);
+            ctx.quadraticCurveTo(padding, padding + iconSize, padding, padding + iconSize - radius);
+            ctx.lineTo(padding, padding + radius);
+            ctx.quadraticCurveTo(padding, padding, padding + radius, padding);
+            ctx.closePath();
+            ctx.fill();
+
+            // Иконка призмы (масштабируем)
+            const scale = iconSize / 32;
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1.5 * scale;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+
+            // Центрируем иконку
+            const offsetX = padding + (iconSize - 32 * scale) / 2;
+            const offsetY = padding + (iconSize - 32 * scale) / 2;
+
+            ctx.save();
+            ctx.translate(offsetX, offsetY);
+            ctx.scale(scale, scale);
+
+            // Верхняя грань призмы
+            ctx.beginPath();
+            ctx.moveTo(16, 4);
+            ctx.lineTo(4, 12);
+            ctx.lineTo(16, 20);
+            ctx.lineTo(28, 12);
+            ctx.lineTo(16, 4);
+            ctx.closePath();
+            ctx.stroke();
+
+            // Нижняя грань
+            ctx.beginPath();
+            ctx.moveTo(4, 20);
+            ctx.lineTo(16, 28);
+            ctx.lineTo(28, 20);
+            ctx.stroke();
+
+            // Круг в центре
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(16, 12, 2, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        function downloadIcon(filename, size, isOG = false) {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = isOG ? Math.round(size * 0.525) : size;
+            
+            drawIcon(canvas, size, isOG);
+            
+            const link = document.createElement('a');
+            link.download = filename;
+            
+            if (isOG) {
+                link.href = canvas.toDataURL('image/jpeg', 0.9);
+            } else {
+                link.href = canvas.toDataURL('image/png');
+            }
+            
+            link.click();
+        }
+
+        function downloadAll() {
+            downloadIcon('favicon-16x16.png', 16);
+            setTimeout(() => downloadIcon('favicon-32x32.png', 32), 500);
+            setTimeout(() => downloadIcon('apple-touch-icon.png', 180), 1000);
+            setTimeout(() => downloadIcon('icon-192x192.png', 192), 1500);
+            setTimeout(() => downloadIcon('icon-512x512.png', 512), 2000);
+            setTimeout(() => downloadIcon('og-image.jpg', 1200, true), 2500);
+        }
+
+        // Инициализация
+        createIconsPreview();
+    </script>
+</body>
+</html>
