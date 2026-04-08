@@ -80,21 +80,32 @@
           </div>
 
           <div class="projects-carousel">
-            <div class="carousel-wrapper">
-              <div class="carousel-track" :style="{ transform: `translateX(-${carouselPosition}px)` }">
-                <!-- <div 
-                  class="project-card" 
-                  v-for="(project, index) in projects" 
-                  :key="index"
+            <swiper
+              :modules="swiperModules"
+              :slides-per-view="1"
+              :space-between="24"
+              :pagination="{ clickable: true }"
+              :navigation="true"
+              :breakpoints="{
+                640: { slidesPerView: 1.2, spaceBetween: 24 },
+                768: { slidesPerView: 1.5, spaceBetween: 28 },
+                1024: { slidesPerView: 2, spaceBetween: 32 },
+                1280: { slidesPerView: 2.5, spaceBetween: 32 }
+              }"
+              :grab-cursor="true"
+              :free-mode="false"
+              class="swiper-container"
+            >
+              <swiper-slide
+                v-for="(project, index) in projects"
+                :key="index"
+              >
+                <div
+                  class="project-card"
                   @click="openProjectModal(index)"
-                > -->
-                <div 
-                  class="project-card" 
-                  v-for="(project, index) in projects" 
-                  :key="index"
                 >
                   <div class="project-image">
-                    <img :src="project.image" :alt="project.title" class="project-img" />
+                    <img :src="project.image" :alt="project.title" class="project-img" loading="lazy" />
                     <div class="project-period">{{ project.period }}</div>
                   </div>
                   <div class="project-content">
@@ -107,49 +118,18 @@
                         <li v-for="(work, idx) in project.works" :key="idx">{{ work }}</li>
                       </ul>
                     </div>
-                    <!-- <button class="btn-view-project">
+                    <button class="btn-view-project">
                       Подробнее
                       <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
                         <path d="M4.16663 10H15.8333M15.8333 10L10.8333 5M15.8333 10L10.8333 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                       </svg>
-                    </button> -->
+                    </button>
                   </div>
                 </div>
-              </div>
-            </div>
-
-            <div class="carousel-controls">
-              <button 
-                class="carousel-btn carousel-prev" 
-                @click="prevProject"
-                :disabled="currentIndex === 0"
-              >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-              </button>
-              <div class="carousel-indicators">
-                <span 
-                  v-for="(_, index) in visibleProjects" 
-                  :key="index"
-                  class="indicator"
-                  :class="{ active: index === currentIndex }"
-                  @click="goToSlide(index)"
-                ></span>
-              </div>
-              
-              <button 
-                class="carousel-btn carousel-next" 
-                @click="nextProject"
-                :disabled="currentIndex >= visibleProjects - 1"
-              >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-              </button>
-            </div>
+              </swiper-slide>
+            </swiper>
           </div>
-        </div>{{ visibleProjects }}
+        </div>
       </section>
 
       <!-- Project Modal -->
@@ -357,12 +337,21 @@
 </template>
 
 <script setup lang="ts">
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import { Navigation, Pagination, FreeMode } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/free-mode';
+
 useHead({
   title: 'AirBorn | Монтаж вентиляции и кондиционирования в СПб',
   meta: [
     { name: 'description', content: 'Профессиональный монтаж систем вентиляции и кондиционирования в Санкт-Петербурге. Гарантия 12 месяцев. Бесплатный выезд инженера.' }
   ]
 });
+
+const swiperModules = [Navigation, Pagination, FreeMode];
 
 const isSubmitting = ref(false);
 const formSuccess = ref(false);
@@ -462,37 +451,9 @@ const projects = [
   }
 ];
 
-// Carousel State
-const currentIndex = ref(0);
+// Modal State
 const showModal = ref(false);
 const selectedProject = ref<any>(null);
-const cardWidth = ref(380); // Card width + gap
-
-const visibleProjects = computed(() => {
-  return Math.min(projects.length, 2);
-});
-
-const carouselPosition = computed(() => {
-  return currentIndex.value * cardWidth.value;
-});
-
-const nextProject = () => {
-  if (currentIndex.value < projects.length - visibleProjects.value) {
-    currentIndex.value++;
-  }
-};
-
-const prevProject = () => {
-  if (currentIndex.value > 0) {
-    currentIndex.value--;
-  }
-};
-
-const goToSlide = (index: number) => {
-  if (index >= 0 && index < projects.length - visibleProjects.value + 1) {
-    currentIndex.value = index;
-  }
-};
 
 const openProjectModal = (index: number) => {
   selectedProject.value = projects[index];
@@ -1467,26 +1428,73 @@ const submitForm = async () => {
   position: relative;
 }
 
-.carousel-wrapper {
-  overflow: hidden;
-  margin: 0 -16px;
+.swiper-container {
+  padding-bottom: 60px !important;
 }
 
-.carousel-track {
-  display: flex;
-  gap: 32px;
-  transition: transform 0.5s ease-in-out;
-  padding: 16px 0;
+:deep(.swiper) {
+  overflow: visible !important;
+}
+
+:deep(.swiper-slide) {
+  height: auto;
+}
+
+:deep(.swiper-button-next),
+:deep(.swiper-button-prev) {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+:deep(.swiper-button-next):after,
+:deep(.swiper-button-prev):after {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+:deep(.swiper-button-next):hover,
+:deep(.swiper-button-prev):hover {
+  background: #2563eb;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+}
+
+:deep(.swiper-button-next):hover:after,
+:deep(.swiper-button-prev):hover:after {
+  color: white;
+}
+
+:deep(.swiper-pagination) {
+  bottom: 0 !important;
+}
+
+:deep(.swiper-pagination-bullet) {
+  width: 10px;
+  height: 10px;
+  background: #e2e8f0;
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+
+:deep(.swiper-pagination-bullet-active) {
+  background: #2563eb;
+  width: 32px;
+  border-radius: 5px;
 }
 
 .project-card {
-  min-width: calc(33.333% - 22px);
+  min-width: 100%;
   background: #ffffff;
   border-radius: 24px;
   overflow: hidden;
-  /* cursor: pointer; */
+  cursor: pointer;
   transition: all 0.3s ease;
   border: 1px solid #eef2ff;
+  height: 100%;
 }
 
 .project-card:hover {
@@ -1610,81 +1618,10 @@ const submitForm = async () => {
   color: white;
 }
 
-.carousel-controls {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 24px;
-  margin-top: 40px;
-}
-
-.carousel-btn {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  color: #0f172a;
-}
-
-.carousel-btn:hover:not(:disabled) {
-  background: #2563eb;
-  border-color: #2563eb;
-  color: white;
-}
-
-.carousel-btn:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-}
-
-.carousel-indicators {
-  display: flex;
-  gap: 8px;
-}
-
-.indicator {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #e2e8f0;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.indicator.active {
-  background: #2563eb;
-  width: 32px;
-  border-radius: 5px;
-}
-
-.indicator:hover:not(.active) {
-  background: #cbd5e1;
-}
-
-@media (max-width: 1024px) {
-  .project-card {
-    min-width: calc(50% - 16px);
-  }
-}
-
 @media (max-width: 768px) {
-  .project-card {
-    min-width: calc(100% - 16px);
-  }
-  
-  .carousel-controls {
-    gap: 16px;
-  }
-  
-  .carousel-btn {
-    width: 40px;
-    height: 40px;
+  :deep(.swiper-button-next),
+  :deep(.swiper-button-prev) {
+    display: none !important;
   }
 }
 
