@@ -44,20 +44,16 @@
 
           <div class="filter-group">
             <label class="filter-label">Дата от</label>
-            <input
+            <DatePicker
               v-model="filters.dateFrom"
-              type="date"
-              class="filter-input"
               @change="applyFilters"
             />
           </div>
 
           <div class="filter-group">
             <label class="filter-label">Дата до</label>
-            <input
+            <DatePicker
               v-model="filters.dateTo"
-              type="date"
-              class="filter-input"
               @change="applyFilters"
             />
           </div>
@@ -184,10 +180,8 @@
             <form @submit.prevent="submitEdit" class="edit-form">
               <div class="form-group">
                 <label class="form-label">Дата</label>
-                <input
+                <DatePicker
                   v-model="editForm.date"
-                  type="date"
-                  class="form-input"
                   required
                 />
               </div>

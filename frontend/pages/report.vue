@@ -24,11 +24,9 @@
           <div class="form-grid">
             <div class="form-group">
               <label class="form-label">Дата</label>
-              <input
+              <DatePicker
                 v-model="form.date"
-                type="date"
-                class="form-input"
-                :max="todayDate"
+                :max-date="new Date()"
                 required
               />
             </div>
