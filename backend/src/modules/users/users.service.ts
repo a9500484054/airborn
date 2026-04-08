@@ -299,6 +299,15 @@ export class UsersService {
   }
 
   /**
+   * Update avatar URL
+   */
+  async updateAvatar(userId: string, avatarUrl: string): Promise<User> {
+    const user = await this.findById(userId);
+    user.avatar = avatarUrl;
+    return await this.usersRepository.save(user);
+  }
+
+  /**
    * Clear password reset token
    */
   async clearPasswordResetToken(userId: string): Promise<void> {

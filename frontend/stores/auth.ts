@@ -216,6 +216,46 @@ export const useAuthStore = defineStore('auth', {
     },
 
     /**
+     * Upload user avatar
+     */
+    async uploadAvatar(file: File) {
+      if (!this.user) throw new Error('Not authenticated');
+
+      this.isLoading = true;
+      this.error = null;
+
+      try {
+        const formData = new FormData();
+        formData.append('avatar', file);
+
+        const response = await api.upload<{ message: string; data: User }>(
+          `/users/${this.user.id}/avatar`,
+          formData
+        );
+
+        if (response.success && response.data) {
+          // response.data может быть самим пользователем или объектом с полем data
+          const userData = (response.data as any).data || response.data;
+          this.user = { ...this.user, ...userData };
+
+          // Update localStorage
+          if (process.client) {
+            localStorage.setItem('user', JSON.stringify(this.user));
+          }
+
+          return { success: true };
+        }
+      } catch (error: any) {
+        this.error = error.message || 'Avatar upload failed';
+        return { success: false, error: this.error };
+      } finally {
+        this.isLoading = false;
+      }
+
+      return { success: false, error: 'Unknown error' };
+    },
+
+    /**
      * Change password
      */
     async changePassword(currentPassword: string, newPassword: string) {

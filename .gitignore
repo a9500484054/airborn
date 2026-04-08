@@ -9,6 +9,8 @@ dist/
 .nuxt/
 build/
 
+/docker
+
 # Environment files
 .env
 .env.local

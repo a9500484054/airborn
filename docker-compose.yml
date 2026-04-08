@@ -69,12 +69,12 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        NUXT_PUBLIC_API_URL: http://localhost:3000/api
+        NUXT_PUBLIC_API_URL: http://localhost/api
     container_name: airborn-frontend
     restart: unless-stopped
     environment:
-      NUXT_PUBLIC_API_URL: http://localhost:3000/api
-      NUXT_PUBLIC_WS_URL: ws://localhost:3000/chat
+      NUXT_PUBLIC_API_URL: http://localhost/api
+      NUXT_PUBLIC_WS_URL: ws://localhost/chat
     ports:
       - "3001:3000"
     depends_on:

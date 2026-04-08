@@ -13,6 +13,9 @@ import {
   Param,
   Query,
   ParseUUIDPipe,
+  UseInterceptors,
+  UploadedFile,
+  BadRequestException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -21,7 +24,13 @@ import {
   ApiQuery,
   ApiResponse,
   ApiBearerAuth,
+  ApiConsumes,
+  ApiBody,
 } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
+import { existsSync, mkdirSync } from 'fs';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { CurrentUser, AuthenticatedUser } from '../../common/decorators/current-user.decorator';
 import { UserRole } from './entities/user.entity';
@@ -60,7 +69,7 @@ export class UsersController {
   ) {
     // Convert string to boolean if provided
     const isBlockedBool = isBlocked === 'true' ? true : isBlocked === 'false' ? false : undefined;
-    
+
     return this.usersService.findAll(
       page ? +page : 1,
       limit ? +limit : 20,
@@ -123,5 +132,75 @@ export class UsersController {
     @Body() blockUserDto: BlockUserDto,
   ) {
     return this.usersService.toggleBlock(id, blockUserDto.isBlocked);
+  }
+
+  @Post(':id/avatar')
+  @ApiOperation({ summary: 'Upload user avatar' })
+  @ApiParam({ name: 'id', type: String, description: 'User ID' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBearerAuth()
+  @ApiBody({
+    schema: {
+      type: 'object',
+      required: ['avatar'],
+      properties: {
+        avatar: {
+          type: 'string',
+          format: 'binary',
+          description: 'Avatar image file (max 5MB, jpg/png/webp/gif)',
+        },
+      },
+    },
+  })
+  @UseInterceptors(
+    FileInterceptor('avatar', {
+      storage: diskStorage({
+        destination: (req, file, callback) => {
+          const uploadPath = process.env.UPLOAD_PATH || '/app/uploads';
+          if (!existsSync(uploadPath)) {
+            mkdirSync(uploadPath, { recursive: true });
+          }
+          callback(null, uploadPath);
+        },
+        filename: (req, file, callback) => {
+          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          callback(null, `avatar-${uniqueSuffix}${ext}`);
+        },
+      }),
+      limits: {
+        fileSize: 5 * 1024 * 1024, // 5MB
+      },
+      fileFilter: (req, file, callback) => {
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        if (allowedTypes.includes(file.mimetype)) {
+          callback(null, true);
+        } else {
+          callback(new BadRequestException('Only image files (JPEG, PNG, GIF, WebP) are allowed'), false);
+        }
+      },
+    }),
+  )
+  async uploadAvatar(
+    @Param('id', ParseUUIDPipe) id: string,
+    @UploadedFile() avatar: Express.Multer.File,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    // Users can only upload avatar for their own profile
+    if (user.id !== id && user.role !== UserRole.ADMIN) {
+      throw new BadRequestException('You can only upload avatar for your own profile');
+    }
+
+    if (!avatar) {
+      throw new BadRequestException('No avatar file uploaded');
+    }
+
+    const avatarUrl = `/uploads/${avatar.filename}`;
+    const updatedUser = await this.usersService.updateAvatar(id, avatarUrl);
+
+    return {
+      message: 'Avatar uploaded successfully',
+      data: updatedUser,
+    };
   }
 }

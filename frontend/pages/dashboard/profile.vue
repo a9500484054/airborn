@@ -16,6 +16,80 @@
       </div>
 
       <div class="profile-grid">
+        <!-- Avatar Upload Card -->
+        <div class="card avatar-card">
+          <div class="card-header">
+            <div class="card-icon">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M10 11.25C12.0711 11.25 13.75 9.57107 13.75 7.5C13.75 5.42893 12.0711 3.75 10 3.75C7.92893 3.75 6.25 5.42893 6.25 7.5C6.25 9.57107 7.92893 11.25 10 11.25Z" stroke="currentColor" stroke-width="1.2"/>
+                <path d="M4.5 16.25C5.5 15 7.5 13.75 10 13.75C12.5 13.75 14.5 15 15.5 16.25" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.2"/>
+              </svg>
+            </div>
+            <h2 class="card-title">Фото профиля</h2>
+          </div>
+          <div class="card-body">
+            <div class="avatar-section">
+              <div class="avatar-container">
+                <img 
+                  v-if="avatarUrl" 
+                  :src="avatarUrl" 
+                  alt="Avatar" 
+                  class="avatar-image"
+                />
+                <div v-else class="avatar-placeholder">
+                  <span class="avatar-initials">{{ authStore.userInitials }}</span>
+                </div>
+                <div v-if="isAvatarUploading" class="avatar-overlay">
+                  <div class="spinner"></div>
+                </div>
+              </div>
+              <div class="avatar-actions">
+                <input
+                  ref="avatarInput"
+                  type="file"
+                  accept="image/jpeg,image/png,image/gif,image/webp"
+                  @change="handleAvatarChange"
+                  style="display: none"
+                />
+                <button
+                  type="button"
+                  class="btn-secondary"
+                  @click="$refs.avatarInput.click()"
+                  :disabled="isAvatarUploading"
+                >
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                    <path d="M6 2.25H3.75C3.15326 2.25 2.58097 2.48705 2.15901 2.90901C1.73705 3.33097 1.5 3.90326 1.5 4.5V14.25C1.5 14.8467 1.73705 15.419 2.15901 15.841C2.58097 16.2629 3.15326 16.5 3.75 16.5H14.25C14.8467 16.5 15.419 16.2629 15.841 15.841C16.2629 15.419 16.5 14.8467 16.5 14.25V12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                    <path d="M12 5.25L9 8.25L6 5.25M9 8.25V1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                  </svg>
+                  {{ isAvatarUploading ? 'Загрузка...' : 'Загрузить фото' }}
+                </button>
+                <button
+                  v-if="authStore.user?.avatar"
+                  type="button"
+                  class="btn-outline"
+                  @click="removeAvatar"
+                  :disabled="isAvatarUploading"
+                >
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                    <path d="M3 4.5H15M6 4.5V3C6 2.58579 6.33579 2.25 6.75 2.25H11.25C11.6642 2.25 12 2.58579 12 3V4.5M13.5 4.5V14.25C13.5 14.6642 13.1642 15 12.75 15H5.25C4.83579 15 4.5 14.6642 4.5 14.25V4.5H13.5Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                  </svg>
+                  Удалить
+                </button>
+              </div>
+            </div>
+            <transition name="alert">
+              <div v-if="avatarError" class="alert-error">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/>
+                  <path d="M10 6V10M10 14H10.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <span>{{ avatarError }}</span>
+              </div>
+            </transition>
+          </div>
+        </div>
+
         <!-- Profile Information Card -->
         <div class="card">
           <div class="card-header">
@@ -302,6 +376,7 @@ definePageMeta({
 });
 
 const authStore = useAuthStore();
+const config = useRuntimeConfig();
 
 const form = ref({
   name: authStore.user?.name || '',
@@ -327,6 +402,22 @@ const isPasswordLoading = ref(false);
 const passwordSuccess = ref(false);
 const passwordError = ref('');
 
+// Avatar upload state
+const isAvatarUploading = ref(false);
+const avatarError = ref('');
+
+// Computed avatar URL with base API URL
+const avatarUrl = computed(() => {
+  if (!authStore.user?.avatar) return '';
+  // If avatar is relative path (starts with /), prepend API base URL
+  if (authStore.user.avatar.startsWith('/')) {
+    // Get base URL without the /api suffix
+    const baseUrl = config.public.apiUrl.replace(/\/api$/, '');
+    return `${baseUrl}${authStore.user.avatar}`;
+  }
+  return authStore.user.avatar;
+});
+
 // Password strength calculation
 const passwordStrength = computed(() => {
   const pwd = passwordForm.value.newPassword;
@@ -336,7 +427,7 @@ const passwordStrength = computed(() => {
   if (/[a-z]/.test(pwd) && /[A-Z]/.test(pwd)) strength++;
   if (/[0-9]/.test(pwd)) strength++;
   if (/[^a-zA-Z0-9]/.test(pwd)) strength++;
-  
+
   if (strength <= 1) return 'weak';
   if (strength === 2) return 'medium';
   if (strength >= 3) return 'strong';
@@ -351,6 +442,58 @@ const strengthText = computed(() => {
     default: return '';
   }
 });
+
+const handleAvatarChange = async (event: Event) => {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+  
+  if (!file) return;
+
+  // Validate file type
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+  if (!allowedTypes.includes(file.type)) {
+    avatarError.value = 'Допускаются только изображения (JPEG, PNG, GIF, WebP)';
+    input.value = '';
+    return;
+  }
+
+  // Validate file size (5MB)
+  if (file.size > 5 * 1024 * 1024) {
+    avatarError.value = 'Размер файла не должен превышать 5 МБ';
+    input.value = '';
+    return;
+  }
+
+  isAvatarUploading.value = true;
+  avatarError.value = '';
+
+  const result = await authStore.uploadAvatar(file);
+
+  if (!result.success) {
+    avatarError.value = result.error || 'Не удалось загрузить аватар';
+  }
+
+  isAvatarUploading.value = false;
+  input.value = '';
+};
+
+const removeAvatar = async () => {
+  if (!confirm('Вы уверены, что хотите удалить аватар?')) {
+    return;
+  }
+
+  isAvatarUploading.value = true;
+  avatarError.value = '';
+
+  // Remove avatar by updating profile with null
+  const result = await authStore.updateProfile({ avatar: null as any });
+
+  if (!result.success) {
+    avatarError.value = result.error || 'Не удалось удалить аватар';
+  }
+
+  isAvatarUploading.value = false;
+};
 
 const updateProfile = async () => {
   isLoading.value = true;
@@ -511,6 +654,121 @@ useHead({
 
 .card-body {
   padding: 28px;
+}
+
+/* Avatar Section */
+.avatar-section {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+
+.avatar-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+}
+
+.avatar-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #e2e8f0;
+}
+
+.avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid #e2e8f0;
+}
+
+.avatar-initials {
+  font-size: 36px;
+  font-weight: 700;
+  color: white;
+}
+
+.avatar-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #f1f5f9;
+  color: #0f172a;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #e2e8f0;
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+}
+
+.btn-secondary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: white;
+  color: #ef4444;
+  border: 1px solid #fee2e2;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-outline:hover:not(:disabled) {
+  background: #fef2f2;
+  border-color: #ef4444;
+  transform: translateY(-1px);
+}
+
+.btn-outline:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* Forms */
@@ -708,6 +966,7 @@ useHead({
 }
 
 /* Spinner */
+.spinner,
 .spinner-small {
   width: 18px;
   height: 18px;
@@ -715,6 +974,11 @@ useHead({
   border-top-color: white;
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
+}
+
+.spinner {
+  border-color: rgba(255, 255, 255, 0.3);
+  border-top-color: white;
 }
 
 @keyframes spin {
@@ -750,6 +1014,29 @@ useHead({
   
   .card-body {
     padding: 20px;
+  }
+  
+  .avatar-section {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .avatar-container {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .avatar-initials {
+    font-size: 28px;
+  }
+  
+  .avatar-actions {
+    width: 100%;
+  }
+  
+  .btn-secondary,
+  .btn-outline {
+    width: 100%;
   }
   
   .form-actions button {
