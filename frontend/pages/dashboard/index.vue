@@ -23,7 +23,13 @@
       <div class="profile-card">
         <div class="profile-header">
           <div class="profile-avatar">
-            {{ authStore.userInitials }}
+            <img 
+              v-if="avatarUrl" 
+              :src="avatarUrl" 
+              alt="Avatar" 
+              class="avatar-image"
+            />
+            <span v-else class="avatar-initials">{{ authStore.userInitials }}</span>
           </div>
           <div class="profile-info">
             <h2 class="profile-name">{{ authStore.userName }}</h2>
@@ -154,6 +160,7 @@ definePageMeta({
 });
 
 const authStore = useAuthStore();
+const config = useRuntimeConfig();
 
 const currentDate = computed(() => {
   return new Date().toLocaleDateString('ru-RU', {
@@ -171,6 +178,16 @@ const formatDate = (dateString?: string) => {
     day: 'numeric',
   });
 };
+
+// Computed avatar URL with base API URL
+const avatarUrl = computed(() => {
+  if (!authStore.user?.avatar) return '';
+  if (authStore.user.avatar.startsWith('/')) {
+    const baseUrl = config.public.apiUrl.replace(/\/api$/, '');
+    return `${baseUrl}${authStore.user.avatar}`;
+  }
+  return authStore.user.avatar;
+});
 
 // Recent activity data (можно подключить реальные данные из API)
 const recentActivities = ref([
@@ -286,6 +303,20 @@ useHead({
   font-weight: 600;
   flex-shrink: 0;
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  overflow: hidden;
+}
+
+.avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 24px;
+}
+
+.avatar-initials {
+  font-size: 36px;
+  font-weight: 600;
+  color: white;
 }
 
 .profile-info {
