@@ -117,12 +117,12 @@
                         <li v-for="(work, idx) in project.works" :key="idx">{{ work }}</li>
                       </ul>
                     </div>
-                    <button class="btn-view-project">
+                    <!-- <button class="btn-view-project">
                       Подробнее
                       <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
                         <path d="M4.16663 10H15.8333M15.8333 10L10.8333 5M15.8333 10L10.8333 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                       </svg>
-                    </button>
+                    </button> -->
                   </div>
                 </div>
               </swiper-slide>
