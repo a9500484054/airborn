@@ -1,30 +1,27 @@
 /* eslint-disable no-restricted-globals */
 /**
- * Service Worker для Push-уведомлений
- * Обрабатывает получение и отображение push-уведомлений
+ * Service Worker для AirBorn
+ * Push-уведомления (Android/Desktop Chrome)
+ * НА iOS НЕ РАБОТАЕТ - iOS не поддерживает Web Push API
  */
 
-const CACHE_NAME = 'airborn-v1';
-
-// Установка Service Worker
+// Установка
 self.addEventListener('install', (event) => {
-  console.log('[SW] Service Worker installed');
+  console.log('[SW] Installed');
   self.skipWaiting();
 });
 
-// Активация Service Worker
+// Активация
 self.addEventListener('activate', (event) => {
-  console.log('[SW] Service Worker activated');
+  console.log('[SW] Activated');
   event.waitUntil(self.clients.claim());
 });
 
 // Обработка push-уведомлений
 self.addEventListener('push', (event) => {
   console.log('[SW] Push received');
-
-  if (!event.data) {
-    return;
-  }
+  
+  if (!event.data) return;
 
   let data;
   try {
@@ -32,7 +29,7 @@ self.addEventListener('push', (event) => {
   } catch (e) {
     data = {
       title: 'AirBorn',
-      body: event.data.text(),
+      body: 'Новое сообщение',
       icon: '/logo.svg',
       badge: '/logo.svg',
     };
@@ -43,122 +40,64 @@ self.addEventListener('push', (event) => {
     body: data.body || 'Новое сообщение',
     icon: data.icon || '/logo.svg',
     badge: data.badge || '/logo.svg',
-    image: data.image || null,
     data: data.data || {},
     tag: data.data?.messageId || 'default',
     renotify: true,
     requireInteraction: false,
     actions: [
-      {
-        action: 'open',
-        title: 'Открыть чат',
-        icon: '/logo.svg',
-      },
-      {
-        action: 'close',
-        title: 'Закрыть',
-        icon: '/logo.svg',
-      },
+      { action: 'open', title: 'Открыть' },
+      { action: 'close', title: 'Закрыть' },
     ],
   };
 
-  event.waitUntil(self.registration.showNotification(title, options));
-});
-
-// Обработка клика по уведомлению
-self.addEventListener('notificationclick', (event) => {
-  console.log('[SW] Notification clicked:', event.action);
-
-  event.notification.close();
-
-  if (event.action === 'close') {
-    return;
-  }
-
-  // Открываем или фокусируем окно приложения
   event.waitUntil(
-    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clients) => {
-      // Ищем уже открытое окно
-      for (const client of clients) {
-        if (client.url.includes('/chat') && 'focus' in client) {
-          return client.focus();
-        }
-      }
-
-      // Если нет окна с чатом, открываем новое
-      if (self.clients.openWindow) {
-        return self.clients.openWindow(event.notification.data?.url || '/chat');
-      }
-    })
+    self.registration.showNotification(title, options)
   );
 });
 
-// Обработка закрытия уведомления
-self.addEventListener('notificationclose', (event) => {
-  console.log('[SW] Notification closed');
-});
+// Клик по уведомлению
+self.addEventListener('notificationclick', (event) => {
+  console.log('[SW] Notification clicked');
+  event.notification.close();
 
-// Кэширование статики (только GET запросы)
-self.addEventListener('fetch', (event) => {
-  // Пропускаем нестандартные схемы
-  if (!event.request.url.startsWith('http')) {
-    return;
-  }
-
-  // Кэшируем ТОЛЬКО GET запросы для статики (изображения, шрифты, CSS, JS)
-  if (event.request.method !== 'GET') {
-    return; // Не трогаем POST, PUT, DELETE и т.д.
-  }
-
-  // Для изображений и шрифтов используем cache-first
-  const isStaticAsset = 
-    event.request.destination === 'image' ||
-    event.request.destination === 'font' ||
-    event.request.destination === 'style' ||
-    event.request.destination === 'script';
-
-  if (isStaticAsset) {
-    event.respondWith(
-      caches.match(event.request).then((response) => {
-        if (response) {
-          return response;
-        }
-
-        return fetch(event.request).then((response) => {
-          if (!response || response.status !== 200) {
-            return response;
+  if (event.action !== 'close') {
+    event.waitUntil(
+      self.clients.matchAll({ type: 'window' }).then((clients) => {
+        for (const client of clients) {
+          if (client.url.includes('/chat') && 'focus' in client) {
+            return client.focus();
           }
-
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
-          });
-
-          return response;
-        });
+        }
+        return self.clients.openWindow('/chat');
       })
     );
-    return;
   }
+});
 
-  // Для HTML страниц используем network-first
-  if (event.request.destination === 'document') {
+// Кэширование ТОЛЬКО GET запросов для статики
+self.addEventListener('fetch', (event) => {
+  // Пропускаем всё кроме http/https
+  if (!event.request.url.startsWith('http')) return;
+  
+  // ВАЖНО: Только GET запросы!
+  if (event.request.method !== 'GET') return;
+
+  // Кэшируем только статику
+  const isStatic = ['image', 'style', 'script', 'font'].includes(event.request.destination);
+  
+  if (isStatic) {
     event.respondWith(
-      fetch(event.request)
-        .then((response) => {
-          if (response && response.status === 200) {
-            const responseToCache = response.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, responseToCache);
-            });
+      caches.match(event.request).then((cached) => {
+        if (cached) return cached;
+        
+        return fetch(event.request).then((res) => {
+          if (res.status === 200) {
+            const clone = res.clone();
+            caches.open('airborn-v1').then((cache) => cache.put(event.request, clone));
           }
-          return response;
-        })
-        .catch(() => caches.match(event.request))
+          return res;
+        }).catch(() => fetch(event.request));
+      })
     );
-    return;
   }
-
-  // Для всего остального (включая API) - только network без кэша
-  event.respondWith(fetch(event.request));
 });
