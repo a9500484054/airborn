@@ -96,6 +96,8 @@ export default defineNuxtConfig({
     '/': { ssr: true },
     // Auth pages - SSR
     '/login': { ssr: false },
+    '/verify-email': { ssr: false },
+    '/reset-password': { ssr: false },
     // Dashboard and app - SPA
     '/dashboard/**': { ssr: false },
     '/chat': { ssr: false },
