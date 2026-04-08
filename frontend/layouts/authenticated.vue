@@ -338,6 +338,13 @@ onUnmounted(() => {
   margin-bottom: 32px;
 }
 
+@media (display-mode: standalone) {
+  .sidebar-header {
+    top: 2rem;
+    margin-top: 2rem;
+  }
+}
+
 .sidebar-header .logo {
   display: flex;
   align-items: center;
@@ -608,8 +615,6 @@ onUnmounted(() => {
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   padding: 12px 32px;
-  padding-top: calc(12px + constant(safe-area-inset-top)); /* iOS 11.0 */
-  padding-top: calc(12px + env(safe-area-inset-top)); /* iOS 11.2+ */
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -620,6 +625,24 @@ onUnmounted(() => {
   min-height: 65px;
   position: fixed;
   width: 100%;
+}
+
+@media (display-mode: standalone) {
+  .top-bar {
+      top: 2rem;
+      position: relative;
+  }
+  .top-bar::after {
+    position: absolute;
+    top: -2rem;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.95);
+    content: "";
+    width: 100%;
+    height: 2rem;
+  }
 }
 
 .mobile-menu-btn {
@@ -710,10 +733,6 @@ onUnmounted(() => {
 .page-content {
   flex: 1;
   padding: 32px;
-  padding-top: calc(32px + constant(safe-area-inset-top)); /* iOS 11.0 - для PWA режима */
-  padding-top: calc(32px + env(safe-area-inset-top)); /* iOS 11.2+ */
-  padding-bottom: calc(32px + constant(safe-area-inset-bottom));
-  padding-bottom: calc(32px + env(safe-area-inset-bottom));
   overflow-y: auto;
 }
 
@@ -739,10 +758,6 @@ onUnmounted(() => {
   
   .page-content {
     padding: 24px;
-    padding-top: calc(24px + constant(safe-area-inset-top));
-    padding-top: calc(24px + env(safe-area-inset-top));
-    padding-bottom: calc(24px + constant(safe-area-inset-bottom));
-    padding-bottom: calc(24px + env(safe-area-inset-bottom));
   }
 
 }
@@ -774,8 +789,6 @@ onUnmounted(() => {
   
   .top-bar {
     padding: 12px 20px;
-    padding-top: calc(12px + constant(safe-area-inset-top));
-    padding-top: calc(12px + env(safe-area-inset-top));
   }
   
   .mobile-menu-btn {
@@ -788,20 +801,12 @@ onUnmounted(() => {
   
   .page-content {
     padding: 20px;
-    padding-top: calc(20px + constant(safe-area-inset-top));
-    padding-top: calc(20px + env(safe-area-inset-top));
-    padding-bottom: calc(20px + constant(safe-area-inset-bottom));
-    padding-bottom: calc(20px + env(safe-area-inset-bottom));
   }
 }
 
 @media (max-width: 480px) {
   .page-content {
     padding: 16px;
-    padding-top: calc(16px + constant(safe-area-inset-top));
-    padding-top: calc(16px + env(safe-area-inset-top));
-    padding-bottom: calc(16px + constant(safe-area-inset-bottom));
-    padding-bottom: calc(16px + env(safe-area-inset-bottom));
   }
   
   .top-bar {
@@ -857,8 +862,6 @@ onUnmounted(() => {
   background: white;
   border-top: 1px solid #e2e8f0;
   padding: 8px 16px;
-  padding-bottom: calc(8px + constant(safe-area-inset-bottom)); /* iOS 11.0 */
-  padding-bottom: calc(8px + env(safe-area-inset-bottom)); /* iOS 11.2+ */
   z-index: 90;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
   

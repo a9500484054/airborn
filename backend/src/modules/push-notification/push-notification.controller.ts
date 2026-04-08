@@ -2,7 +2,10 @@ import { Controller, Post, Body, UseGuards, Req, Logger } from '@nestjs/common';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { PushNotificationService, PushSubscriptionDto } from './push-notification.service';
 import type { AuthenticatedUser } from '../../common/decorators/current-user.decorator';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
+@ApiTags('Push Notifications')
+@ApiBearerAuth()
 @Controller('push')
 @UseGuards(JwtAuthGuard)
 export class PushNotificationController {
@@ -13,6 +16,8 @@ export class PushNotificationController {
   ) {}
 
   @Post('subscribe')
+  @ApiOperation({ summary: 'Подписаться на push-уведомления' })
+  @ApiResponse({ status: 201, description: 'Successfully subscribed' })
   async subscribe(
     @Body() subscription: PushSubscriptionDto,
     @Req() req: { user: AuthenticatedUser },
@@ -27,6 +32,9 @@ export class PushNotificationController {
   }
 
   @Post('test')
+  @ApiOperation({ summary: 'Отправить тестовое push-уведомление' })
+  @ApiResponse({ status: 200, description: 'Test notification sent' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   async testNotification(
     @Req() req: { user: AuthenticatedUser },
   ) {

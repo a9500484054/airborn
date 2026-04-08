@@ -216,6 +216,24 @@ a {
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
+@media (display-mode: standalone) {
+  .header {
+    position: relative;
+    top: 2rem;
+  }
+  .header::after {
+    position: absolute;
+    top: -2rem;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.95);
+    content: "";
+    width: 100%;
+    height: 2rem;
+  }
+}
+
 .header-scrolled {
   background: rgba(255, 255, 255, 0.98);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
