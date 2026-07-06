@@ -235,10 +235,10 @@ export class PushNotificationService {
         } catch (error: any) {
           this.logger.error(`[Push] Send failed for subscription: ${error.message || error}`);
 
-          // if (error.statusCode === 404 || error.statusCode === 410 || error.statusCode === 401) {
-          //   this.logger.warn(`[Push] Removing invalid subscription for user ${userId}`);
-          //   await this.pushSubscriptionRepo.delete(sub.id);
-          // }
+          if (error.statusCode === 404 || error.statusCode === 410 || error.statusCode === 401) {
+            this.logger.warn(`[Push] Removing invalid subscription for user ${userId}`);
+            await this.pushSubscriptionRepo.delete(sub.id);
+          }
         }
       });
 
