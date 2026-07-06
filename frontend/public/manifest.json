@@ -1,11 +1,11 @@
 {
   "name": "AirBorn",
   "short_name": "AirBorn",
-  "description": "Профессиональный монтаж вентиляции и кондиционирования",
-  "start_url": "/",
+  "description": "Платформа для общения и управления проектами",
+  "start_url": "/chat",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#3b82f6",
+  "background_color": "#0f172a",
+  "theme_color": "#2563eb",
   "orientation": "portrait-primary",
   "icons": [
     {
@@ -27,12 +27,19 @@
       "purpose": "any"
     }
   ],
-  "categories": ["business", "productivity"],
+  "categories": ["productivity", "communication", "business"],
+  "lang": "ru",
+  "dir": "ltr",
   "shortcuts": [
     {
-      "name": "Dashboard",
+      "name": "Чат",
+      "url": "/chat",
+      "description": "Открыть чат"
+    },
+    {
+      "name": "Дашборд",
       "url": "/dashboard",
-      "description": "Open dashboard"
+      "description": "Открыть дашборд"
     }
   ]
 }

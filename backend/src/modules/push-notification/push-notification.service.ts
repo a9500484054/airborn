@@ -74,71 +74,148 @@ export class PushNotificationService {
   /**
    * Отправляет push-уведомление всем подписчикам кроме отправителя
    */
-  async sendToOthers(
-    excludeUserId: string,
-    payload: string,
-  ): Promise<void> {
+  // async sendToOthers(
+  //   excludeUserId: string,
+  //   payload: string,
+  // ): Promise<void> {
+  //   try {
+  //     const subscriptions = await this.pushSubscriptionRepo
+  //       .createQueryBuilder('sub')
+  //       .where('sub.user_id != :excludeUserId', { excludeUserId })
+  //       .andWhere('sub.is_active = :isActive', { isActive: true })
+  //       .getMany();
+
+  //     if (subscriptions.length === 0) {
+  //       this.logger.debug('No active subscriptions to send push to');
+  //       return;
+  //     }
+
+  //     this.logger.debug(`Sending push to ${subscriptions.length} subscriptions`);
+
+  //     const pushPromises = subscriptions.map(async (sub) => {
+  //       const pushSubscription = {
+  //         endpoint: sub.endpoint,
+  //         keys: {
+  //           p256dh: sub.p256dh,
+  //           auth: sub.auth,
+  //         },
+  //       };
+
+  //       try {
+  //         await webpush.sendNotification(
+  //           pushSubscription as webpush.PushSubscription,
+  //           payload,
+  //         );
+  //       } catch (error) {
+  //         // Если подписка недействительна (404, 410), удаляем её
+  //         if (error.statusCode === 404 || error.statusCode === 410) {
+  //           this.logger.warn(`Removing invalid subscription`);
+  //           await this.pushSubscriptionRepo.delete(sub.id);
+  //         } else {
+  //           this.logger.error(`Failed to send push: ${error.message}`);
+  //         }
+  //       }
+  //     });
+
+  //     await Promise.allSettled(pushPromises);
+  //   } catch (error) {
+  //     this.logger.error(`Failed to send push notifications: ${error.message}`, error.stack);
+  //   }
+  // }
+
+  async sendToOthers(excludeUserId: string, payload: string): Promise<void> {
     try {
       const subscriptions = await this.pushSubscriptionRepo
         .createQueryBuilder('sub')
         .where('sub.user_id != :excludeUserId', { excludeUserId })
-        .andWhere('sub.is_active = :isActive', { isActive: true })
+        .andWhere('sub.is_active = true')
         .getMany();
 
       if (subscriptions.length === 0) {
-        this.logger.debug('No active subscriptions to send push to');
+        this.logger.debug('[Push] No active subscriptions to send push to');
         return;
       }
 
-      this.logger.debug(`Sending push to ${subscriptions.length} subscriptions`);
+      this.logger.log(`[Push] Sending push to ${subscriptions.length} other users`);
 
       const pushPromises = subscriptions.map(async (sub) => {
         const pushSubscription = {
           endpoint: sub.endpoint,
-          keys: {
-            p256dh: sub.p256dh,
-            auth: sub.auth,
-          },
+          keys: { p256dh: sub.p256dh, auth: sub.auth },
         };
 
         try {
-          await webpush.sendNotification(
-            pushSubscription as webpush.PushSubscription,
-            payload,
-          );
-        } catch (error) {
-          // Если подписка недействительна (404, 410), удаляем её
-          if (error.statusCode === 404 || error.statusCode === 410) {
-            this.logger.warn(`Removing invalid subscription`);
+          await webpush.sendNotification(pushSubscription as webpush.PushSubscription, payload);
+          this.logger.log(`[Push] Sent successfully to ${sub.userId}`);
+        } catch (error: any) {
+          this.logger.error(`[Push] Failed for ${sub.userId}: ${error.message || error}`);
+          if ([404, 410, 401].includes(error.statusCode)) {
             await this.pushSubscriptionRepo.delete(sub.id);
-          } else {
-            this.logger.error(`Failed to send push: ${error.message}`);
           }
         }
       });
 
       await Promise.allSettled(pushPromises);
     } catch (error) {
-      this.logger.error(`Failed to send push notifications: ${error.message}`, error.stack);
+      this.logger.error(`[Push] sendToOthers error: ${error.message}`, error.stack);
     }
   }
 
   /**
    * Отправляет push-уведомление конкретному пользователю
    */
-  async sendToUser(
-    userId: string,
-    payload: string,
-  ): Promise<void> {
+  // async sendToUser(
+  //   userId: string,
+  //   payload: string,
+  // ): Promise<void> {
+  //   try {
+  //     const subscriptions = await this.pushSubscriptionRepo.find({
+  //       where: { userId, isActive: true },
+  //     });
+
+  //     if (subscriptions.length === 0) {
+  //       this.logger.debug(`No active subscriptions for user ${userId}`);
+  //       return;
+  //     }
+
+  //     const pushPromises = subscriptions.map(async (sub) => {
+  //       const pushSubscription = {
+  //         endpoint: sub.endpoint,
+  //         keys: {
+  //           p256dh: sub.p256dh,
+  //           auth: sub.auth,
+  //         },
+  //       };
+
+  //       try {
+  //         await webpush.sendNotification(
+  //           pushSubscription as webpush.PushSubscription,
+  //           payload,
+  //         );
+  //       } catch (error) {
+  //         if (error.statusCode === 404 || error.statusCode === 410) {
+  //           await this.pushSubscriptionRepo.delete(sub.id);
+  //         }
+  //       }
+  //     });
+
+  //     await Promise.allSettled(pushPromises);
+  //   } catch (error) {
+  //     this.logger.error(`Failed to send push to user ${userId}: ${error.message}`, error.stack);
+  //   }
+  // }
+  async sendToUser(userId: string, payload: string): Promise<void> {
     try {
       const subscriptions = await this.pushSubscriptionRepo.find({
         where: { userId, isActive: true },
       });
 
       if (subscriptions.length === 0) {
-        this.logger.debug(`No active subscriptions for user ${userId}`);
+        this.logger.warn(`[Push] No active subscriptions for user ${userId}`);
         return;
       }
+
+      this.logger.log(`[Push] Found ${subscriptions.length} subscriptions for user ${userId}`);
 
       const pushPromises = subscriptions.map(async (sub) => {
         const pushSubscription = {
@@ -152,18 +229,22 @@ export class PushNotificationService {
         try {
           await webpush.sendNotification(
             pushSubscription as webpush.PushSubscription,
-            payload,
+            payload
           );
-        } catch (error) {
-          if (error.statusCode === 404 || error.statusCode === 410) {
-            await this.pushSubscriptionRepo.delete(sub.id);
-          }
+          this.logger.log(`[Push] Successfully sent to ${sub.endpoint.substring(0, 50)}...`);
+        } catch (error: any) {
+          this.logger.error(`[Push] Send failed for subscription: ${error.message || error}`);
+
+          // if (error.statusCode === 404 || error.statusCode === 410 || error.statusCode === 401) {
+          //   this.logger.warn(`[Push] Removing invalid subscription for user ${userId}`);
+          //   await this.pushSubscriptionRepo.delete(sub.id);
+          // }
         }
       });
 
       await Promise.allSettled(pushPromises);
     } catch (error) {
-      this.logger.error(`Failed to send push to user ${userId}: ${error.message}`, error.stack);
+      this.logger.error(`[Push] sendToUser critical error: ${error.message}`, error.stack);
     }
   }
 

@@ -202,6 +202,9 @@
         <slot />
       </main>
 
+      <!-- Push Notification Hint -->
+      <PushNotificationHint />
+
       <!-- Mobile Bottom Navigation -->
       <nav v-if="$route.path !== '/chat'" class="mobile-bottom-nav">
         <NuxtLink to="/dashboard" class="nav-item" :class="{ active: $route.path === '/dashboard' }">

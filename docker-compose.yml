@@ -22,7 +22,7 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     container_name: airborn_backend
     restart: always
     environment:
@@ -52,7 +52,7 @@ services:
       CORS_ORIGIN: http://localhost:3001,http://localhost:3000
     ports:
       - "3002:3000"  # Другой порт
-      - "9229:9229"
+      - "9230:9229"
     volumes:
       - ./backend:/app
       - /app/node_modules

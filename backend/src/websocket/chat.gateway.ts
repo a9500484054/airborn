@@ -123,7 +123,7 @@ export class ChatGateway
         throw new UnauthorizedException('User not authenticated');
       }
 
-      // Create message in database
+      // Создаём сообщение
       const message = await this.messagesService.create(data, userId);
 
       const messageData = {
@@ -132,7 +132,6 @@ export class ChatGateway
         fileUrl: message.fileUrl,
         fileType: message.fileType,
         replyToId: message.replyToId,
-        replyTo: message.replyTo,
         user: {
           id: user.id,
           name: user.name,
@@ -141,29 +140,34 @@ export class ChatGateway
         createdAt: message.createdAt,
       };
 
-      // Broadcast to all connected clients
+      // Отправляем в WebSocket
       this.server.emit('new_message', messageData);
 
-      // Send push notification to offline users
+      // === PUSH УВЕДОМЛЕНИЯ ===
+      console.log(`[ChatGateway] Preparing push for message from ${user.name}`);
+
       const pushPayload = JSON.stringify({
-        title: `AirBorn - ${user.name}`,
-        body: message.content || '📎 Вложение',
-        icon: '/logo.svg',
-        badge: '/logo.svg',
+        title: `Новое сообщение от ${user.name}`,
+        body: message.content 
+          ? (message.content.length > 70 ? message.content.substring(0, 67) + '...' : message.content)
+          : '📎 Новое вложение',
+        icon: '/icon-192x192.png',
+        badge: '/icon-72.png',
         data: { 
           url: '/chat',
-          messageId: message.id,
-          senderId: user.id,
-          senderName: user.name,
-        },
+          messageId: message.id 
+        }
       });
 
-      // Отправляем push всем кроме отправителя
+      console.log(`[ChatGateway] Sending push payload to others...`);
+
       await this.pushNotificationService.sendToOthers(userId, pushPayload);
+
+      console.log(`[ChatGateway] Push request completed for user ${user.name}`);
 
       return { event: 'message_sent', data: message };
     } catch (error) {
-      this.logger.error(`Error sending message: ${error.message}`);
+      this.logger.error(`Error sending message: ${error.message}`, error.stack);
       client.emit('error', { message: error.message });
     }
   }

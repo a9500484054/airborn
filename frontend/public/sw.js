@@ -1,103 +1,78 @@
 /* eslint-disable no-restricted-globals */
 /**
  * Service Worker для AirBorn
- * Push-уведомления (Android/Desktop Chrome)
- * НА iOS НЕ РАБОТАЕТ - iOS не поддерживает Web Push API
+ * Поддержка push-уведомлений (Android + iOS PWA)
  */
 
-// Установка
+const CACHE_NAME = 'airborn-v1';
+
+// Install
 self.addEventListener('install', (event) => {
   console.log('[SW] Installed');
   self.skipWaiting();
 });
 
-// Активация
+// Activate
 self.addEventListener('activate', (event) => {
   console.log('[SW] Activated');
   event.waitUntil(self.clients.claim());
 });
 
-// Обработка push-уведомлений
+// Push Notification
 self.addEventListener('push', (event) => {
   console.log('[SW] Push received');
-  
-  if (!event.data) return;
 
-  let data;
+  let data = {
+    title: 'AirBorn',
+    body: 'Новое сообщение',
+    icon: '/icon-192.png',
+    badge: '/icon-72.png'
+  };
+
   try {
-    data = event.data.json();
+    if (event.data) {
+      data = { ...data, ...event.data.json() };
+    }
   } catch (e) {
-    data = {
-      title: 'AirBorn',
-      body: 'Новое сообщение',
-      icon: '/logo.svg',
-      badge: '/logo.svg',
-    };
+    console.warn('[SW] Invalid push payload');
   }
 
-  const title = data.title || 'AirBorn';
   const options = {
-    body: data.body || 'Новое сообщение',
-    icon: data.icon || '/logo.svg',
-    badge: data.badge || '/logo.svg',
-    data: data.data || {},
-    tag: data.data?.messageId || 'default',
+    body: data.body || 'У вас новое сообщение',
+    icon: data.icon || '/icon-192.png',
+    badge: data.badge || '/icon-72.png',
+    data: data.data || { url: '/chat' },
+    tag: 'airborn-chat-message',
     renotify: true,
-    requireInteraction: false,
+    vibrate: [100, 50, 100],
     actions: [
-      { action: 'open', title: 'Открыть' },
-      { action: 'close', title: 'Закрыть' },
-    ],
+      { action: 'open', title: 'Открыть чат' },
+      { action: 'close', title: 'Закрыть' }
+    ]
   };
 
   event.waitUntil(
-    self.registration.showNotification(title, options)
+    self.registration.showNotification(data.title, options)
   );
 });
 
-// Клик по уведомлению
+// Click on notification
 self.addEventListener('notificationclick', (event) => {
-  console.log('[SW] Notification clicked');
   event.notification.close();
 
-  if (event.action !== 'close') {
-    event.waitUntil(
-      self.clients.matchAll({ type: 'window' }).then((clients) => {
+  if (event.action === 'close') return;
+
+  const urlToOpen = event.notification.data?.url || '/chat';
+
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true })
+      .then(clients => {
         for (const client of clients) {
           if (client.url.includes('/chat') && 'focus' in client) {
             return client.focus();
           }
         }
-        return self.clients.openWindow('/chat');
+        return self.clients.openWindow(urlToOpen);
       })
-    );
-  }
-});
-
-// Кэширование ТОЛЬКО GET запросов для статики
-self.addEventListener('fetch', (event) => {
-  // Пропускаем всё кроме http/https
-  if (!event.request.url.startsWith('http')) return;
-  
-  // ВАЖНО: Только GET запросы!
-  if (event.request.method !== 'GET') return;
-
-  // Кэшируем только статику
-  const isStatic = ['image', 'style', 'script', 'font'].includes(event.request.destination);
-  
-  if (isStatic) {
-    event.respondWith(
-      caches.match(event.request).then((cached) => {
-        if (cached) return cached;
-        
-        return fetch(event.request).then((res) => {
-          if (res.status === 200) {
-            const clone = res.clone();
-            caches.open('airborn-v1').then((cache) => cache.put(event.request, clone));
-          }
-          return res;
-        }).catch(() => fetch(event.request));
-      })
-    );
-  }
+  );
 });
