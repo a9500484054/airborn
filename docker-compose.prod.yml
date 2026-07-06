@@ -61,32 +61,6 @@ services:
       postgres:
         condition: service_healthy
 
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-      args:
-        NUXT_PUBLIC_API_URL: https://airborn.online/api
-    container_name: airborn-frontend
-    restart: always
-    ports:
-      - "127.0.0.1:3001:3000"              # ← ДОБАВИТЬ ЭТУ СТРОКУ
-    environment:
-      NUXT_PUBLIC_API_URL: https://airborn.online/api
-      NUXT_PUBLIC_WS_URL: wss://airborn.online/chat
-    networks:
-      - airborn-network
-    depends_on:
-      - backend
-
-  # ⚠️ ВЕСЬ БЛОК nginx и certbot - УДАЛИТЬ полностью (мы используем системный nginx)
-  # nginx:
-  #   image: nginx:alpine
-  #   ...
-
-  # certbot:
-  #   image: certbot/certbot
-  #   ...
 
 networks:
   airborn-network:
