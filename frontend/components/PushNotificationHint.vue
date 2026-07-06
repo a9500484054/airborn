@@ -2,7 +2,6 @@
   <div v-if="showHint" class="push-hint-wrapper">
     <div class="push-hint">
       <div class="push-hint-icon">📱</div>
-      <!-- |{{ showHint }} -->
       
       <div class="push-hint-content">
         <h4>Получайте уведомления на iPhone</h4>
@@ -84,6 +83,7 @@ const enablePush = async () => {
       hintDismissed.value = false
       localStorage.removeItem('push-hint-dismissed')
     }
+    dismissHint();
   } catch (error) {
     console.error('Error enabling notifications:', error)
     // При ошибке показываем подсказку снова через 5 секунд
