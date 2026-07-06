@@ -1,109 +1,83 @@
 services:
-  # PostgreSQL Database
+  # PostgreSQL для AirBorn
   postgres:
     image: postgres:15-alpine
-    container_name: airborn-postgres
-    restart: unless-stopped
+    container_name: airborn_postgres
+    restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: airborn
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
-    networks:
-      - airborn-network
+      - "5433:5432"  # Другой порт, чтобы не конфликтовать
+    volumes:
+      - airborn_postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  # Backend (NestJS)
+  # Backend
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: airborn-backend
-    restart: unless-stopped
+    container_name: airborn_backend
+    restart: always
     environment:
-      NODE_ENV: production
+      NODE_ENV: development
       PORT: 3000
+      API_PREFIX: api
       DB_HOST: postgres
       DB_PORT: 5432
       DB_USERNAME: postgres
       DB_PASSWORD: postgres
       DB_DATABASE: airborn
-      JWT_SECRET: airborn-production-jwt-secret-key-2026-change-in-real-deployment
+      JWT_SECRET: airborn-dev-jwt-secret-2026
       JWT_EXPIRATION: 7d
-      REFRESH_SECRET: airborn-production-refresh-secret-key-2026-change
+      REFRESH_SECRET: airborn-dev-refresh-secret-2026
       REFRESH_EXPIRATION: 7d
-      CORS_ORIGIN: http://localhost:3011
-      UPLOAD_PATH: /app/uploads
-      MAX_FILE_SIZE: 20971520
       THROTTLE_TTL: 60
       THROTTLE_LIMIT: 100
-      # Email configuration
+      MAX_FILE_SIZE: 20971520
+      UPLOAD_PATH: /app/uploads
       SMTP_HOST: smtp.yandex.ru
       SMTP_PORT: 465
       SMTP_USER: airbornonline@yandex.ru
       SMTP_PASS: omrhvzxardmrdgdh
       EMAIL_FROM: airbornonline@yandex.ru
-      REQUIRE_EMAIL_VERIFICATION: "true"
-      FRONTEND_URL: http://localhost:3011
-    volumes:
-      - backend_uploads:/app/uploads
+      REQUIRE_EMAIL_VERIFICATION: true
+      FRONTEND_URL: http://localhost:3001
+      CORS_ORIGIN: http://localhost:3001,http://localhost:3000
     ports:
-      - "3010:3000"
+      - "3002:3000"  # Другой порт
+      - "9229:9229"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+      - airborn_uploads:/app/uploads
     depends_on:
       postgres:
         condition: service_healthy
-    networks:
-      - airborn-network
-    command: ["node", "dist/main.js"]
+    command: npm run start:dev
 
-  # Frontend (Nuxt)
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-      args:
-        NUXT_PUBLIC_API_URL: http://localhost/api
-    container_name: airborn-frontend
-    restart: unless-stopped
+  # PgAdmin (опционально)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: airborn_pgadmin
+    restart: always
     environment:
-      NUXT_PUBLIC_API_URL: http://localhost/api
-      NUXT_PUBLIC_WS_URL: ws://localhost/chat
+      PGADMIN_DEFAULT_EMAIL: admin@airborn.com
+      PGADMIN_DEFAULT_PASSWORD: admin
     ports:
-      - "3001:3000"
+      - "5051:80"
     depends_on:
-      - backend
-    networks:
-      - airborn-network
-
-  # Nginx Reverse Proxy
-  nginx:
-    image: nginx:alpine
-    container_name: airborn-nginx
-    restart: unless-stopped
-    ports:
-      - "80:80"
+      - postgres
     volumes:
-      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./docker/nginx/logs:/var/log/nginx
-    depends_on:
-      - backend
-      - frontend
-    networks:
-      - airborn-network
-
-networks:
-  airborn-network:
-    driver: bridge
+      - airborn_pgadmin_data:/var/lib/pgadmin
 
 volumes:
-  postgres_data:
-    driver: local
-  backend_uploads:
-    driver: local
+  airborn_postgres_data:
+  airborn_pgadmin_data:
+  airborn_uploads:

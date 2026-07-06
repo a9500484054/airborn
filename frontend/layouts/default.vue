@@ -102,7 +102,6 @@
               </svg>
             </div>
             <span class="logo-text">AirBorn</span>
-            <p class="footer-desc">Профессиональный монтаж систем вентиляции и кондиционирования в Санкт-Петербурге</p>
           </div>
 
           <div class="footer-links">
@@ -119,9 +118,11 @@
               <NuxtLink to="/under-construction" class="footer-link">Отзывы</NuxtLink> -->
             </div>
             <div class="footer-column">
-              <h4>Правовая информация</h4>
+              <p class="footer-desc">Профессиональный монтаж систем вентиляции и кондиционирования в Санкт-Петербурге</p>
+
+              <!-- <h4>Правовая информация</h4>
               <NuxtLink to="/under-construction" class="footer-link">Политика конфиденциальности</NuxtLink>
-              <NuxtLink to="/under-construction" class="footer-link">Договор оферты</NuxtLink>
+              <NuxtLink to="/under-construction" class="footer-link">Договор оферты</NuxtLink> -->
             </div>
           </div>
         </div>
@@ -532,7 +533,8 @@ a {
 
 .footer-brand {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
   gap: 16px;
 }
 

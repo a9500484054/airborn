@@ -4,10 +4,8 @@
     <NuxtLayout>
       <!-- Hero Section -->
       <section class="hero">
-        <div class="hero-bg">
-          <div class="hero-gradient"></div>
-          <div class="hero-particles"></div>
-        </div>
+        <div class="hero-bg"></div>
+        <div class="hero-particles"></div>
         
         <div class="container">
           <div class="hero-content">
@@ -60,14 +58,6 @@
               </div>
             </div>
           </div>
-
-          <!-- <div class="hero-image-wrapper">
-            <div class="hero-image-container">
-              <img src="/img/hero-img.png" alt="Монтаж вентиляции и кондиционирования" class="hero-image" />
-              <div class="hero-image-overlay"></div>
-              <div class="hero-image-glow"></div>
-            </div>
-          </div> -->
         </div>
       </section>
 
@@ -90,7 +80,7 @@
                 640: { slidesPerView: 1, spaceBetween: 24 },
                 768: { slidesPerView: 1, spaceBetween: 28 },
                 1024: { slidesPerView: 2, spaceBetween: 32 },
-                1280: { slidesPerView: 2, spaceBetween: 32 }
+                1280: { slidesPerView: 3, spaceBetween: 32 }
               }"
               :grab-cursor="true"
               :free-mode="false"
@@ -100,29 +90,41 @@
                 v-for="(project, index) in projects"
                 :key="index"
               >
-                <div
-                  class="project-card"
-                >
+                <div class="project-card" @click="openProjectModal(index)">
                   <div class="project-image">
-                    <img :src="project.image" :alt="project.title" class="project-img" loading="lazy" />
+                    <img 
+                      v-if="project.image" 
+                      :src="project.image" 
+                      :alt="project.title" 
+                      class="project-img" 
+                      loading="lazy" 
+                    />
+                    <div v-else class="project-placeholder">
+                      <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <rect x="3" y="3" width="18" height="18" rx="2" />
+                        <circle cx="8.5" cy="8.5" r="1.5" />
+                        <path d="M21 15L16 10L5 21" />
+                      </svg>
+                      <span>Фото нет</span>
+                    </div>
                     <div class="project-period">{{ project.period }}</div>
                   </div>
                   <div class="project-content">
                     <h3 class="project-title">{{ project.title }}</h3>
                     <p class="project-address">{{ project.address }}</p>
                     <p class="project-desc">{{ project.description }}</p>
-                    <div class="project-works">
+                    <!-- <div class="project-works">
                       <h4>Выполненные работы:</h4>
                       <ul>
                         <li v-for="(work, idx) in project.works" :key="idx">{{ work }}</li>
                       </ul>
-                    </div>
-                    <!-- <button class="btn-view-project">
+                    </div> -->
+                    <button class="btn-view-project">
                       Подробнее
                       <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
                         <path d="M4.16663 10H15.8333M15.8333 10L10.8333 5M15.8333 10L10.8333 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                       </svg>
-                    </button> -->
+                    </button>
                   </div>
                 </div>
               </swiper-slide>
@@ -142,7 +144,33 @@
           
           <div class="modal-body" v-if="selectedProject">
             <div class="modal-image">
-              <img :src="selectedProject.image" :alt="selectedProject.title" class="modal-img" />
+              <div v-if="selectedProject.images && selectedProject.images.length > 0" class="modal-gallery">
+                <img 
+                  :src="selectedProject.currentImage || selectedProject.images[0]" 
+                  :alt="selectedProject.title" 
+                  class="modal-img" 
+                />
+                <div v-if="selectedProject.images.length > 1" class="modal-thumbnails">
+                  <img 
+                    v-for="(img, idx) in selectedProject.images" 
+                    :key="idx"
+                    :src="img" 
+                    :alt="selectedProject.title + ' ' + (idx + 1)"
+                    class="modal-thumb"
+                    :class="{ 'modal-thumb-active': selectedProject.currentImage === img }"
+                    @click="selectedProject.currentImage = img"
+                  />
+             
+                </div>
+              </div>
+              <div v-else class="modal-placeholder">
+                <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5">
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                  <circle cx="8.5" cy="8.5" r="1.5" />
+                  <path d="M21 15L16 10L5 21" />
+                </svg>
+                <span>Изображения отсутствуют</span>
+              </div>
               <div class="modal-period">{{ selectedProject.period }}</div>
             </div>
             
@@ -153,12 +181,12 @@
                 <h3>Описание проекта</h3>
                 <p>{{ selectedProject.description }}</p>
               </div>
-              <div class="modal-section">
+              <!-- <div class="modal-section">
                 <h3>Выполненные работы</h3>
                 <ul class="modal-works">
                   <li v-for="(work, idx) in selectedProject.works" :key="idx">{{ work }}</li>
                 </ul>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
@@ -359,7 +387,7 @@ const formError = ref('');
 const form = ref({
   name: '',
   phone: '',
-  service: ''
+  comment: ''
 });
 
 const services = [
@@ -386,7 +414,6 @@ const services = [
 const advantages = [
   { number: '01', title: 'Гарантия 12 месяцев', desc: 'На все виды работ и оборудование' },
   { number: '02', title: 'Бесплатный выезд', desc: 'Инженер приедет в день обращения' },
-  // { number: '03', title: 'Оплата по факту', desc: 'Только после полного завершения работ' },
   { number: '03', title: 'Соблюдение СНиП', desc: 'Все работы по ГОСТ и нормативам' }
 ];
 
@@ -397,65 +424,196 @@ const steps = [
   { title: 'Монтаж и оплата', desc: 'Профессиональная установка. Оплата после приемки' }
 ];
 
+// ========== ОБНОВЛЕННЫЕ ПРОЕКТЫ ==========
+// Все проекты из папки Portfolio
+const projects = [
+  {
+    id: 'school-bugry',
+    period: 'Сен 2024 - Июль 2025',
+    title: 'Школа «Бугры»',
+    address: 'Ленинградская обл., Всеволожский р-н, пос. Бугры, массив «Центральное»',
+    description: 'Объект начального и среднего общего образования на 1383 места.',
+    image: '/img/Portfolio/Школа Бугры/photo_2026-07-02_13-34-46.jpg',
+    images: [
+      '/img/Portfolio/Школа Бугры/photo_2026-07-02_13-34-46.jpg',
+      '/img/Portfolio/Школа Бугры/photo_2026-07-02_13-35-12.jpg'
+    ],
+    works: [
+      'Монтаж систем отопления и вентиляции',
+      'Пусконаладочные работы'
+    ],
+    folder: 'Школа Бугры',
+    currentImage: '/img/Portfolio/Школа Бугры/photo_2026-07-02_13-34-46.jpg'
+  },
+  {
+    id: 'school-blyuhera',
+    period: '2024 - 2025',
+    title: 'Школа на Блюхера',
+    address: 'Санкт-Петербург, пр. Блюхера',
+    description: 'Объект среднего общего образования с современными инженерными системами.',
+    image: '/img/Portfolio/Школа на Блюхера/IMG_4404.jpg',
+    images: [
+      '/img/Portfolio/Школа на Блюхера/IMG_4404.jpg',
+    ],
+    works: [
+      'Монтаж систем отопления и вентиляции',
+      'Пусконаладочные работы'
+    ],
+    folder: 'Школа на Блюхера',
+    currentImage: '/img/Portfolio/Школа на Блюхера/IMG_4404.jpg'
+  },
+  {
+    id: 'teremok',
+    period: '2024 - 2025',
+    title: 'Ресторан «Теремок»',
+    address: 'Санкт-Петербург, пр. Стачек, 99',
+    description: 'Ресторан общественного питания с комплексной системой вентиляции.',
+    image: '/img/Portfolio/Теремок/IMG_4332.jpg',
+    images: [
+      '/img/Portfolio/Теремок/IMG_4332.jpg',
+      '/img/Portfolio/Теремок/IMG_4385.JPG',
+      '/img/Portfolio/Теремок/IMG_4515.jpg',
+      '/img/Portfolio/Теремок/IMG_4553.jpg',
+      '/img/Portfolio/Теремок/IMG_4555.jpg',
+      '/img/Portfolio/Теремок/IMG_4557.jpg',
+      '/img/Portfolio/Теремок/IMG_4859.jpg'
+    ],
+    works: [
+      'Монтаж систем вентиляции и кондиционирования',
+      'Комплексная поставка оборудования'
+    ],
+    folder: 'Теремок',
+    currentImage: '/img/Portfolio/Теремок/IMG_4332.jpg'
+  },
+  {
+    id: 'fitness-pionerskaya',
+    period: '2024 - 2025',
+    title: 'Фитнес-центр на Пионерской',
+    address: 'Санкт-Петербург, ул. Пионерская',
+    description: 'Фитнес-центр с системой приточно-вытяжной вентиляции.',
+    image: '',
+    images: [],
+    works: [
+      'Монтаж систем вентиляции и кондиционирования',
+      'Пусконаладочные работы'
+    ],
+    folder: 'Фитнесс на Пионерской',
+    hasImages: false,
+    currentImage: ''
+  },
+  {
+    id: 'restaurant-kolpino',
+    period: '2024 - 2025',
+    title: 'Ресторан в Колпино',
+    address: 'г. Колпино, ул. Пролетарская, д. 7',
+    description: 'Ресторан общественного питания с современной системой вентиляции.',
+    image: '',
+    images: [],
+    works: [
+      'Монтаж систем вентиляции и кондиционирования',
+      'Поставка оборудования'
+    ],
+    folder: 'Ресторан в Колпино',
+    hasImages: false,
+    currentImage: ''
+  },
+  {
+    id: 'moskovskaya',
+    period: '2024 - 2025',
+    title: 'Объект на Московской',
+    address: 'Санкт-Петербург, Московский пр.',
+    description: 'Комплексные работы по монтажу систем вентиляции и кондиционирования.',
+    image: '/img/Portfolio/Московская/IMG_4414.jpg',
+    images: [
+      '/img/Portfolio/Московская/IMG_4414.jpg',
+      '/img/Portfolio/Московская/IMG_4419.jpg',
+      '/img/Portfolio/Московская/IMG_4421.jpg',
+      '/img/Portfolio/Московская/IMG_4427.jpg'
+    ],
+    works: [
+      'Монтаж систем вентиляции и кондиционирования',
+      'Пусконаладочные работы'
+    ],
+    folder: 'Московская',
+    currentImage: '/img/Portfolio/Московская/IMG_4414.jpg'
+  },
+  {
+    id: 'primorskaya',
+    period: '2024 - 2025',
+    title: 'Объект на Приморской',
+    address: 'Санкт-Петербург, Приморский р-н',
+    description: 'Монтаж систем вентиляции в жилом комплексе.',
+    image: '/img/Portfolio/Приморская/IMG_4494.PNG',
+    images: [
+      '/img/Portfolio/Приморская/IMG_4494.PNG',
+      '/img/Portfolio/Приморская/IMG_4499.PNG',
+      '/img/Portfolio/Приморская/IMG_4502.PNG',
+      '/img/Portfolio/Приморская/photo_2026-07-02_13-35-56.jpg'
+    ],
+    works: [
+      'Монтаж систем вентиляции',
+      'Комплексная поставка оборудования'
+    ],
+    folder: 'Приморская',
+    currentImage: '/img/Portfolio/Приморская/IMG_4494.PNG'
+  },
+  {
+    id: 'bolshaya-pushkarskaya',
+    period: '2024 - 2025',
+    title: 'Объект на Большой Пушкарской',
+    address: 'Санкт-Петербург, ул. Большая Пушкарская',
+    description: 'Монтаж систем вентиляции в административном здании.',
+    image: '/img/Portfolio/Большая Пушкарская/IMG_5137.jpg',
+    images: [
+      '/img/Portfolio/Большая Пушкарская/IMG_5137.jpg',
+      '/img/Portfolio/Большая Пушкарская/IMG_5144.jpg',
+      '/img/Portfolio/Большая Пушкарская/IMG_5145.jpg'
+    ],
+    works: [
+      'Монтаж систем вентиляции и кондиционирования',
+      'Пусконаладочные работы'
+    ],
+    folder: 'Большая Пушкарская',
+    currentImage: '/img/Portfolio/Большая Пушкарская/IMG_5137.jpg'
+  },
+  {
+    id: 'pool',
+    period: '2024 - 2025',
+    title: 'Бассейн',
+    address: 'Санкт-Петербург',
+    description: 'Монтаж систем вентиляции в бассейне с учетом высокой влажности.',
+    image: '/img/Portfolio/Бассейн/IMG_5266.jpg',
+    images: [
+      '/img/Portfolio/Бассейн/IMG_5266.jpg',
+      '/img/Portfolio/Бассейн/IMG_5267.jpg',
+      '/img/Portfolio/Бассейн/IMG_5333.jpg'
+    ],
+    works: [
+      'Монтаж систем вентиляции в бассейне',
+      'Пусконаладочные работы'
+    ],
+    folder: 'Бассейн',
+    currentImage: '/img/Portfolio/Бассейн/IMG_5266.jpg'
+  }
+];
+
 const config = useRuntimeConfig();
 
 const scrollToForm = () => {
   document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
 };
 
-// Projects Carousel Data
-const projects = [
-  {
-    period: 'Сен 2024 - Июль 2025',
-    title: 'Школа «Бугры»',
-    address: 'Ленинградская обл., Всеволожский р-н, пос. Бугры, массив «Центральное»',
-    description: 'Объект начального и среднего общего образования на 1383 места.',
-    image: '/img/image 447.jpg',
-    works: [
-      'Монтаж систем отопления и вентиляции.',
-      'Пусконаладочные работы.'
-    ]
-  },
-  {
-    period: 'Март 2025 - по наст. время',
-    title: 'Жилой комплекс со встроенными помещениями и автостоянкой',
-    address: 'Санкт-Петербург, В.О., Шкиперский проток, д. 19, лит. А',
-    description: 'Многоквартирный жилой дом с коммерческими помещениями и подземной парковкой.',
-    image: '/img/image 450.jpg',
-    works: [
-      'Монтаж систем отопления и вентиляции.'
-    ]
-  },
-  {
-    period: 'Авг 2025 - Сен 2025',
-    title: 'Фитнес-центр «URBANFIT»',
-    address: 'г. Санкт-Петербург, пр. Большевиков, д. 7, корп. 2, 1 этаж',
-    description: 'Коммерческий объект, фитнес-центр премиум-класса.',
-    image: '/img/image 451.jpg',
-    works: [
-      'Монтаж систем вентиляции и кондиционирования.',
-      'Комплексная поставка материалов и оборудования.'
-    ]
-  },
-  {
-    period: 'Август 2025',
-    title: 'Ресторан «Евразия»',
-    address: 'г. Санкт-Петербург, г. Колпино, ул. Пролетарская, д. 7',
-    description: 'Ресторан общественного питания.',
-    image: '/img/image 447.jpg',
-    works: [
-      'Монтаж систем вентиляции и кондиционирования.',
-      'Поставка материалов и оборудования.'
-    ]
-  }
-];
-
 // Modal State
 const showModal = ref(false);
 const selectedProject = ref<any>(null);
 
 const openProjectModal = (index: number) => {
-  selectedProject.value = projects[index];
+  const project = { ...projects[index] };
+  // Устанавливаем текущее изображение на первое
+  if (project.images && project.images.length > 0) {
+    project.currentImage = project.images[0];
+  }
+  selectedProject.value = project;
   showModal.value = true;
   document.body.style.overflow = 'hidden';
 };
@@ -511,10 +669,9 @@ const formatPhone = (event: Event) => {
   form.value.phone = formatted;
 };
 
-function formatPhoneNumber(phone:string): string {
-    // Удаляем все символы, кроме цифр
-    const digits = phone.replace(/\D/g, '');
-    return `+${digits}`;
+function formatPhoneNumber(phone: string): string {
+  const digits = phone.replace(/\D/g, '');
+  return `+${digits}`;
 }
 
 const submitForm = async () => {
@@ -539,7 +696,7 @@ const submitForm = async () => {
 
     if (data.value) {
       formSuccess.value = true;
-      form.value = { name: '', phone: '', service: '' };
+      form.value = { name: '', phone: '', comment: '' };
     }
   } catch (err) {
     formError.value = 'Произошла ошибка. Попробуйте позже.';
@@ -585,7 +742,6 @@ const submitForm = async () => {
   background-image: url('/img/hero-img.png');
   background-repeat: no-repeat;
   background-size: cover;
-  /* filter: brightness(0.1); */
   background-position-y: -982px;
 }
 
@@ -599,13 +755,6 @@ const submitForm = async () => {
     background-position-y: 0;
   }
 }
-/* .hero-bg::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgb(255 255 255 / 68%); 
-  z-index: 1;
-} */
 
 .hero-gradient {
   position: absolute;
@@ -623,7 +772,6 @@ const submitForm = async () => {
 .hero-content {
   position: relative;
   z-index: 1;
-
   padding: 120px 0 80px;
 }
 
@@ -661,8 +809,6 @@ const submitForm = async () => {
   color: #0f172a;
   margin-bottom: 24px;
 }
-
-
 
 .title-gradient {
   background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
@@ -788,113 +934,511 @@ const submitForm = async () => {
   .hero-title {
     font-size: 28px;
   }
-
 }
 
-/* Hero Image Styles */
-.hero-image-wrapper {
-  position: absolute;
-  top: 50%;
-  right: -80px;
-  transform: translateY(-50%);
-  z-index: 0;
-  opacity: 0.9;
+/* Projects Carousel Section */
+.projects {
+  padding: 100px 0;
+  background: #f8fafc;
 }
 
-.hero-image-container {
+.projects-carousel {
   position: relative;
-  width: 700px;
-  height: 500px;
   overflow: hidden;
-  border-radius: 32px;
-  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.15);
 }
 
-.hero-image {
+.swiper-container {
+  padding-bottom: 60px !important;
+}
+
+:deep(.swiper) {
+  overflow: visible !important;
+}
+
+:deep(.swiper-slide) {
+  height: auto;
+}
+
+:deep(.swiper-button-next),
+:deep(.swiper-button-prev) {
+  display: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+:deep(.swiper-button-next):after,
+:deep(.swiper-button-prev):after {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+:deep(.swiper-button-next):hover,
+:deep(.swiper-button-prev):hover {
+  background: #2563eb;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+}
+
+:deep(.swiper-button-next):hover:after,
+:deep(.swiper-button-prev):hover:after {
+  color: white;
+}
+
+:deep(.swiper-pagination) {
+  bottom: 0 !important;
+}
+
+:deep(.swiper-pagination-bullet) {
+  width: 10px;
+  height: 10px;
+  background: #e2e8f0;
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+
+:deep(.swiper-pagination-bullet-active) {
+  background: #2563eb;
+  width: 32px;
+  border-radius: 5px;
+}
+
+.project-card {
+  min-width: 100%;
+  background: #ffffff;
+  border-radius: 24px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid #eef2ff;
+  height: 100%;
+}
+
+.project-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  border-color: #2563eb;
+}
+
+.project-image {
+  position: relative;
+  height: 200px;
+  background: linear-gradient(135deg, #e0e7ff 0%, #dbeafe 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.project-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
 }
 
-.hero-image-container:hover .hero-image {
+.project-card:hover .project-img {
   transform: scale(1.05);
 }
 
-.hero-image-overlay {
+/* Project Placeholder */
+.project-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  color: #94a3b8;
+  gap: 12px;
+}
+
+.project-placeholder svg {
+  width: 64px;
+  height: 64px;
+}
+
+.project-placeholder span {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.project-period {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.2) 0%, rgba(37, 99, 235, 0.1) 100%);
-  pointer-events: none;
+  top: 16px;
+  right: 16px;
+  background: #0f172a;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
 }
 
-.hero-image-glow {
-  position: absolute;
-  inset: -20px;
-  background: radial-gradient(circle at 50% 50%, rgba(37, 99, 235, 0.2) 0%, transparent 70%);
-  filter: blur(40px);
-  z-index: -1;
+.project-content {
+  padding: 24px;
 }
 
-@media (max-width: 1440px) {
-  .hero-image-wrapper {
-    right: -40px;
-  }
-  
-  .hero-image-container {
-    width: 600px;
-    height: 430px;
-  }
+.project-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 12px;
+  line-height: 1.3;
 }
 
-@media (max-width: 1280px) {
-  .hero-image-wrapper {
-    right: -20px;
-  }
-  
-  .hero-image-container {
-    width: 500px;
-    height: 360px;
-  }
+.project-address {
+  color: #64748b;
+  font-size: 14px;
+  margin-bottom: 16px;
+  line-height: 1.5;
 }
 
-@media (max-width: 1024px) {
-  .hero-image-wrapper {
-    right: -10px;
-  }
-  
-  .hero-image-container {
-    width: 450px;
-    height: 320px;
-    border-radius: 24px;
-  }
+.project-desc {
+  color: #475569;
+  font-size: 14px;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.project-works {
+  margin-bottom: 20px;
+}
+
+.project-works h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 12px;
+}
+
+.project-works ul {
+  list-style: none;
+  padding: 0;
+}
+
+.project-works li {
+  color: #475569;
+  font-size: 13px;
+  padding: 4px 0;
+  line-height: 1.5;
+}
+
+.project-works li::before {
+  content: '• ';
+  color: #2563eb;
+  font-weight: 700;
+}
+
+.btn-view-project {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: transparent;
+  color: #2563eb;
+  border: 1px solid #2563eb;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  justify-content: center;
+}
+
+.btn-view-project:hover {
+  background: #2563eb;
+  color: white;
 }
 
 @media (max-width: 768px) {
-  .hero-image-wrapper {
-    position: relative;
-    top: auto;
-    right: auto;
-    transform: none;
-    margin-top: 40px;
-    opacity: 1;
-  }
-  
-  .hero-image-container {
-    width: 100%;
-    height: 300px;
-    border-radius: 20px;
-  }
-  
-  .hero-content {
-    padding: 100px 0 40px;
+  :deep(.swiper-button-next),
+  :deep(.swiper-button-prev) {
+    display: none !important;
   }
 }
 
-@media (max-width: 433px) {
-  .hero-image-container {
-    height: 250px;
-    border-radius: 16px;
+/* Project Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  background: #ffffff;
+  border-radius: 32px;
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #0f172a;
+  z-index: 10;
+}
+
+.modal-close:hover {
+  background: #e2e8f0;
+  transform: rotate(90deg);
+}
+
+.modal-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+
+.modal-image {
+  position: relative;
+  height: 100%;
+  min-height: 400px;
+  background: linear-gradient(135deg, #e0e7ff 0%, #dbeafe 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 32px 0 0 32px;
+  overflow: hidden;
+}
+
+/* Modal Gallery */
+.modal-gallery {
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  background: #f8fafc;
+  border-radius: 32px 0 0 32px;
+  overflow: hidden;
+}
+
+.modal-img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+}
+
+.modal-thumbnails {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  background: white;
+  flex-wrap: wrap;
+}
+
+.modal-thumb {
+  width: 80px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.modal-thumb:hover {
+  border-color: #2563eb;
+  transform: scale(1.05);
+}
+
+.modal-thumb-active {
+  border-color: #2563eb;
+}
+
+.modal-thumb-more {
+  width: 80px;
+  height: 60px;
+  border-radius: 8px;
+  background: #0f172a;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.modal-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  color: #94a3b8;
+  gap: 16px;
+}
+
+.modal-placeholder span {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.modal-period {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: #0f172a;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.modal-info {
+  padding: 40px;
+}
+
+.modal-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 16px;
+  line-height: 1.3;
+}
+
+.modal-address {
+  color: #64748b;
+  font-size: 15px;
+  margin-bottom: 32px;
+  line-height: 1.6;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.modal-section {
+  margin-bottom: 32px;
+}
+
+.modal-section h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 16px;
+}
+
+.modal-section p {
+  color: #475569;
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+.modal-works {
+  list-style: none;
+  padding: 0;
+}
+
+.modal-works li {
+  color: #475569;
+  font-size: 15px;
+  padding: 8px 0;
+  line-height: 1.6;
+  padding-left: 24px;
+  position: relative;
+}
+
+.modal-works li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: #10b981;
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .modal-body {
+    grid-template-columns: 1fr;
+  }
+  
+  .modal-image {
+    min-height: 250px;
+    border-radius: 32px 32px 0 0;
+  }
+  
+  .modal-gallery {
+    border-radius: 32px 32px 0 0;
+    min-height: 250px;
+  }
+  
+  .modal-img {
+    height: 200px;
+  }
+  
+  .modal-thumb {
+    width: 60px;
+    height: 45px;
+  }
+  
+  .modal-thumb-more {
+    width: 60px;
+    height: 45px;
+    font-size: 14px;
+  }
+  
+  .modal-info {
+    padding: 32px;
+  }
+  
+  .modal-title {
+    font-size: 24px;
+  }
+  
+  .modal-content {
+    border-radius: 24px;
   }
 }
 
@@ -1157,7 +1701,6 @@ const submitForm = async () => {
   }
 }
 
-
 .cta-stat-label {
   font-size: 14px;
   color: rgba(255, 255, 255, 0.7);
@@ -1336,480 +1879,91 @@ const submitForm = async () => {
   }
 }
 
-/* Footer */
-.footer {
-  background: #0f172a;
-  padding: 64px 0 32px;
-  color: white;
-}
 
-.footer-content {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 64px;
-  margin-bottom: 48px;
-}
-
-.footer-brand .logo-mark {
-  color: #2563eb;
-  margin-bottom: 16px;
-}
-
-.footer-brand .logo-text {
-  font-size: 24px;
-  font-weight: 700;
-  display: block;
-  margin-bottom: 16px;
-  color: white;
-  background: none;
-  -webkit-text-fill-color: white;
-}
-
-.footer-desc {
-  color: rgba(255, 255, 255, 0.7);
-  line-height: 1.6;
-  max-width: 300px;
-}
-
-.footer-links {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 32px;
-}
-
-.footer-column h4 {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 20px;
-  color: white;
-}
-
-.footer-column a {
-  display: block;
-  color: rgba(255, 255, 255, 0.7);
-  text-decoration: none;
-  margin-bottom: 12px;
-  font-size: 14px;
-  transition: color 0.3s ease;
-}
-
-.footer-column a:hover {
-  color: #2563eb;
-}
-
-.footer-bottom {
-  padding-top: 32px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  text-align: center;
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 14px;
-}
-
-@media (max-width: 768px) {
-  .footer-content {
-    grid-template-columns: 1fr;
-    gap: 48px;
-  }
-
-  .footer-links {
-    grid-template-columns: 1fr;
-    gap: 32px;
-  }
-}
-
-/* Projects Carousel Section */
-.projects {
-  padding: 100px 0;
-  background: #f8fafc;
-}
-
-.projects-carousel {
+/* Hero Section */
+.hero {
   position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  background: #ffffff;
   overflow: hidden;
 }
 
-.swiper-container {
-  padding-bottom: 60px !important;
-}
-
-:deep(.swiper) {
-  overflow: visible !important;
-}
-
-:deep(.swiper-slide) {
-  height: auto;
-}
-
-:deep(.swiper-button-next),
-:deep(.swiper-button-prev) {
-  display: none;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: #ffffff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-}
-
-:deep(.swiper-button-next):after,
-:deep(.swiper-button-prev):after {
-  font-size: 18px;
-  font-weight: 700;
-  color: #0f172a;
-}
-
-:deep(.swiper-button-next):hover,
-:deep(.swiper-button-prev):hover {
-  background: #2563eb;
-  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
-}
-
-:deep(.swiper-button-next):hover:after,
-:deep(.swiper-button-prev):hover:after {
-  color: white;
-}
-
-:deep(.swiper-pagination) {
-  bottom: 0 !important;
-}
-
-:deep(.swiper-pagination-bullet) {
-  width: 10px;
-  height: 10px;
-  background: #e2e8f0;
-  opacity: 1;
-  transition: all 0.3s ease;
-}
-
-:deep(.swiper-pagination-bullet-active) {
-  background: #2563eb;
-  width: 32px;
-  border-radius: 5px;
-}
-
-.project-card {
-  min-width: 100%;
-  background: #ffffff;
-  border-radius: 24px;
-  overflow: hidden;
-  /* cursor: pointer; */
-  transition: all 0.3s ease;
-  border: 1px solid #eef2ff;
-  height: 100%;
-}
-
-.project-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-  border-color: #2563eb;
-}
-
-.project-image {
-  position: relative;
-  height: 200px;
-  background: linear-gradient(135deg, #e0e7ff 0%, #dbeafe 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.project-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s ease;
-}
-
-.project-card:hover .project-img {
-  transform: scale(1.05);
-}
-
-.project-placeholder svg {
-  color: #2563eb;
-  opacity: 0.5;
-}
-
-.project-period {
+.hero-bg {
   position: absolute;
-  top: 16px;
-  right: 16px;
-  background: #0f172a;
-  color: white;
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 500;
+  inset: 0;
+  z-index: 0;
+  background-image: url('/img/hero-img.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
 }
 
-.project-content {
-  padding: 24px;
+/* Затемнение для лучшей читаемости текста */
+.hero-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 1;
 }
 
-.project-title {
-  font-size: 20px;
-  font-weight: 600;
-  color: #0f172a;
-  margin-bottom: 12px;
-  line-height: 1.3;
+/* Градиентный оверлей для красоты */
+.hero-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 50%, rgba(37, 99, 235, 0.05) 0%, transparent 60%);
+  z-index: 2;
 }
 
-.project-address {
-  color: #64748b;
-  font-size: 14px;
-  margin-bottom: 16px;
-  line-height: 1.5;
+.hero-gradient {
+  display: none; /* Скрываем старый градиент */
 }
 
-.project-desc {
-  color: #475569;
-  font-size: 14px;
-  margin-bottom: 20px;
-  line-height: 1.6;
+.hero-particles {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background-image: radial-gradient(circle at 2px 2px, rgba(37, 99, 235, 0.08) 1px, transparent 0);
+  background-size: 40px 40px;
+  pointer-events: none;
 }
 
-.project-works {
-  margin-bottom: 20px;
+/* Адаптивные настройки для фона */
+@media (max-width: 1200px) {
+  .hero-bg {
+    background-size: cover;
+    background-position: 70% center;
+  }
 }
 
-.project-works h4 {
-  font-size: 14px;
-  font-weight: 600;
-  color: #0f172a;
-  margin-bottom: 12px;
-}
-
-.project-works ul {
-  list-style: none;
-  padding: 0;
-}
-
-.project-works li {
-  color: #475569;
-  font-size: 13px;
-  padding: 4px 0;
-  line-height: 1.5;
-}
-
-.project-works li::before {
-  content: '• ';
-  color: #2563eb;
-  font-weight: 700;
-}
-
-.btn-view-project {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 20px;
-  background: transparent;
-  color: #2563eb;
-  border: 1px solid #2563eb;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  width: 100%;
-  justify-content: center;
-}
-
-.btn-view-project:hover {
-  background: #2563eb;
-  color: white;
+@media (max-width: 992px) {
+  .hero-bg {
+    background-position: 60% center;
+  }
 }
 
 @media (max-width: 768px) {
-  :deep(.swiper-button-next),
-  :deep(.swiper-button-prev) {
-    display: none !important;
-  }
-}
-
-/* Project Modal */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 20px;
-  animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.modal-content {
-  background: #ffffff;
-  border-radius: 32px;
-  max-width: 900px;
-  width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
-  position: relative;
-  animation: slideUp 0.3s ease;
-}
-
-@keyframes slideUp {
-  from {
-    transform: translateY(50px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-.modal-close {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: #f1f5f9;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  color: #0f172a;
-  z-index: 10;
-}
-
-.modal-close:hover {
-  background: #e2e8f0;
-  transform: rotate(90deg);
-}
-
-.modal-body {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
-}
-
-.modal-image {
-  position: relative;
-  height: 100%;
-  min-height: 400px;
-  background: linear-gradient(135deg, #e0e7ff 0%, #dbeafe 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 32px 0 0 32px;
-}
-
-.modal-placeholder svg {
-  color: #2563eb;
-  opacity: 0.5;
-}
-
-.modal-period {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  background: #0f172a;
-  color: white;
-  padding: 8px 16px;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.modal-info {
-  padding: 40px;
-}
-
-.modal-title {
-  font-size: 28px;
-  font-weight: 700;
-  color: #0f172a;
-  margin-bottom: 16px;
-  line-height: 1.3;
-}
-
-.modal-address {
-  color: #64748b;
-  font-size: 15px;
-  margin-bottom: 32px;
-  line-height: 1.6;
-  padding-bottom: 24px;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.modal-section {
-  margin-bottom: 32px;
-}
-
-.modal-section h3 {
-  font-size: 18px;
-  font-weight: 600;
-  color: #0f172a;
-  margin-bottom: 16px;
-}
-
-.modal-section p {
-  color: #475569;
-  line-height: 1.6;
-  font-size: 15px;
-}
-
-.modal-works {
-  list-style: none;
-  padding: 0;
-}
-
-.modal-works li {
-  color: #475569;
-  font-size: 15px;
-  padding: 8px 0;
-  line-height: 1.6;
-  padding-left: 24px;
-  position: relative;
-}
-
-.modal-works li::before {
-  content: '✓';
-  position: absolute;
-  left: 0;
-  color: #10b981;
-  font-weight: 700;
-}
-
-@media (max-width: 768px) {
-  .modal-body {
-    grid-template-columns: 1fr;
+  .hero-bg {
+    background-position: 50% 30%;
+    background-size: cover;
   }
   
-  .modal-image {
-    min-height: 250px;
-    border-radius: 32px 32px 0 0;
+  .hero-bg::before {
+    background: rgba(0, 0, 0, 0.3);
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-bg {
+    background-position: 40% 20%;
+    background-size: cover;
   }
   
-  .modal-info {
-    padding: 32px;
-  }
-  
-  .modal-title {
-    font-size: 24px;
-  }
-  
-  .modal-content {
-    border-radius: 24px;
+  .hero-bg::before {
+    background: rgba(0, 0, 0, 0.3);
   }
 }
 </style>
