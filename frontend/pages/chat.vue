@@ -722,7 +722,8 @@ useHead({
 .chat-page {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 100px);
+  height: calc(100dvh - 100px); /* ← ИЗМЕНЕНО с vh на dvh */
+  max-height: calc(100dvh - 100px);
   max-width: 1400px;
   margin: 0 auto;
   position: relative;
@@ -2046,6 +2047,20 @@ useHead({
     display: none;
   }
 }
+@media (max-width: 768px) {
+  .chat-page {
+    height: calc(100dvh - 80px); /* ← меньше отступ для мобильных */
+    max-height: calc(100dvh - 80px);
+    border-radius: 0;
+  }
+}
 
+@media (max-width: 480px) {
+  .chat-page {
+    height: calc(100dvh - 60px);
+    max-height: calc(100dvh - 60px);
+    border-radius: 0;
+  }
+}
 
 </style>
