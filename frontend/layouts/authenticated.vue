@@ -246,6 +246,7 @@
 <script setup lang="ts">
 const authStore = useAuthStore();
 const config = useRuntimeConfig();
+const vapidPublicKey = config.public.vapidPublicKey;
 const mobileMenuOpen = ref(false);
 const userMenuOpen = ref(false);
 const userMenuOpenMobile = ref(false);
@@ -306,8 +307,6 @@ onMounted(() => {
   document.addEventListener('click', handleClickOutside);
 
   // Получаем переменные окружения правильно для Nuxt 3
-  const config = useRuntimeConfig();
-  const vapidPublicKey = config.public.vapidPublicKey;
 
   if ('serviceWorker' in navigator && 'PushManager' in window) {
     navigator.serviceWorker.ready.then(registration => {
@@ -315,13 +314,16 @@ onMounted(() => {
         if (!subscription) {
           registration.pushManager.subscribe({
             userVisibleOnly: true,
-            applicationServerKey: vapidPublicKey
+            applicationServerKey: urlBase64ToUint8Array(vapidPublicKey)
           }).then(newSubscription => {
             console.log('Новая подписка:', newSubscription);
             
             fetch('/api/push/subscribe', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+                headers: {
+                  Authorization: `Bearer ${authStore.accessToken}`,
+                  'Content-Type': 'application/json'
+                },
               body: JSON.stringify(newSubscription)
             });
           }).catch(err => {
@@ -337,7 +339,15 @@ onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside);
 });
 
+function urlBase64ToUint8Array(base64String: string) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding)
+    .replace(/-/g, '+')
+    .replace(/_/g, '/');
 
+  const rawData = atob(base64);
+  return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)));
+}
 </script>
 
 <style scoped>
