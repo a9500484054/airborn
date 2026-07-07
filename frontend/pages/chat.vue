@@ -272,16 +272,17 @@
 
         <form @submit.prevent="sendMessage" class="message-input-form">
           <div class="input-wrapper">
-            <textarea
-              v-model="newMessage"
-              class="message-input"
-              placeholder="Введите сообщение..."
-              @focus="startTyping"
-              @blur="stopTyping"
-              @input="handleInput"
-              @keydown.enter.exact.prevent="sendMessage"
-              rows="1"
-            ></textarea>
+          <textarea
+            v-model="newMessage"
+            class="message-input"
+            placeholder="Введите сообщение..."
+            @focus="handleFocus"
+            @blur="handleBlur"
+            @input="handleInput"
+            @keydown.enter.exact.prevent="sendMessage"
+            rows="1"
+            style="font-size: 16px;" 
+          ></textarea>
 
             <label class="file-upload-btn" title="Прикрепить файл">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -716,6 +717,36 @@ const getUserInitials = (name: string) => {
 useHead({
   title: 'Чат - AirBorn',
 });
+
+// Добавьте эти функции
+const handleFocus = () => {
+  // Для iOS
+  if (window.visualViewport) {
+    // Отключаем зум
+    const viewport = document.querySelector('meta[name=viewport]');
+    if (viewport) {
+      viewport.setAttribute('content', 
+        'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'
+      );
+    }
+  }
+  
+  // Запускаем typing
+  startTyping();
+};
+
+const handleBlur = () => {
+  // Восстанавливаем зум
+  const viewport = document.querySelector('meta[name=viewport]');
+  if (viewport) {
+    viewport.setAttribute('content', 
+      'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=1'
+    );
+  }
+  
+  stopTyping();
+};
+
 </script>
 
 <style scoped>
@@ -2060,6 +2091,33 @@ useHead({
     height: calc(100dvh - 60px);
     /* max-height: calc(100dvh - 60px); */
     border-radius: 0;
+  }
+}
+
+/* В assets/css/main.css или в app.vue */
+/* Предотвращение зума на iOS */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+textarea,
+select {
+  -webkit-appearance: none;
+  appearance: none;
+  font-size: 16px !important;
+}
+
+/* Для всех устройств */
+@media (max-width: 768px) {
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+}
+
+/* Добавьте это правило */
+@media screen and (max-width: 768px) {
+  .message-input {
+    font-size: 16px !important;
   }
 }
 
