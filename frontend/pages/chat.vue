@@ -2050,7 +2050,7 @@ useHead({
 @media (max-width: 768px) {
   .chat-page {
     height: calc(100dvh - 80px); /* ← меньше отступ для мобильных */
-    max-height: calc(100dvh - 80px);
+    /* max-height: calc(100dvh - 80px); */
     border-radius: 0;
   }
 }
@@ -2058,7 +2058,7 @@ useHead({
 @media (max-width: 480px) {
   .chat-page {
     height: calc(100dvh - 60px);
-    max-height: calc(100dvh - 60px);
+    /* max-height: calc(100dvh - 60px); */
     border-radius: 0;
   }
 }
