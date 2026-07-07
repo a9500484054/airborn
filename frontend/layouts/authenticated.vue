@@ -305,32 +305,32 @@ watch(() => useRoute().path, () => {
 onMounted(() => {
   document.addEventListener('click', handleClickOutside);
 
-  // // Получаем переменные окружения правильно для Nuxt 3
-  // const config = useRuntimeConfig();
-  // const vapidPublicKey = config.public.vapidPublicKey;
+  // Получаем переменные окружения правильно для Nuxt 3
+  const config = useRuntimeConfig();
+  const vapidPublicKey = config.public.vapidPublicKey;
 
-  // if ('serviceWorker' in navigator && 'PushManager' in window) {
-  //   navigator.serviceWorker.ready.then(registration => {
-  //     registration.pushManager.getSubscription().then(subscription => {
-  //       if (!subscription) {
-  //         registration.pushManager.subscribe({
-  //           userVisibleOnly: true,
-  //           applicationServerKey: vapidPublicKey
-  //         }).then(newSubscription => {
-  //           console.log('Новая подписка:', newSubscription);
+  if ('serviceWorker' in navigator && 'PushManager' in window) {
+    navigator.serviceWorker.ready.then(registration => {
+      registration.pushManager.getSubscription().then(subscription => {
+        if (!subscription) {
+          registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: vapidPublicKey
+          }).then(newSubscription => {
+            console.log('Новая подписка:', newSubscription);
             
-  //           fetch('/api/push/subscribe', {
-  //             method: 'POST',
-  //             headers: { 'Content-Type': 'application/json' },
-  //             body: JSON.stringify(newSubscription)
-  //           });
-  //         }).catch(err => {
-  //           console.error('Ошибка подписки:', err);
-  //         });
-  //       }
-  //     });
-  //   });
-  // }
+            fetch('/api/push/subscribe', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(newSubscription)
+            });
+          }).catch(err => {
+            console.error('Ошибка подписки:', err);
+          });
+        }
+      });
+    });
+  }
 });
 
 onUnmounted(() => {
