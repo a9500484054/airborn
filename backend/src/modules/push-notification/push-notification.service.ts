@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as webpush from 'web-push';
 import { PushSubscription } from './entities/push-subscription.entity';
-import { google } from 'google-auth-library';
+import { GoogleAuth } from 'google-auth-library'; // ← Правильный импорт
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -65,7 +65,7 @@ export class PushNotificationService {
       );
 
       // Создаем клиент для аутентификации
-      const auth = new google.auth.GoogleAuth({
+      const auth = new GoogleAuth({ // ← Используем GoogleAuth напрямую
         credentials: serviceAccount,
         scopes: ['https://www.googleapis.com/auth/firebase.messaging'],
       });
@@ -73,13 +73,17 @@ export class PushNotificationService {
       const client = await auth.getClient();
       const token = await client.getAccessToken();
       
-      this.fcmAccessToken = token.token as string;
+      if (!token.token) {
+        throw new Error('Failed to get access token');
+      }
+      
+      this.fcmAccessToken = token.token;
       this.tokenExpiry = Date.now() + 3500000; // ~1 час
       
       this.logger.log('FCM Access Token получен успешно');
       return this.fcmAccessToken;
       
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(`Ошибка получения FCM токена: ${error.message}`);
       throw error;
     }
@@ -97,25 +101,37 @@ export class PushNotificationService {
       
       // Извлекаем project_id из service account
       const serviceAccountPath = process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
+      if (!serviceAccountPath) {
+        throw new Error('FIREBASE_SERVICE_ACCOUNT_PATH not set');
+      }
+      
       const serviceAccount = JSON.parse(
         fs.readFileSync(path.resolve(serviceAccountPath), 'utf8')
       );
       const projectId = serviceAccount.project_id;
+
+      // Парсим payload
+      let notificationData;
+      try {
+        notificationData = JSON.parse(payload);
+      } catch {
+        notificationData = { title: 'AirBorn', body: payload };
+      }
 
       // Формируем правильную структуру для FCM v1
       const fcmPayload = {
         message: {
           token: subscription.endpoint.split('/').pop(), // Извлекаем token из endpoint
           notification: {
-            title: JSON.parse(payload).title || 'AirBorn',
-            body: JSON.parse(payload).body || 'Новое сообщение',
+            title: notificationData.title || 'AirBorn',
+            body: notificationData.body || 'Новое сообщение',
           },
           webpush: {
             fcm_options: {
-              link: JSON.parse(payload).data?.url || '/chat',
+              link: notificationData.data?.url || '/chat',
             },
           },
-          data: JSON.parse(payload).data || {},
+          data: notificationData.data || {},
         },
       };
 
@@ -138,7 +154,7 @@ export class PushNotificationService {
 
       this.logger.log('✅ Уведомление отправлено через FCM v1 API');
       
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(`❌ Ошибка отправки через FCM v1: ${error.message}`);
       throw error;
     }
@@ -154,7 +170,7 @@ export class PushNotificationService {
     try {
       await webpush.sendNotification(pushSubscription, payload);
       this.logger.log('✅ Уведомление отправлено через web-push (VAPID)');
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(`❌ Ошибка web-push: ${error.message}`);
       throw error;
     }
@@ -201,7 +217,7 @@ export class PushNotificationService {
           }
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(`[Push] sendToOthers error: ${error.message}`);
     }
   }
@@ -239,7 +255,7 @@ export class PushNotificationService {
           }
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(`[Push] sendToUser error: ${error.message}`);
     }
   }
@@ -269,7 +285,7 @@ export class PushNotificationService {
         await this.pushSubscriptionRepo.save(newSub);
         this.logger.log(`✅ New subscription saved for user ${userId}`);
       }
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(`Failed to save subscription: ${error.message}`);
       throw error;
     }
