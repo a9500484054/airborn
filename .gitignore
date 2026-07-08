@@ -1,3 +1,7 @@
+# Firebase keys
+backend/keys/*.json
+backend/keys/
+
 # Dependencies
 node_modules/
 .pnp
