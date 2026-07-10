@@ -56,10 +56,10 @@ services:
       # VAPID ключи для push-уведомлений
       VAPID_PUBLIC_KEY: ${VAPID_PUBLIC_KEY}
       VAPID_PRIVATE_KEY: ${VAPID_PRIVATE_KEY}
-      FIREBASE_SERVICE_ACCOUNT_PATH: /app/keys/airbor-firebase-adminsdk-fbsvc-3c6ccf98e1.json
+      # FIREBASE_SERVICE_ACCOUNT_PATH: /app/keys/airbor-firebase-adminsdk-fbsvc-3c6ccf98e1.json
     volumes:
       - backend_uploads:/app/uploads
-      - ./backend/keys:/app/keys  # Монтируем папку с Firebase ключами
+      # - ./backend/keys:/app/keys  # Монтируем папку с Firebase ключами
     networks:
       - airborn-network
     depends_on:
