@@ -1,7 +1,6 @@
 /**
  * API Client with auto token refresh
  */
-const config = useRuntimeConfig();
 
 export interface ApiResponse<T> {
   success: boolean;
@@ -22,8 +21,8 @@ export class ApiClient {
   private isRefreshing = false;
   private refreshPromise: Promise<boolean> | null = null;
 
-  constructor() {
-    this.baseUrl = config.public.apiUrl;
+  constructor(baseUrl: string) {
+    this.baseUrl = baseUrl;
   }
 
   private getHeaders(accessToken?: string): HeadersInit {
@@ -180,5 +179,3 @@ export class ApiClient {
     return data;
   }
 }
-
-export const api = new ApiClient();

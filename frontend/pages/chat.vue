@@ -372,7 +372,7 @@
 import { watch } from 'vue';
 
 definePageMeta({
-  middleware: ['auth'],
+  middleware: 'auth',
 });
 
 const authStore = useAuthStore();

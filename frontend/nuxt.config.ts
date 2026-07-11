@@ -26,24 +26,17 @@ export default defineNuxtConfig({
       },
       meta: [
         { charset: 'utf-8' },
-        // ✅ ИСПРАВЛЕННЫЙ viewport для предотвращения зума
         { 
           name: 'viewport', 
           content: 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=1, viewport-fit=cover' 
         },
         { name: 'description', content: 'AirBorn - Профессиональный монтаж вентиляции и кондиционирования' },
-        
-        // Theme color for mobile browsers
         { name: 'theme-color', content: '#3b82f6' },
         { name: 'msapplication-TileColor', content: '#3b82f6' },
-        
-        // iOS specific
         { name: 'apple-mobile-web-app-capable', content: 'yes' },
         { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
         { name: 'apple-mobile-web-app-title', content: 'AirBorn' },
         { name: 'format-detection', content: 'telephone=no' },
-        
-        // Open Graph / Facebook
         { property: 'og:type', content: 'website' },
         { property: 'og:url', content: 'https://airborn.com/' },
         { property: 'og:title', content: 'AirBorn - Innovative Solutions' },
@@ -53,8 +46,6 @@ export default defineNuxtConfig({
         { property: 'og:image:height', content: '630' },
         { property: 'og:site_name', content: 'AirBorn' },
         { property: 'og:locale', content: 'ru_RU' },
-        
-        // Twitter
         { property: 'twitter:card', content: 'summary_large_image' },
         { property: 'twitter:url', content: 'https://airborn.com/' },
         { property: 'twitter:title', content: 'AirBorn - Innovative Solutions' },
@@ -62,15 +53,10 @@ export default defineNuxtConfig({
         { property: 'twitter:image', content: '/og-image.jpg' },
       ],
       link: [
-        // Favicon
         { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' },
         { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
         { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png' },
-        
-        // Apple Touch Icon (for home screen)
         { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
-        
-        // Android/Web App Manifest
         { rel: 'manifest', href: '/manifest.json' },
       ],
     },
@@ -97,19 +83,15 @@ export default defineNuxtConfig({
 
   // Route rules for SSR/SPA hybrid
   routeRules: {
-    // Landing page - SSR
     '/': { ssr: true },
-    // Auth pages - SSR
     '/login': { ssr: false },
     '/verify-email': { ssr: false },
     '/reset-password': { ssr: false },
-    // Dashboard and app - SPA
     '/dashboard/**': { ssr: false },
     '/chat': { ssr: false },
     '/projects/**': { ssr: false },
     '/admin/**': { ssr: false },
     '/under-construction': { ssr: true },
-    // 404 page
     '/404': { ssr: true },
   },
 
@@ -127,4 +109,4 @@ export default defineNuxtConfig({
       },
     },
   },
-});
+})

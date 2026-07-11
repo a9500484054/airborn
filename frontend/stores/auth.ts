@@ -228,13 +228,14 @@ export const useAuthStore = defineStore('auth', {
         const formData = new FormData();
         formData.append('avatar', file);
 
-        const response = await api.upload<{ message: string; data: User }>(
+        // Используем $api из NuxtApp
+        const { $api } = useNuxtApp();
+        const response = await $api.upload<{ message: string; data: User }>(
           `/users/${this.user.id}/avatar`,
           formData
         );
 
         if (response.success && response.data) {
-          // response.data может быть самим пользователем или объектом с полем data
           const userData = (response.data as any).data || response.data;
           this.user = { ...this.user, ...userData };
 
