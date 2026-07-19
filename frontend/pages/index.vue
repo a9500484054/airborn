@@ -21,13 +21,13 @@
               </h1>
               
               <p class="hero-description">
-                Монтируем системы «под ключ» с гарантией 12 месяцев. 
+                Монтируем системы «под ключ» с гарантией от 12 месяцев. 
                 Бесплатный выезд инженера в день обращения.
               </p>
               
               <div class="hero-stats">
                 <div class="stat">
-                  <div class="stat-number">500+</div>
+                  <div class="stat-number">100+</div>
                   <div class="stat-label">Выполненных проектов</div>
                 </div>
                 <div class="stat-divider"></div>
@@ -36,10 +36,6 @@
                   <div class="stat-label">Опыта на рынке</div>
                 </div>
                 <div class="stat-divider"></div>
-                <div class="stat">
-                  <div class="stat-number">24/7</div>
-                  <div class="stat-label">Техподдержка</div>
-                </div>
               </div>
               
               <div class="hero-actions">
@@ -395,7 +391,7 @@ const services = [
     icon: '❄️',
     title: 'Сплит-системы',
     desc: 'Идеальное решение для квартир и небольших офисов',
-    items: ['Монтаж за 2-4 часа', 'Пуско-наладка в подарок', 'Гарантия 12 месяцев']
+    items: ['Монтаж за 2-4 часа', 'Выезд инженера в день обращения', 'Гарантия от 12 месяцев']
   },
   {
     icon: '🏢',
@@ -406,8 +402,8 @@ const services = [
   {
     icon: '💨',
     title: 'Вентиляция',
-    desc: 'Приточно-вытяжные системы с рекуперацией тепла',
-    items: ['Фильтрация воздуха', 'Тихая работа', 'Экономия до 40% тепла']
+    desc: 'Приточно-вытяжные системы',
+    items: ['Общеобменная вентиляция', 'Приточно-вытяжные вентиляция', 'Системы дымоудаления и подпора воздуха']
   }
 ];
 
@@ -468,7 +464,7 @@ const projects = [
     title: 'Ресторан «Теремок»',
     address: 'Санкт-Петербург, пр. Стачек, 99',
     description: 'Ресторан общественного питания с комплексной системой вентиляции.',
-    image: '/img/Portfolio/Теремок/IMG_4332.jpg',
+    image: '/img/Portfolio/Теремок/IMG_4859.jpg',
     images: [
       '/img/Portfolio/Теремок/IMG_4332.jpg',
       '/img/Portfolio/Теремок/IMG_4385.JPG',
@@ -491,8 +487,11 @@ const projects = [
     title: 'Фитнес-центр на Пионерской',
     address: 'Санкт-Петербург, ул. Пионерская',
     description: 'Фитнес-центр с системой приточно-вытяжной вентиляции.',
-    image: '',
-    images: [],
+    image: '/img/Portfolio/Фитнесс на Пионерской/foto-1.png',
+    images: [
+      '/img/Portfolio/Фитнесс на Пионерской/foto-1.png',
+      '/img/Portfolio/Фитнесс на Пионерской/foto-2.png',
+    ],
     works: [
       'Монтаж систем вентиляции и кондиционирования',
       'Пусконаладочные работы'
@@ -507,8 +506,10 @@ const projects = [
     title: 'Ресторан в Колпино',
     address: 'г. Колпино, ул. Пролетарская, д. 7',
     description: 'Ресторан общественного питания с современной системой вентиляции.',
-    image: '',
-    images: [],
+    image: '/img/Portfolio/Ресторан в Колпино/foto-1.png',
+    images: [
+      '/img/Portfolio/Ресторан в Колпино/foto-1.png'
+    ],
     works: [
       'Монтаж систем вентиляции и кондиционирования',
       'Поставка оборудования'
@@ -543,7 +544,7 @@ const projects = [
     title: 'Объект на Приморской',
     address: 'Санкт-Петербург, Приморский р-н',
     description: 'Монтаж систем вентиляции в жилом комплексе.',
-    image: '/img/Portfolio/Приморская/IMG_4494.PNG',
+    image: '/img/Portfolio/Приморская/photo_2026-07-02_13-35-56.jpg',
     images: [
       '/img/Portfolio/Приморская/IMG_4494.PNG',
       '/img/Portfolio/Приморская/IMG_4499.PNG',
@@ -581,7 +582,7 @@ const projects = [
     period: '2024 - 2025',
     title: 'Бассейн',
     address: 'Санкт-Петербург',
-    description: 'Монтаж систем вентиляции в бассейне с учетом высокой влажности.',
+    description: 'Монтаж систем вентиляции в бассейне с учетом высотных работ.',
     image: '/img/Portfolio/Бассейн/IMG_5266.jpg',
     images: [
       '/img/Portfolio/Бассейн/IMG_5266.jpg',
