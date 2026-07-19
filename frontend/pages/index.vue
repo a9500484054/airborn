@@ -1,5 +1,15 @@
 <template>
   <div class="landing-page">
+    <!-- Плашка "Сайт на стадии разработки" -->
+    <div class="development-banner">
+      <div class="container">
+        <div class="banner-content">
+          <span class="banner-icon">🚧</span>
+          <span class="banner-text">Сайт находится на стадии разработки. Некоторые разделы могут быть неактивны.</span>
+          <span class="banner-close" @click="closeBanner">✕</span>
+        </div>
+      </div>
+    </div>
 
     <NuxtLayout>
       <!-- Hero Section -->
@@ -109,12 +119,6 @@
                     <h3 class="project-title">{{ project.title }}</h3>
                     <p class="project-address">{{ project.address }}</p>
                     <p class="project-desc">{{ project.description }}</p>
-                    <!-- <div class="project-works">
-                      <h4>Выполненные работы:</h4>
-                      <ul>
-                        <li v-for="(work, idx) in project.works" :key="idx">{{ work }}</li>
-                      </ul>
-                    </div> -->
                     <button class="btn-view-project">
                       Подробнее
                       <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
@@ -177,12 +181,6 @@
                 <h3>Описание проекта</h3>
                 <p>{{ selectedProject.description }}</p>
               </div>
-              <!-- <div class="modal-section">
-                <h3>Выполненные работы</h3>
-                <ul class="modal-works">
-                  <li v-for="(work, idx) in selectedProject.works" :key="idx">{{ work }}</li>
-                </ul>
-              </div> -->
             </div>
           </div>
         </div>
@@ -376,6 +374,13 @@ useHead({
 
 const swiperModules = [Navigation, Pagination, FreeMode];
 
+// Состояние для плашки
+const bannerVisible = ref(true);
+
+const closeBanner = () => {
+  bannerVisible.value = false;
+};
+
 const isSubmitting = ref(false);
 const formSuccess = ref(false);
 const formError = ref('');
@@ -403,7 +408,7 @@ const services = [
     icon: '💨',
     title: 'Вентиляция',
     desc: 'Приточно-вытяжные системы',
-    items: ['Общеобменная вентиляция', 'Приточно-вытяжные вентиляция', 'Системы дымоудаления и подпора воздуха']
+    items: ['Общеобменная вентиляция', 'Приточно-вытяжная вентиляция', 'Системы дымоудаления и подпора воздуха']
   }
 ];
 
@@ -420,7 +425,6 @@ const steps = [
   { title: 'Монтаж и оплата', desc: 'Профессиональная установка. Оплата после приемки' }
 ];
 
-// ========== ОБНОВЛЕННЫЕ ПРОЕКТЫ ==========
 // Все проекты из папки Portfolio
 const projects = [
   {
@@ -610,7 +614,6 @@ const selectedProject = ref<any>(null);
 
 const openProjectModal = (index: number) => {
   const project = { ...projects[index] };
-  // Устанавливаем текущее изображение на первое
   if (project.images && project.images.length > 0) {
     project.currentImage = project.images[0];
   }
@@ -625,7 +628,6 @@ const closeModal = () => {
   document.body.style.overflow = '';
 };
 
-// Close modal on ESC
 if (process.client) {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
@@ -723,6 +725,60 @@ const submitForm = async () => {
 @media (max-width: 768px) {
   .container {
     padding: 0 20px;
+  }
+}
+
+/* ===== ПЛАШКА РАЗРАБОТКИ ===== */
+.development-banner {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 1000;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  padding: 10px 0;
+  border-bottom: 2px solid #b45309;
+}
+
+.banner-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: white;
+  font-size: 14px;
+  flex-wrap: wrap;
+}
+
+.banner-icon {
+  font-size: 20px;
+}
+
+.banner-text {
+  font-weight: 500;
+  text-align: center;
+}
+
+.banner-close {
+  cursor: pointer;
+  font-size: 18px;
+  padding: 0 8px;
+  transition: transform 0.2s ease;
+  opacity: 0.8;
+}
+
+.banner-close:hover {
+  transform: scale(1.2);
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .banner-content {
+    font-size: 12px;
+    gap: 8px;
+  }
+  
+  .banner-icon {
+    font-size: 16px;
   }
 }
 
@@ -1045,7 +1101,6 @@ const submitForm = async () => {
   transform: scale(1.05);
 }
 
-/* Project Placeholder */
 .project-placeholder {
   display: flex;
   flex-direction: column;
@@ -1252,7 +1307,6 @@ const submitForm = async () => {
   overflow: hidden;
 }
 
-/* Modal Gallery */
 .modal-gallery {
   width: 100%;
   height: 100%;
@@ -1901,7 +1955,6 @@ const submitForm = async () => {
   background-position: center center;
 }
 
-/* Затемнение для лучшей читаемости текста */
 .hero-bg::before {
   content: '';
   position: absolute;
@@ -1910,7 +1963,6 @@ const submitForm = async () => {
   z-index: 1;
 }
 
-/* Градиентный оверлей для красоты */
 .hero-bg::after {
   content: '';
   position: absolute;
@@ -1920,7 +1972,7 @@ const submitForm = async () => {
 }
 
 .hero-gradient {
-  display: none; /* Скрываем старый градиент */
+  display: none;
 }
 
 .hero-particles {
@@ -1932,7 +1984,6 @@ const submitForm = async () => {
   pointer-events: none;
 }
 
-/* Адаптивные настройки для фона */
 @media (max-width: 1200px) {
   .hero-bg {
     background-size: cover;
