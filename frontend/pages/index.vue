@@ -46,6 +46,11 @@
                   <div class="stat-label">Опыта на рынке</div>
                 </div>
                 <div class="stat-divider"></div>
+                <div class="stat">
+                  <div class="stat-number">Прозрачные цены</div>
+                  <div class="stat-label"> Фиксируем стоимость в договоре</div>
+                </div>
+                <!-- <div class="stat-divider"></div> -->
               </div>
               
               <div class="hero-actions">
@@ -429,7 +434,7 @@ const steps = [
 const projects = [
   {
     id: 'school-bugry',
-    period: 'Сен 2024 - Июль 2025',
+    period: 'Сен 2024 - Июль 2026',
     title: 'Школа «Бугры»',
     address: 'Ленинградская обл., Всеволожский р-н, пос. Бугры, массив «Центральное»',
     description: 'Объект начального и среднего общего образования на 1383 места.',
@@ -446,28 +451,11 @@ const projects = [
     currentImage: '/img/Portfolio/Школа Бугры/photo_2026-07-02_13-34-46.jpg'
   },
   {
-    id: 'school-blyuhera',
-    period: '2024 - 2025',
-    title: 'Школа на Блюхера',
-    address: 'Санкт-Петербург, пр. Блюхера',
-    description: 'Объект среднего общего образования с современными инженерными системами.',
-    image: '/img/Portfolio/Школа на Блюхера/IMG_4404.jpg',
-    images: [
-      '/img/Portfolio/Школа на Блюхера/IMG_4404.jpg',
-    ],
-    works: [
-      'Монтаж систем отопления и вентиляции',
-      'Пусконаладочные работы'
-    ],
-    folder: 'Школа на Блюхера',
-    currentImage: '/img/Portfolio/Школа на Блюхера/IMG_4404.jpg'
-  },
-  {
     id: 'teremok',
     period: '2024 - 2025',
-    title: 'Ресторан «Теремок»',
-    address: 'Санкт-Петербург, пр. Стачек, 99',
-    description: 'Ресторан общественного питания с комплексной системой вентиляции.',
+    title: 'Складсие комплексы',
+    address: 'Санкт-Петербург, Приморский район',
+    description: 'Производство, предприятие общественного питания и складские комплексы',
     image: '/img/Portfolio/Теремок/IMG_4859.jpg',
     images: [
       '/img/Portfolio/Теремок/IMG_4332.jpg',
@@ -476,7 +464,8 @@ const projects = [
       '/img/Portfolio/Теремок/IMG_4553.jpg',
       '/img/Portfolio/Теремок/IMG_4555.jpg',
       '/img/Portfolio/Теремок/IMG_4557.jpg',
-      '/img/Portfolio/Теремок/IMG_4859.jpg'
+      '/img/Portfolio/Теремок/IMG_4859.jpg',
+      '/img/Portfolio/Теремок/Складсие комплексы.JPG',
     ],
     works: [
       'Монтаж систем вентиляции и кондиционирования',
@@ -506,9 +495,9 @@ const projects = [
   },
   {
     id: 'restaurant-kolpino',
-    period: '2024 - 2025',
+    period: '2025',
     title: 'Ресторан в Колпино',
-    address: 'г. Колпино, ул. Пролетарская, д. 7',
+    address: 'Ленинградская область, город Колпино',
     description: 'Ресторан общественного питания с современной системой вентиляции.',
     image: '/img/Portfolio/Ресторан в Колпино/foto-1.png',
     images: [
@@ -524,8 +513,8 @@ const projects = [
   },
   {
     id: 'moskovskaya',
-    period: '2024 - 2025',
-    title: 'Объект на Московской',
+    period: '2025-2026',
+    title: 'Поликлиника на Московской',
     address: 'Санкт-Петербург, Московский пр.',
     description: 'Комплексные работы по монтажу систем вентиляции и кондиционирования.',
     image: '/img/Portfolio/Московская/IMG_4414.jpg',
@@ -533,7 +522,10 @@ const projects = [
       '/img/Portfolio/Московская/IMG_4414.jpg',
       '/img/Portfolio/Московская/IMG_4419.jpg',
       '/img/Portfolio/Московская/IMG_4421.jpg',
-      '/img/Portfolio/Московская/IMG_4427.jpg'
+      '/img/Portfolio/Московская/IMG_4427.jpg',
+      '/img/Portfolio/Московская/Фото поликлиника на Московской (1).JPG',
+      '/img/Portfolio/Московская/Фото поликлиника на Московской (2).JPG',
+      '/img/Portfolio/Московская/Фото поликлиника на Московской (3).JPG',
     ],
     works: [
       'Монтаж систем вентиляции и кондиционирования',
@@ -545,15 +537,17 @@ const projects = [
   {
     id: 'primorskaya',
     period: '2024 - 2025',
-    title: 'Объект на Приморской',
-    address: 'Санкт-Петербург, Приморский р-н',
-    description: 'Монтаж систем вентиляции в жилом комплексе.',
+    title: 'Жилой комплекс на Приморской',
+    address: ' Санкт-Петербург, Василеостровский район',
+    description: 'Многоквартирные дома со встроенными помещениями и паркингом.',
     image: '/img/Portfolio/Приморская/photo_2026-07-02_13-35-56.jpg',
     images: [
       '/img/Portfolio/Приморская/IMG_4494.PNG',
       '/img/Portfolio/Приморская/IMG_4499.PNG',
       '/img/Portfolio/Приморская/IMG_4502.PNG',
-      '/img/Portfolio/Приморская/photo_2026-07-02_13-35-56.jpg'
+      '/img/Portfolio/Приморская/photo_2026-07-02_13-35-56.jpg',
+      '/img/Portfolio/Приморская/Screenshot_93.png',
+      '/img/Portfolio/Приморская/Screenshot_94.png',
     ],
     works: [
       'Монтаж систем вентиляции',
@@ -585,7 +579,7 @@ const projects = [
     id: 'pool',
     period: '2024 - 2025',
     title: 'Бассейн',
-    address: 'Санкт-Петербург',
+    address: 'Санкт-Петербург, Выборгский район',
     description: 'Монтаж систем вентиляции в бассейне с учетом высотных работ.',
     image: '/img/Portfolio/Бассейн/IMG_5266.jpg',
     images: [
@@ -599,7 +593,28 @@ const projects = [
     ],
     folder: 'Бассейн',
     currentImage: '/img/Portfolio/Бассейн/IMG_5266.jpg'
-  }
+  },
+  {
+    id: 'school-blyuhera',
+    period: '2026',
+    title: 'Школа на Блюхера',
+    address: 'Санкт-Петербург, пр. Блюхера',
+    description: 'Объект среднего общего образования с современными инженерными системами.',
+    image: '/img/Portfolio/Школа на Блюхера/IMG_4404.jpg',
+    images: [
+      '/img/Portfolio/Школа на Блюхера/IMG_4404.jpg',
+      '/img/Portfolio/Школа на Блюхера/Screenshot_95.png',
+      '/img/Portfolio/Школа на Блюхера/Школа на Блюхера (2).JPG',
+      '/img/Portfolio/Школа на Блюхера/Школа на Блюхера (3).JPG',
+      '/img/Portfolio/Школа на Блюхера/Школа на Блюхера (4).JPG',
+    ],
+    works: [
+      'Монтаж систем отопления и вентиляции',
+      'Пусконаладочные работы'
+    ],
+    folder: 'Школа на Блюхера',
+    currentImage: '/img/Portfolio/Школа на Блюхера/IMG_4404.jpg'
+  },
 ];
 
 const config = useRuntimeConfig();
